@@ -19,7 +19,19 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-
+  # FONTS
+  fonts:
+    - family: "Montserrat"
+      fonts:
+        - asset: fonts/montserrat_variable_italic.ttf
+        - asset: fonts/montserrat_variable_normal.ttf
+  # ASSETS
+  assets:
+    - assets/splash_full.png
+    - assets/splash_branding.png
+    - assets/splash_logo_only.png
+    - assets/full.png
+# ICONS
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
