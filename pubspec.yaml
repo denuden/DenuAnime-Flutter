@@ -11,6 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_launcher_icons: ^0.14.4
+  flutter_svg: ^2.3.0
 
 dev_dependencies:
   flutter_test:
@@ -31,6 +32,8 @@ flutter:
     - assets/splash_branding.png
     - assets/splash_logo_only.png
     - assets/full.png
+    - assets/icons/ic_facebook.png
+    - assets/icons/ic_google.png
 # ICONS
 flutter_launcher_icons:
   android: "launcher_icon"

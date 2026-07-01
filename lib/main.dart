@@ -13,6 +13,10 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(theme: darkMode, home: LandingView());
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: darkMode,
+      home: LandingView(),
+    );
   }
 }

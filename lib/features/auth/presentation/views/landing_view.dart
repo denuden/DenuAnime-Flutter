@@ -1,3 +1,5 @@
+import 'package:denuanime/features/auth/presentation/views/login_view.dart';
+import 'package:denuanime/theme/dark_mode.dart';
 import 'package:flutter/material.dart';
 
 class LandingView extends StatefulWidget {
@@ -8,6 +10,14 @@ class LandingView extends StatefulWidget {
 }
 
 class _LandingViewState extends State<LandingView> {
+  //* ============= functions
+  void navigateToLogin() {
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (context) => LoginView()));
+  }
+
+  //* ================== UI
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,32 +36,37 @@ class _LandingViewState extends State<LandingView> {
                     SizedBox(height: 16),
 
                     Chip(
+                      avatar: Icon(
+                        Icons.waving_hand_rounded,
+                        color: primaryLight,
+                        size: 18,
+                      ),
+                      labelStyle: TextStyle(
+                        color: primaryLight,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      backgroundColor: glass,
                       label: Text("Welcome Back!"),
                       labelPadding: EdgeInsets.symmetric(
                         vertical: 8,
                         horizontal: 16,
                       ),
-                      labelStyle: TextStyle(fontWeight: FontWeight.w600),
                       shape: RoundedRectangleBorder(
-                        side: BorderSide(
-                          width: 0.5,
-                          color: Theme.of(context).colorScheme.inversePrimary,
+                        side: const BorderSide(
+                          width: 0.8,
+                          color: primaryBorder,
                         ),
                         borderRadius: BorderRadiusGeometry.circular(24),
                       ),
                     ),
 
-                    SizedBox(height: 16),
+                    SizedBox(height: 24),
                     ShaderMask(
                       blendMode: BlendMode.srcIn,
                       shaderCallback: (bounds) => const LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
-                        colors: [
-                          Color(0xFFFFD180),
-                          Color(0xFFFFA726),
-                          Color(0xFFFF8C00),
-                        ],
+                        colors: [primaryLight, primary, primaryDeep],
                       ).createShader(bounds),
                       child: Text(
                         "YOUR ANIME COMPANION APP",
@@ -60,7 +75,7 @@ class _LandingViewState extends State<LandingView> {
                           height: 0.9,
                           fontSize: 42,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white, // IMPORTANT
+                          color: inversePrimary, // IMPORTANT
                         ),
                       ),
                     ),
@@ -69,11 +84,15 @@ class _LandingViewState extends State<LandingView> {
                     Text(
                       "Track, discover, and save your favorite anime.\nFind your next obsession, one episode at a time.",
                       textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.bodyMedium,
                     ),
 
                     SizedBox(height: 32),
 
                     TextButton(
+                      style: TextButton.styleFrom(
+                        foregroundColor: primaryLight,
+                      ),
                       onPressed: () {},
                       child: Text("Explore the app"),
                     ),
@@ -84,12 +103,18 @@ class _LandingViewState extends State<LandingView> {
                       children: [
                         SizedBox(
                           width: 80,
-                          child: Divider(thickness: 0.5, color: Colors.white),
+                          child: Divider(thickness: 0.5, color: divider),
                         ),
-                        Text("or"),
+                        Text(
+                          "or",
+                          style: TextStyle(
+                            color: textSecondary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
                         SizedBox(
                           width: 80,
-                          child: Divider(thickness: 0.5, color: Colors.white),
+                          child: Divider(thickness: 0.5, color: divider),
                         ),
                       ],
                     ),
@@ -99,7 +124,12 @@ class _LandingViewState extends State<LandingView> {
                     SizedBox(
                       width: double.infinity,
                       child: OutlinedButton(
-                        onPressed: () {},
+                        style: OutlinedButton.styleFrom(
+                          side: const BorderSide(color: primaryBorder),
+                        ),
+                        onPressed: () {
+                          navigateToLogin();
+                        },
                         child: Text("Login"),
                       ),
                     ),
