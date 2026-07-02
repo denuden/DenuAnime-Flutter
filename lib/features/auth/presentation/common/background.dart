@@ -52,7 +52,7 @@ class Background extends StatelessWidget {
           // Login Card
           Center(
             child: Padding(
-              padding: const EdgeInsets.all(24.0),
+              padding: const EdgeInsets.all(16.0),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 //*glassmorphism
@@ -60,6 +60,7 @@ class Background extends StatelessWidget {
                   filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
                   //*card itself to hold content
                   child: Container(
+                    height: double.infinity,
                     width: double.infinity,
                     padding: EdgeInsets.all(24),
                     //*border

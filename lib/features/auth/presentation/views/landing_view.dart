@@ -1,4 +1,6 @@
 import 'package:denuanime/features/auth/presentation/views/login_view.dart';
+import 'package:denuanime/features/auth/presentation/views/register_view.dart';
+import 'package:denuanime/features/main/presentation/home_view.dart';
 import 'package:denuanime/theme/dark_mode.dart';
 import 'package:flutter/material.dart';
 
@@ -15,6 +17,18 @@ class _LandingViewState extends State<LandingView> {
     Navigator.of(
       context,
     ).push(MaterialPageRoute(builder: (context) => LoginView()));
+  }
+
+  void navigateToRegister() {
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (context) => RegisterView()));
+  }
+
+  void navigateToHome() {
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (context) => HomeView()));
   }
 
   //* ================== UI
@@ -93,7 +107,9 @@ class _LandingViewState extends State<LandingView> {
                       style: TextButton.styleFrom(
                         foregroundColor: primaryLight,
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        navigateToHome();
+                      },
                       child: Text("Explore the app"),
                     ),
 
@@ -137,7 +153,9 @@ class _LandingViewState extends State<LandingView> {
                     SizedBox(
                       width: double.infinity,
                       child: FilledButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          navigateToRegister();
+                        },
                         child: Text("Register"),
                       ),
                     ),

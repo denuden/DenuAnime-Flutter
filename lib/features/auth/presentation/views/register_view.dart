@@ -2,23 +2,25 @@ import 'package:denuanime/features/auth/presentation/common/auth_textfield.dart'
 import 'package:denuanime/features/auth/presentation/common/background.dart';
 import 'package:flutter/material.dart';
 
-class LoginView extends StatefulWidget {
-  const LoginView({super.key});
+class RegisterView extends StatefulWidget {
+  const RegisterView({super.key});
 
   @override
-  State<LoginView> createState() => _LoginViewState();
+  State<RegisterView> createState() => _RegisterViewState();
 }
 
-class _LoginViewState extends State<LoginView> {
+class _RegisterViewState extends State<RegisterView> {
   //? variable ============
   bool obscureText = true;
   late TextEditingController _email;
   late TextEditingController _password;
+  late TextEditingController _name;
   IconData passwordIcon = Icons.password;
 
   //? functions ==============
   @override
   void initState() {
+    _name = TextEditingController();
     _email = TextEditingController();
     _password = TextEditingController();
 
@@ -30,6 +32,7 @@ class _LoginViewState extends State<LoginView> {
   void dispose() {
     _email.dispose();
     _password.dispose();
+    _name.dispose();
     super.dispose();
   }
 
@@ -63,7 +66,7 @@ class _LoginViewState extends State<LoginView> {
                       children: [
                         //*Contents of background card
                         const Text(
-                          "Sign In",
+                          "Register",
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 28,
@@ -80,6 +83,16 @@ class _LoginViewState extends State<LoginView> {
                         ),
 
                         const SizedBox(height: 24),
+
+                        AuthTextfield(
+                          controller: _name,
+                          hint: "Nickname",
+                          isPassword: false,
+                          suffixIcon: Icon(Icons.person),
+                          type: TextInputType.text,
+                        ),
+
+                        const SizedBox(height: 16),
 
                         AuthTextfield(
                           controller: _email,
@@ -123,7 +136,7 @@ class _LoginViewState extends State<LoginView> {
                           child: ElevatedButton(
                             onPressed: () {},
                             child: const Text(
-                              "Sign In",
+                              "Sign Up",
                               style: TextStyle(fontSize: 18),
                             ),
                           ),
@@ -132,7 +145,7 @@ class _LoginViewState extends State<LoginView> {
                         const SizedBox(height: 24),
 
                         Text(
-                          "Forgot password?",
+                          "or sign up with",
                           style: TextStyle(
                             color: Colors.white.withValues(alpha: .6),
                           ),
