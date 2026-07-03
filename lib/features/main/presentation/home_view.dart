@@ -1,8 +1,11 @@
+import 'package:denuanime/features/anime/domain/entities/genre_model.dart';
 import 'package:denuanime/features/common/entities/base_image_model.dart';
 import 'package:denuanime/features/common/entities/image_type_model.dart';
 import 'package:denuanime/features/main/presentation/common/drawer_home.dart';
-import 'package:denuanime/features/main/presentation/common/person_item_view.dart';
+import 'package:denuanime/features/main/presentation/common/genre_item.dart';
+import 'package:denuanime/features/people/presentation/common/person_item_view.dart';
 import 'package:denuanime/features/people/domain/entities/people_model.dart';
+import 'package:denuanime/theme/dark_mode.dart';
 import 'package:flutter/material.dart';
 
 class HomeView extends StatefulWidget {
@@ -115,6 +118,75 @@ class _HomeViewState extends State<HomeView> {
           SizedBox(height: 16),
 
           //* ---------------------- Filter
+          Row(
+            children: [
+              Icon(Icons.filter_alt, color: primaryDark),
+              SizedBox(width: 4),
+              Text("Filter", style: TextStyle(color: primaryDark)),
+              SizedBox(width: 8),
+
+              SizedBox(
+                height: 22,
+                child: VerticalDivider(
+                  width: 1,
+                  thickness: 0.2,
+                  color: inversePrimary,
+                ),
+              ),
+              SizedBox(width: 8),
+
+              Expanded(
+                child: SizedBox(
+                  height: 40,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: 10,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: GenreItem(
+                          onSelect: (value) {
+                            // list[index].isSelected = value
+                          },
+                          genre: GenreModel(
+                            name: "Action",
+                            isSelected: index == 1 ? true : false,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+          //* --------------- Carousel Anime
+          SizedBox(height: 8),
+          SizedBox(
+            height: 200,
+            child: Container(
+              decoration: BoxDecoration(color: Colors.black),
+
+              child: CarouselView.weighted(
+                backgroundColor: Colors.red,
+                itemSnapping: true,
+                flexWeights: [4, 1],
+                scrollDirection: Axis.horizontal,
+
+                children: List<Widget>.generate(10, (int index) {
+                  return Center(
+                    child: Text(
+                      'Item $index',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  );
+                }),
+              ),
+            ),
+          ),
+
+          //*===== END COLUMN
         ],
       ),
     );
