@@ -163,6 +163,7 @@ ThemeData darkMode = ThemeData(
     bodyLarge: TextStyle(fontSize: 16, color: inversePrimary),
 
     bodyMedium: TextStyle(fontSize: 14, color: textSecondary),
+    bodySmall: TextStyle(fontSize: 12, color: textSecondary),
   ),
 );
 
