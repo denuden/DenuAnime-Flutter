@@ -1,6 +1,19 @@
+import 'package:denuanime/features/anime/domain/entities/aired_model.dart';
+import 'package:denuanime/features/anime/domain/entities/anime_details_model.dart';
+import 'package:denuanime/features/anime/domain/entities/broadcast_model.dart';
+import 'package:denuanime/features/anime/domain/entities/external_model.dart';
 import 'package:denuanime/features/anime/domain/entities/genre_model.dart';
+import 'package:denuanime/features/anime/domain/entities/licensor_model.dart';
+import 'package:denuanime/features/anime/domain/entities/producer_model.dart';
+import 'package:denuanime/features/anime/domain/entities/relation_model.dart';
+import 'package:denuanime/features/anime/domain/entities/streaming_model.dart';
+import 'package:denuanime/features/anime/domain/entities/studio_model.dart';
+import 'package:denuanime/features/anime/domain/entities/theme_song_model.dart';
+import 'package:denuanime/features/anime/domain/entities/title_model.dart';
+import 'package:denuanime/features/anime/domain/entities/trailer_model.dart';
 import 'package:denuanime/features/common/entities/base_image_model.dart';
 import 'package:denuanime/features/common/entities/image_type_model.dart';
+import 'package:denuanime/features/main/presentation/common/anime_carousel_item.dart';
 import 'package:denuanime/features/main/presentation/common/drawer_home.dart';
 import 'package:denuanime/features/main/presentation/common/genre_item.dart';
 import 'package:denuanime/features/people/presentation/common/person_item_view.dart';
@@ -16,9 +29,167 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
+  final animeDetails = AnimeDetailsModel(
+    malId: 37999,
+    url:
+        "https://myanimelist.net/anime/37999/Kaguya-sama_wa_Kokurasetai__Tensai-tachi_no_Renai_Zunousen",
+    images: ImageTypeModel.fromJson({
+      "jpg": {
+        "image_url": "https://cdn.myanimelist.net/images/anime/1295/106551.jpg",
+        "small_image_url":
+            "https://cdn.myanimelist.net/images/anime/1295/106551t.jpg",
+        "large_image_url":
+            "https://cdn.myanimelist.net/images/anime/1295/106551l.jpg",
+      },
+      "webp": {
+        "image_url":
+            "https://cdn.myanimelist.net/images/anime/1295/106551.webp",
+        "small_image_url":
+            "https://cdn.myanimelist.net/images/anime/1295/106551t.webp",
+        "large_image_url":
+            "https://cdn.myanimelist.net/images/anime/1295/106551l.webp",
+      },
+    }),
+    trailer: TrailerModel.fromJson({
+      "youtube_id": null,
+      "url": null,
+      "embed_url":
+          "https://www.youtube-nocookie.com/embed/Ti2kJ-GYO68?enablejsapi=1&wmode=opaque&autoplay=1",
+      "images": {
+        "image_url": null,
+        "small_image_url": null,
+        "medium_image_url": null,
+        "large_image_url": null,
+        "maximum_image_url": null,
+      },
+    }),
+    approved: true,
+    titles: [
+      TitleModel(
+        type: "Default",
+        title: "Kaguya-sama wa Kokurasetai: Tensai-tachi no Renai Zunousen",
+      ),
+      TitleModel(type: "English", title: "Kaguya-sama: Love is War"),
+      TitleModel(type: "Japanese", title: "かぐや様は告らせたい～天才たちの恋愛頭脳戦～"),
+    ],
+    title: "Kaguya-sama wa Kokurasetai: Tensai-tachi no Renai Zunousen",
+    titleEnglish: "Kaguya-sama: Love is War",
+    titleJapanese: "かぐや様は告らせたい～天才たちの恋愛頭脳戦～",
+    titleSynonyms: [
+      "Kaguya Wants to be Confessed To: The Geniuses' War of Love and Brains",
+    ],
+    type: "TV",
+    source: "Manga",
+    episodes: 12,
+    status: "Finished Airing",
+    airing: false,
+    aired: AiredModel.fromJson({
+      "from": "2019-01-12T00:00:00+00:00",
+      "to": "2019-03-30T00:00:00+00:00",
+      "string": "Jan 12, 2019 to Mar 30, 2019",
+      "prop": {
+        "from": {"day": 12, "month": 1, "year": 2019},
+        "to": {"day": 30, "month": 3, "year": 2019},
+      },
+    }),
+    duration: "25 min per ep",
+    rating: "PG-13 - Teens 13 or older",
+    score: 8.4,
+    scoredBy: 1221648,
+    rank: 229,
+    popularity: 51,
+    members: 1954770,
+    favorites: 42701,
+    synopsis:
+        "At the renowned Shuchiin Academy, Miyuki Shirogane and Kaguya Shinomiya are the student body's top representatives...",
+    background: "",
+    season: "winter",
+    year: 2019,
+    broadcast: BroadcastModel.fromJson({
+      "day": "Saturdays",
+      "time": "23:30",
+      "timezone": "Asia/Tokyo",
+      "string": "Saturdays at 23:30 (JST)",
+    }),
+    producers: [
+      ProducerModel(malId: 17, type: "anime", name: "Aniplex"),
+      ProducerModel(
+        malId: 143,
+        type: "anime",
+        name: "Mainichi Broadcasting System",
+      ),
+      ProducerModel(malId: 306, type: "anime", name: "Magic Capsule"),
+      ProducerModel(malId: 1365, type: "anime", name: "Shueisha"),
+      ProducerModel(
+        malId: 1501,
+        type: "anime",
+        name: "JR East Marketing & Communications",
+      ),
+    ],
+    licensors: [
+      LicensorModel(malId: 493, type: "anime", name: "Aniplex of America"),
+    ],
+    studios: [StudioModel(malId: 56, type: "anime", name: "A-1 Pictures")],
+    genres: [
+      GenreModel(malId: 4, type: "anime", name: "Comedy"),
+      GenreModel(malId: 22, type: "anime", name: "Romance"),
+    ],
+    explicitGenres: [],
+    themes: [GenreModel(malId: 23, type: "anime", name: "School")],
+    demographics: [GenreModel(malId: 42, type: "anime", name: "Seinen")],
+    relations: [
+      RelationModel.fromJson({
+        "relation": "Sequel",
+        "entry": [
+          {
+            "mal_id": 40591,
+            "type": "anime",
+            "name":
+                "Kaguya-sama wa Kokurasetai? Tensai-tachi no Renai Zunousen",
+            "url":
+                "https://myanimelist.net/anime/40591/Kaguya-sama_wa_Kokurasetai_Tensai-tachi_no_Renai_Zunousen",
+          },
+        ],
+      }),
+      RelationModel.fromJson({
+        "relation": "Adaptation",
+        "entry": [
+          {
+            "mal_id": 90125,
+            "type": "manga",
+            "name":
+                "Kaguya-sama wa Kokurasetai: Tensai-tachi no Renai Zunousen",
+            "url":
+                "https://myanimelist.net/manga/90125/Kaguya-sama_wa_Kokurasetai__Tensai-tachi_no_Renai_Zunousen",
+          },
+        ],
+      }),
+    ],
+    theme: ThemeSongModel.fromJson({
+      "openings": ["\"Love Dramatic feat. Rikka Ihara\" by Masayuki Suzuki"],
+      "endings": [
+        "\"Sentimental Crisis\" by halca",
+        "\"Chikatto Chika Chika♡\" by Chika Fujiwara",
+      ],
+    }),
+    external: [
+      ExternalModel(name: "Official Site", url: "https://kaguya.love/1st/"),
+      ExternalModel(
+        name: "@anime_kaguya",
+        url: "https://twitter.com/anime_kaguya",
+      ),
+    ],
+    streaming: [
+      StreamingModel(
+        name: "Crunchyroll",
+        url: "http://www.crunchyroll.com/series-277391",
+      ),
+      StreamingModel(name: "Netflix", url: "https://www.netflix.com/"),
+    ],
+  );
   //? =========== variable
   int _selectedIndex = 0;
-
+  int currentCarouselIndex = 0;
   //? ============ functions
   void _onMenuSelection(int index) {
     setState(() {
@@ -161,28 +332,32 @@ class _HomeViewState extends State<HomeView> {
             ],
           ),
 
-          //* --------------- Carousel Anime
+          //* ----------------- Carousel
           SizedBox(height: 8),
-          SizedBox(
-            height: 200,
-            child: Container(
-              decoration: BoxDecoration(color: Colors.black),
+          Container(
+            width: double.infinity,
+            height: 400,
+            decoration: BoxDecoration(color: Colors.black),
 
-              child: CarouselView.weighted(
-                backgroundColor: Colors.red,
-                itemSnapping: true,
-                flexWeights: [4, 1],
-                scrollDirection: Axis.horizontal,
+            child: CarouselView.weighted(
+              enableSplash: true,
+              backgroundColor: Colors.red,
+              itemSnapping: true,
+              flexWeights: [6, 1],
+              shape: RoundedRectangleBorder(),
+              scrollDirection: Axis.horizontal,
 
-                children: List<Widget>.generate(10, (int index) {
-                  return Center(
-                    child: Text(
-                      'Item $index',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  );
-                }),
-              ),
+              onIndexChanged: (index) {
+                setState(() {
+                  currentCarouselIndex = index;
+                });
+              },
+              children: List<Widget>.generate(10, (int index) {
+                return AnimeCarouselItem(
+                  animeDetails: animeDetails,
+                  shouldShowDetails: index == currentCarouselIndex,
+                );
+              }),
             ),
           ),
 
