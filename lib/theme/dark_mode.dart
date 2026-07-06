@@ -72,6 +72,11 @@ const warning = Color(0xFFFFB300);
 
 const error = Color(0xFFE53935);
 
+/// ================================
+/// GENERAL
+/// ================================
+const white = Color(0xFFFFFFFF);
+
 ThemeData darkMode = ThemeData(
   fontFamily: "Montserrat",
   useMaterial3: true,

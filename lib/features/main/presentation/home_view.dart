@@ -1,19 +1,25 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:denuanime/features/anime/domain/entities/aired_model.dart';
 import 'package:denuanime/features/anime/domain/entities/anime_details_model.dart';
 import 'package:denuanime/features/anime/domain/entities/broadcast_model.dart';
+import 'package:denuanime/features/anime/domain/entities/episode_model.dart';
 import 'package:denuanime/features/anime/domain/entities/external_model.dart';
 import 'package:denuanime/features/anime/domain/entities/genre_model.dart';
 import 'package:denuanime/features/anime/domain/entities/licensor_model.dart';
 import 'package:denuanime/features/anime/domain/entities/producer_model.dart';
+import 'package:denuanime/features/anime/domain/entities/recent_episodes_model.dart';
 import 'package:denuanime/features/anime/domain/entities/relation_model.dart';
 import 'package:denuanime/features/anime/domain/entities/streaming_model.dart';
 import 'package:denuanime/features/anime/domain/entities/studio_model.dart';
 import 'package:denuanime/features/anime/domain/entities/theme_song_model.dart';
 import 'package:denuanime/features/anime/domain/entities/title_model.dart';
 import 'package:denuanime/features/anime/domain/entities/trailer_model.dart';
+import 'package:denuanime/features/anime/presentation/common/anime_horizontal_card_item.dart';
+import 'package:denuanime/features/anime/presentation/common/anime_vertical_card_item.dart';
 import 'package:denuanime/features/common/entities/base_image_model.dart';
 import 'package:denuanime/features/common/entities/image_type_model.dart';
-import 'package:denuanime/features/main/presentation/common/anime_carousel_item.dart';
+import 'package:denuanime/features/anime/presentation/common/anime_carousel_item.dart';
 import 'package:denuanime/features/main/presentation/common/drawer_home.dart';
 import 'package:denuanime/features/main/presentation/common/genre_item.dart';
 import 'package:denuanime/features/people/presentation/common/person_item_view.dart';
@@ -27,6 +33,8 @@ class HomeView extends StatefulWidget {
   @override
   State<HomeView> createState() => _HomeViewState();
 }
+
+enum RecentSegmentedButton { recent, ongoing, upcoming }
 
 class _HomeViewState extends State<HomeView> {
   final animeDetails = AnimeDetailsModel(
@@ -188,12 +196,13 @@ class _HomeViewState extends State<HomeView> {
     ],
   );
   //? =========== variable
-  int _selectedIndex = 0;
+  int _selectedMenuIndex = 0;
   int currentCarouselIndex = 0;
+  RecentSegmentedButton recentSegmentedButton = .recent;
   //? ============ functions
   void _onMenuSelection(int index) {
     setState(() {
-      _selectedIndex = index;
+      _selectedMenuIndex = index;
     });
 
     //* close drawer
@@ -213,157 +222,389 @@ class _HomeViewState extends State<HomeView> {
       ),
       //* =============== drawer
       drawer: HomeDrawer(
-        selected: _selectedIndex,
+        selected: _selectedMenuIndex,
         onSelect: (index) {
           _onMenuSelection(index);
         },
       ),
 
       //* ============== body
-      body: ListView(
-        children: [
+      body: CustomScrollView(
+        slivers: [
           //*-------------- People List
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: Text(
-                      "TOP PEOPLE",
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                  Spacer(),
-                  TextButton.icon(
-                    onPressed: () {},
-                    label: Text("View all"),
-                    icon: Icon(Icons.keyboard_arrow_right),
-                    iconAlignment: IconAlignment.end,
-                    style: TextButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
-                      minimumSize: const Size(
-                        0,
-                        0,
-                      ), // removes default min constraints
-                    ),
-                  ),
-                ],
-              ),
+          SliverToBoxAdapter(child: _TopPeopleSection(context)),
+          //* ---------------------- Filter
+          SliverToBoxAdapter(child: _FilterSection(context)),
 
-              SizedBox(
-                height: 110,
+          //* ----------------- Carousel
+          SliverToBoxAdapter(child: _CarouselSection(context)),
+
+          //* -------------- Recommendation
+          SliverToBoxAdapter(child: _RecommendationSection(context)),
+
+          //* -------------------- Recents
+          SliverToBoxAdapter(child: _RecentHeaderSection(context)),
+          SliverPadding(
+            padding: EdgeInsetsGeometry.symmetric(horizontal: 8),
+            sliver: SliverList.builder(
+              itemCount: 5,
+              itemBuilder: (context, index) {
+                return AnimeHorizontalCardItem(
+                  model: RecentEpisodesModel(
+                    entry: animeDetails,
+                    episodes: [
+                      EpisodeModel(
+                        malId: 1,
+                        url: "url",
+                        title: "Episode 1",
+                        premium: true,
+                      ),
+                      EpisodeModel(
+                        malId: 1,
+                        url: "url",
+                        title: "Episode 2",
+                        premium: true,
+                      ),
+                    ],
+                    regionLocked: true,
+                  ),
+                );
+              },
+            ),
+          ),
+          //*===== END COLUMN
+        ],
+      ),
+    );
+  }
+
+  Widget _TopPeopleSection(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: Text(
+                "TOP PEOPLE",
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
+              ),
+            ),
+            Spacer(),
+            TextButton.icon(
+              onPressed: () {},
+              label: Text("View all"),
+              icon: Icon(Icons.keyboard_arrow_right),
+              iconAlignment: IconAlignment.end,
+              style: TextButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                minimumSize: const Size(
+                  0,
+                  0,
+                ), // removes default min constraints
+              ),
+            ),
+          ],
+        ),
+
+        SizedBox(
+          height: 110,
+          child: ListView.builder(
+            itemCount: 4,
+            itemBuilder: (context, index) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: PersonItemView(
+                  people: PeopleModel(
+                    name: "Tomokazu Seki",
+                    birthday: "1972-09-08T00:00:00+00:00",
+                    images: ImageTypeModel(
+                      jpg: BaseImagesModel(
+                        imageUrl:
+                            "https://cdn.myanimelist.net/r/84x124/images/characters/7/618735.jpg?s=9902344694bb6579f0f271c3b9729ed0",
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
+            scrollDirection: Axis.horizontal,
+          ),
+        ),
+
+        SizedBox(height: 8),
+        Divider(thickness: 0.2),
+      ],
+    );
+  }
+
+  Widget _FilterSection(BuildContext context) {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Icon(Icons.filter_alt, color: primaryDark),
+            SizedBox(width: 4),
+            Text("Filter", style: TextStyle(color: primaryDark)),
+            SizedBox(width: 8),
+
+            SizedBox(
+              height: 22,
+              child: VerticalDivider(
+                width: 1,
+                thickness: 0.2,
+                color: inversePrimary,
+              ),
+            ),
+            SizedBox(width: 8),
+
+            Expanded(
+              child: SizedBox(
+                height: 40,
                 child: ListView.builder(
-                  itemCount: 4,
+                  scrollDirection: Axis.horizontal,
+                  itemCount: 10,
                   itemBuilder: (context, index) {
                     return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: PersonItemView(
-                        people: PeopleModel(
-                          name: "Tomokazu Seki",
-                          birthday: "1972-09-08T00:00:00+00:00",
-                          images: ImageTypeModel(
-                            jpg: BaseImagesModel(
-                              imageUrl:
-                                  "https://cdn.myanimelist.net/r/84x124/images/characters/7/618735.jpg?s=9902344694bb6579f0f271c3b9729ed0",
-                            ),
-                          ),
+                      padding: const EdgeInsets.only(right: 8),
+                      child: GenreItem(
+                        onSelect: (value) {
+                          // list[index].isSelected = value
+                        },
+                        genre: GenreModel(
+                          name: "Action",
+                          isSelected: index == 1 ? true : false,
                         ),
                       ),
                     );
                   },
-                  scrollDirection: Axis.horizontal,
                 ),
               ),
-            ],
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _CarouselSection(BuildContext context) {
+    return Column(
+      children: [
+        SizedBox(height: 8),
+        Container(
+          width: double.infinity,
+          height: 500,
+          decoration: BoxDecoration(color: Colors.black),
+
+          child: CarouselView.weighted(
+            enableSplash: true,
+            backgroundColor: Colors.red,
+            itemSnapping: true,
+            flexWeights: [6, 1],
+            shape: RoundedRectangleBorder(),
+            scrollDirection: Axis.horizontal,
+
+            onIndexChanged: (index) {
+              setState(() {
+                currentCarouselIndex = index;
+              });
+            },
+            children: List<Widget>.generate(10, (int index) {
+              return AnimeCarouselItem(
+                animeDetails: animeDetails,
+                shouldShowDetails: index == currentCarouselIndex,
+              );
+            }),
           ),
+        ),
+      ],
+    );
+  }
 
-          SizedBox(height: 8),
-          Divider(thickness: 0.2),
-          SizedBox(height: 16),
+  Widget _RecommendationSection(BuildContext context) {
+    return Column(
+      children: [
+        SizedBox(height: 16),
 
-          //* ---------------------- Filter
-          Row(
+        Padding(
+          padding: EdgeInsetsGeometry.symmetric(horizontal: 8),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Icon(Icons.filter_alt, color: primaryDark),
-              SizedBox(width: 4),
-              Text("Filter", style: TextStyle(color: primaryDark)),
-              SizedBox(width: 8),
-
-              SizedBox(
-                height: 22,
-                child: VerticalDivider(
-                  width: 1,
-                  thickness: 0.2,
-                  color: inversePrimary,
-                ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Recommendations",
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyLarge?.copyWith(color: white),
+                  ),
+                  Text(
+                    "You might be interested in",
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
               ),
-              SizedBox(width: 8),
 
-              Expanded(
-                child: SizedBox(
-                  height: 40,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: 10,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.only(right: 8),
-                        child: GenreItem(
-                          onSelect: (value) {
-                            // list[index].isSelected = value
-                          },
-                          genre: GenreModel(
-                            name: "Action",
-                            isSelected: index == 1 ? true : false,
-                          ),
-                        ),
-                      );
-                    },
+              Spacer(),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size(0, 36),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 4,
                   ),
                 ),
+                onPressed: () {},
+                child: const Text("Explore"),
               ),
             ],
           ),
+        ),
 
-          //* ----------------- Carousel
-          SizedBox(height: 8),
-          Container(
-            width: double.infinity,
-            height: 400,
-            decoration: BoxDecoration(color: Colors.black),
+        Card.filled(
+          color: tertiary,
+          child: Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: AnimeVerticalCardItem(
+                        animeDetailsModel: animeDetails,
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: AnimeVerticalCardItem(
+                        animeDetailsModel: animeDetails,
+                      ),
+                    ),
+                  ],
+                ),
 
-            child: CarouselView.weighted(
-              enableSplash: true,
-              backgroundColor: Colors.red,
-              itemSnapping: true,
-              flexWeights: [6, 1],
-              shape: RoundedRectangleBorder(),
-              scrollDirection: Axis.horizontal,
-
-              onIndexChanged: (index) {
-                setState(() {
-                  currentCarouselIndex = index;
-                });
-              },
-              children: List<Widget>.generate(10, (int index) {
-                return AnimeCarouselItem(
-                  animeDetails: animeDetails,
-                  shouldShowDetails: index == currentCarouselIndex,
-                );
-              }),
+                Divider(height: 1, thickness: 0.2),
+                SizedBox(height: 16),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: BoxBorder.all(width: 0.3, color: white),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Icon(Icons.lightbulb_outlined, color: primary),
+                        ),
+                      ),
+                      SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Why we recommended this",
+                              style: Theme.of(context).textTheme.bodyMedium
+                                  ?.copyWith(
+                                    color: primary,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                            ),
+                            SizedBox(height: 4),
+                            Text(
+                              "Similar chill vibes. A lot of focus on the food recipe and preparation itself, sometimes even mentioning some dishes' history and stuff. Instead of Shirou, we have a maid doing it all.",
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 8),
+              ],
             ),
           ),
+        ),
+        SizedBox(height: 16),
 
-          //*===== END COLUMN
-        ],
-      ),
+        Column(
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: AnimeVerticalCardItem(animeDetailsModel: animeDetails),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: AnimeVerticalCardItem(animeDetailsModel: animeDetails),
+                ),
+              ],
+            ),
+            SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Text(
+                "Similar chill vibes. A lot of focus on the food recipe and preparation itself, sometimes even mentioning some dishes' history and stuff. Instead of Shirou, we have a maid doing it all.",
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _RecentHeaderSection(BuildContext context) {
+    return Column(
+      children: [
+        SizedBox(height: 12),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16),
+          child: SegmentedButton<RecentSegmentedButton>(
+            style: ButtonStyle(
+              backgroundColor: WidgetStateProperty.resolveWith<Color?>((
+                states,
+              ) {
+                if (states.contains(WidgetState.selected)) {
+                  return primary;
+                }
+                return Colors.transparent;
+              }),
+            ),
+
+            segments: const <ButtonSegment<RecentSegmentedButton>>[
+              ButtonSegment<RecentSegmentedButton>(
+                value: RecentSegmentedButton.recent,
+                label: Text("Recent Episodes"),
+              ),
+              ButtonSegment<RecentSegmentedButton>(
+                value: RecentSegmentedButton.ongoing,
+                label: Text("Ongoing Seasons"),
+              ),
+              ButtonSegment<RecentSegmentedButton>(
+                value: RecentSegmentedButton.upcoming,
+                label: Text("Upcoming Seasons"),
+              ),
+            ],
+            selected: {recentSegmentedButton},
+            onSelectionChanged: (Set<RecentSegmentedButton> newSelection) {
+              setState(() {
+                recentSegmentedButton = newSelection.first;
+              });
+            },
+          ),
+        ),
+      ],
     );
   }
 }

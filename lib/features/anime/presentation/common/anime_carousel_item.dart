@@ -1,4 +1,5 @@
 import 'package:denuanime/features/anime/domain/entities/anime_details_model.dart';
+import 'package:denuanime/theme/dark_mode.dart';
 import 'package:flutter/material.dart';
 
 class AnimeCarouselItem extends StatelessWidget {
@@ -14,12 +15,12 @@ class AnimeCarouselItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 400,
+      height: 500,
       child: Stack(
         children: [
           //* picture
           SizedBox(
-            height: 400,
+            height: 500,
             width: double.infinity,
             child: Image.network(
               fit: BoxFit.cover,
@@ -29,7 +30,7 @@ class AnimeCarouselItem extends StatelessWidget {
 
           //* gradient
           Container(
-            height: 400,
+            height: 500,
             width: double.infinity,
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -39,6 +40,35 @@ class AnimeCarouselItem extends StatelessWidget {
               ),
             ),
           ),
+
+          //*Chips for genre
+          if (shouldShowDetails)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Wrap(
+                spacing: 4,
+                runSpacing: -8,
+                children: List.generate(
+                  5,
+                  (index) => FilterChip(
+                    backgroundColor: primarySoft,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadiusGeometry.circular(8),
+                      side: BorderSide(color: Colors.transparent),
+                    ),
+                    padding: EdgeInsets.zero,
+                    label: Text(
+                      'Adventure',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: secondary,
+                        fontSize: 10,
+                      ),
+                    ),
+                    onSelected: (value) {},
+                  ),
+                ),
+              ),
+            ),
 
           //* Details
           if (shouldShowDetails)
