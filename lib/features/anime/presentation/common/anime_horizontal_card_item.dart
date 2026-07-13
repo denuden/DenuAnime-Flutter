@@ -14,6 +14,7 @@ class AnimeHorizontalCardItem extends StatelessWidget {
         children: [
           SizedBox(
             height: 120,
+            width: 100,
             child: ClipRRect(
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(12),

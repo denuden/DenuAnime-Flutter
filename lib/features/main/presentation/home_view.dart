@@ -9,6 +9,7 @@ import 'package:denuanime/features/anime/domain/entities/genre_model.dart';
 import 'package:denuanime/features/anime/domain/entities/licensor_model.dart';
 import 'package:denuanime/features/anime/domain/entities/producer_model.dart';
 import 'package:denuanime/features/anime/domain/entities/recent_episodes_model.dart';
+import 'package:denuanime/features/anime/domain/entities/recommendation_model.dart';
 import 'package:denuanime/features/anime/domain/entities/relation_model.dart';
 import 'package:denuanime/features/anime/domain/entities/streaming_model.dart';
 import 'package:denuanime/features/anime/domain/entities/studio_model.dart';
@@ -16,12 +17,14 @@ import 'package:denuanime/features/anime/domain/entities/theme_song_model.dart';
 import 'package:denuanime/features/anime/domain/entities/title_model.dart';
 import 'package:denuanime/features/anime/domain/entities/trailer_model.dart';
 import 'package:denuanime/features/anime/presentation/common/anime_horizontal_card_item.dart';
-import 'package:denuanime/features/anime/presentation/common/anime_vertical_card_item.dart';
 import 'package:denuanime/features/common/entities/base_image_model.dart';
 import 'package:denuanime/features/common/entities/image_type_model.dart';
 import 'package:denuanime/features/anime/presentation/common/anime_carousel_item.dart';
+import 'package:denuanime/features/common/entities/user_model.dart';
 import 'package:denuanime/features/main/presentation/common/drawer_home.dart';
+import 'package:denuanime/features/main/presentation/common/dropdown_menu_filter.dart';
 import 'package:denuanime/features/main/presentation/common/genre_item.dart';
+import 'package:denuanime/features/main/presentation/common/recommendation_item.dart';
 import 'package:denuanime/features/people/presentation/common/person_item_view.dart';
 import 'package:denuanime/features/people/domain/entities/people_model.dart';
 import 'package:denuanime/theme/dark_mode.dart';
@@ -199,6 +202,9 @@ class _HomeViewState extends State<HomeView> {
   int _selectedMenuIndex = 0;
   int currentCarouselIndex = 0;
   RecentSegmentedButton recentSegmentedButton = .recent;
+  bool isFilterEnabled = true;
+  int selectedType = 0;
+  int selectedRating = 0;
   //? ============ functions
   void _onMenuSelection(int index) {
     setState(() {
@@ -346,9 +352,18 @@ class _HomeViewState extends State<HomeView> {
       children: [
         Row(
           children: [
-            Icon(Icons.filter_alt, color: primaryDark),
-            SizedBox(width: 4),
-            Text("Filter", style: TextStyle(color: primaryDark)),
+            DropdownMenuFilter(
+              enabled: isFilterEnabled,
+              selectedType: selectedType,
+              selectedRating: selectedRating,
+              onFilterChanged: (typeIndex, ratingIndex) {
+                setState(() {
+                  selectedType = typeIndex;
+                  selectedRating = ratingIndex;
+                });
+              },
+            ),
+            // Text("Filter", style: TextStyle(color: primaryDark)),
             SizedBox(width: 8),
 
             SizedBox(
@@ -467,98 +482,33 @@ class _HomeViewState extends State<HomeView> {
           ),
         ),
 
-        Card.filled(
-          color: tertiary,
-          child: Padding(
-            padding: const EdgeInsets.all(4.0),
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      flex: 1,
-                      child: AnimeVerticalCardItem(
-                        animeDetailsModel: animeDetails,
-                      ),
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: AnimeVerticalCardItem(
-                        animeDetailsModel: animeDetails,
-                      ),
-                    ),
-                  ],
-                ),
-
-                Divider(height: 1, thickness: 0.2),
-                SizedBox(height: 16),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: BoxBorder.all(width: 0.3, color: white),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Icon(Icons.lightbulb_outlined, color: primary),
-                        ),
-                      ),
-                      SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Why we recommended this",
-                              style: Theme.of(context).textTheme.bodyMedium
-                                  ?.copyWith(
-                                    color: primary,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                            ),
-                            SizedBox(height: 4),
-                            Text(
-                              "Similar chill vibes. A lot of focus on the food recipe and preparation itself, sometimes even mentioning some dishes' history and stuff. Instead of Shirou, we have a maid doing it all.",
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 8),
-              ],
+        RecommendationItem(
+          recommendationModel: RecommendationModel(
+            malId: 0,
+            entry: [animeDetails, animeDetails],
+            content:
+                "Similar chill vibes. A lot of focus on the food recipe and preparation itself, sometimes even mentioning some dishes' history and stuff. Instead of Shirou, we have a maid doing it all.",
+            date: "",
+            user: UserModel(
+              url: "https://myanimelist.net/profile/Zm00sp",
+              username: "Zm00sp",
             ),
           ),
         ),
-        SizedBox(height: 16),
+        SizedBox(height: 8),
 
-        Column(
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: AnimeVerticalCardItem(animeDetailsModel: animeDetails),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: AnimeVerticalCardItem(animeDetailsModel: animeDetails),
-                ),
-              ],
-            ),
-            SizedBox(height: 8),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Text(
+        RecommendationItem(
+          recommendationModel: RecommendationModel(
+            malId: 0,
+            entry: [animeDetails, animeDetails],
+            content:
                 "Similar chill vibes. A lot of focus on the food recipe and preparation itself, sometimes even mentioning some dishes' history and stuff. Instead of Shirou, we have a maid doing it all.",
-              ),
+            date: "",
+            user: UserModel(
+              url: "https://myanimelist.net/profile/Zm00sp",
+              username: "Zm00sp",
             ),
-          ],
+          ),
         ),
       ],
     );
