@@ -14,7 +14,7 @@ class TrailerModel {
       url: json['url'] as String?,
       embedUrl: json['embed_url'] as String?,
       images: json['images'] != null
-          ? BaseImagesModel.fromJson(json['images'])
+          ? BaseImagesModel.fromJson(json['images'] as Map<String, dynamic>)
           : null,
     );
   }

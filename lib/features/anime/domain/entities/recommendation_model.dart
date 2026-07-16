@@ -18,13 +18,15 @@ class RecommendationModel {
 
   factory RecommendationModel.fromJson(Map<String, dynamic> json) {
     return RecommendationModel(
-      malId: json['mal_id'],
+      malId: json['mal_id'] as int,
       entry: (json['entry'] as List?)
-          ?.map((e) => AnimeDetailsModel.fromJson(e))
+          ?.map((e) => AnimeDetailsModel.fromJson(e as Map<String, dynamic>))
           .toList(),
-      content: json['content'],
-      date: json['date'],
-      user: json['user'] != null ? UserModel.fromJson(json['user']) : null,
+      content: json['content'] as String,
+      date: json['date'] as String,
+      user: json['user'] != null
+          ? UserModel.fromJson(json['user'] as Map<String, dynamic>)
+          : null,
     );
   }
 

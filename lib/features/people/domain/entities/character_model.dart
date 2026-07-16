@@ -13,7 +13,7 @@ class CharacterModel {
       malId: json['mal_id'] as int?,
       url: json['url'] as String?,
       images: json['images'] != null
-          ? ImageTypeModel.fromJson(json['images'])
+          ? ImageTypeModel.fromJson(json['images'] as Map<String, dynamic>)
           : null,
       name: json['name'] as String?,
     );

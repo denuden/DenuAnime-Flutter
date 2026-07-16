@@ -12,10 +12,10 @@ class VoicesModel {
     return VoicesModel(
       role: json['role'] as String?,
       anime: json['anime'] != null
-          ? AnimeDetailsModel.fromJson(json['anime'])
+          ? AnimeDetailsModel.fromJson(json['anime'] as Map<String, dynamic>)
           : null,
       character: json['character'] != null
-          ? CharacterModel.fromJson(json['character'])
+          ? CharacterModel.fromJson(json['character'] as Map<String, dynamic>)
           : null,
     );
   }

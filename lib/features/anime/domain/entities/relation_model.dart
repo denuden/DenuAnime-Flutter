@@ -10,7 +10,7 @@ class RelationModel {
     return RelationModel(
       relation: json['relation'] as String?,
       entry: (json['entry'] as List?)
-          ?.map((e) => EntryModel.fromJson(e))
+          ?.map((e) => EntryModel.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
   }

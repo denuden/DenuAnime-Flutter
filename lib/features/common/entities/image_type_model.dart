@@ -8,9 +8,11 @@ class ImageTypeModel {
 
   factory ImageTypeModel.fromJson(Map<String, dynamic> json) {
     return ImageTypeModel(
-      jpg: json['jpg'] != null ? BaseImagesModel.fromJson(json['jpg']) : null,
+      jpg: json['jpg'] != null
+          ? BaseImagesModel.fromJson(json['jpg'] as Map<String, dynamic>)
+          : null,
       webp: json['webp'] != null
-          ? BaseImagesModel.fromJson(json['webp'])
+          ? BaseImagesModel.fromJson(json['webp'] as Map<String, dynamic>)
           : null,
     );
   }

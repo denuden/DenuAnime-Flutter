@@ -102,14 +102,14 @@ class AnimeDetailsModel {
       malId: json['mal_id'] as int?,
       url: json['url'] as String?,
       images: json['images'] != null
-          ? ImageTypeModel.fromJson(json['images'])
+          ? ImageTypeModel.fromJson(json['images'] as Map<String, dynamic>)
           : null,
       trailer: json['trailer'] != null
-          ? TrailerModel.fromJson(json['trailer'])
+          ? TrailerModel.fromJson(json['trailer'] as Map<String, dynamic>)
           : null,
       approved: json['approved'] as bool?,
       titles: (json['titles'] as List?)
-          ?.map((e) => TitleModel.fromJson(e))
+          ?.map((e) => TitleModel.fromJson(e as Map<String, dynamic>))
           .toList(),
       title: json['title'] as String?,
       titleEnglish: json['title_english'] as String?,
@@ -122,7 +122,9 @@ class AnimeDetailsModel {
       episodes: json['episodes'] as int?,
       status: json['status'] as String?,
       airing: json['airing'] as bool?,
-      aired: json['aired'] != null ? AiredModel.fromJson(json['aired']) : null,
+      aired: json['aired'] != null
+          ? AiredModel.fromJson(json['aired'] as Map<String, dynamic>)
+          : null,
       duration: json['duration'] as String?,
       rating: json['rating'] as String?,
       score: (json['score'] as num?)?.toDouble(),
@@ -136,38 +138,38 @@ class AnimeDetailsModel {
       season: json['season'] as String?,
       year: json['year'] as int?,
       broadcast: json['broadcast'] != null
-          ? BroadcastModel.fromJson(json['broadcast'])
+          ? BroadcastModel.fromJson(json['broadcast'] as Map<String, dynamic>)
           : null,
       producers: (json['producers'] as List?)
-          ?.map((e) => ProducerModel.fromJson(e))
+          ?.map((e) => ProducerModel.fromJson(e as Map<String, dynamic>))
           .toList(),
       licensors: (json['licensors'] as List?)
-          ?.map((e) => LicensorModel.fromJson(e))
+          ?.map((e) => LicensorModel.fromJson(e as Map<String, dynamic>))
           .toList(),
       studios: (json['studios'] as List?)
-          ?.map((e) => StudioModel.fromJson(e))
+          ?.map((e) => StudioModel.fromJson(e as Map<String, dynamic>))
           .toList(),
       genres: (json['genres'] as List?)
-          ?.map((e) => GenreModel.fromJson(e))
+          ?.map((e) => GenreModel.fromJson(e as Map<String, dynamic>))
           .toList(),
       explicitGenres: json['explicit_genres'] as List?,
       themes: (json['themes'] as List?)
-          ?.map((e) => GenreModel.fromJson(e))
+          ?.map((e) => GenreModel.fromJson(e as Map<String, dynamic>))
           .toList(),
       demographics: (json['demographics'] as List?)
-          ?.map((e) => GenreModel.fromJson(e))
+          ?.map((e) => GenreModel.fromJson(e as Map<String, dynamic>))
           .toList(),
       relations: (json['relations'] as List?)
-          ?.map((e) => RelationModel.fromJson(e))
+          ?.map((e) => RelationModel.fromJson(e as Map<String, dynamic>))
           .toList(),
       theme: json['theme'] != null
-          ? ThemeSongModel.fromJson(json['theme'])
+          ? ThemeSongModel.fromJson(json['theme'] as Map<String, dynamic>)
           : null,
       external: (json['external'] as List?)
-          ?.map((e) => ExternalModel.fromJson(e))
+          ?.map((e) => ExternalModel.fromJson(e as Map<String, dynamic>))
           .toList(),
       streaming: (json['streaming'] as List?)
-          ?.map((e) => StreamingModel.fromJson(e))
+          ?.map((e) => StreamingModel.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
   }

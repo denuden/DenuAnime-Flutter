@@ -41,7 +41,7 @@ class PeopleModel {
       url: json['url'] as String?,
       websiteUrl: json['website_url'] as String?,
       images: json['images'] != null
-          ? ImageTypeModel.fromJson(json['images'])
+          ? ImageTypeModel.fromJson(json['images'] as Map<String, dynamic>)
           : null,
       name: json['name'] as String?,
       givenName: json['given_name'] as String?,
@@ -53,13 +53,13 @@ class PeopleModel {
       favorites: json['favorites'] as int?,
       about: json['about'] as String?,
       anime: (json['anime'] as List?)
-          ?.map((e) => PeopleAnimeModel.fromJson(e))
+          ?.map((e) => PeopleAnimeModel.fromJson(e as Map<String, dynamic>))
           .toList(),
       manga: (json['manga'] as List?)
-          ?.map((e) => PeopleAnimeModel.fromJson(e))
+          ?.map((e) => PeopleAnimeModel.fromJson(e as Map<String, dynamic>))
           .toList(),
       voices: (json['voices'] as List?)
-          ?.map((e) => VoicesModel.fromJson(e))
+          ?.map((e) => VoicesModel.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
   }

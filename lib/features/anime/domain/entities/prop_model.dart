@@ -9,9 +9,11 @@ class PropModel {
   factory PropModel.fromJson(Map<String, dynamic> json) {
     return PropModel(
       from: json['from'] != null
-          ? SimpleDateModel.fromJson(json['from'])
+          ? SimpleDateModel.fromJson(json['from'] as Map<String, dynamic>)
           : null,
-      to: json['to'] != null ? SimpleDateModel.fromJson(json['to']) : null,
+      to: json['to'] != null
+          ? SimpleDateModel.fromJson(json['to'] as Map<String, dynamic>)
+          : null,
     );
   }
 

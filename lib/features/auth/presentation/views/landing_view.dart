@@ -14,21 +14,23 @@ class LandingView extends StatefulWidget {
 class _LandingViewState extends State<LandingView> {
   //* ============= functions
   void navigateToLogin() {
-    Navigator.of(
-      context,
-    ).push(MaterialPageRoute(builder: (context) => LoginView()));
+    Navigator.of(context).push(
+      MaterialPageRoute<LoginView>(builder: (context) => const LoginView()),
+    );
   }
 
   void navigateToRegister() {
-    Navigator.of(
-      context,
-    ).push(MaterialPageRoute(builder: (context) => RegisterView()));
+    Navigator.of(context).push(
+      MaterialPageRoute<RegisterView>(
+        builder: (context) => const RegisterView(),
+      ),
+    );
   }
 
   void navigateToHome() {
     Navigator.of(
       context,
-    ).push(MaterialPageRoute(builder: (context) => HomeView()));
+    ).push(MaterialPageRoute<HomeView>(builder: (context) => const HomeView()));
   }
 
   //* ================== UI

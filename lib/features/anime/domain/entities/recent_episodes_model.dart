@@ -15,7 +15,7 @@ class RecentEpisodesModel {
   factory RecentEpisodesModel.fromJson(Map<String, dynamic> json) {
     return RecentEpisodesModel(
       entry: json['entry'] != null
-          ? AnimeDetailsModel.fromJson(json['entry'])
+          ? AnimeDetailsModel.fromJson(json['entry'] as Map<String, dynamic>)
           : null,
       episodes: (json['episodes'] as List<dynamic>?)
           ?.map((e) => EpisodeModel.fromJson(e as Map<String, dynamic>))

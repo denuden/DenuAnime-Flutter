@@ -16,7 +16,9 @@ class PaginationModel {
       lastVisiblePage: json['last_visible_page'] as int?,
       hasNextPage: json['has_next_page'] as bool?,
       currentPage: json['current_page'] as int?,
-      items: json['items'] != null ? Items.fromJson(json['items']) : null,
+      items: json['items'] != null
+          ? Items.fromJson(json['items'] as Map<String, dynamic>)
+          : null,
     );
   }
 
