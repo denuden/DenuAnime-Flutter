@@ -16,6 +16,7 @@ import 'package:denuanime/features/anime/domain/entities/studio_model.dart';
 import 'package:denuanime/features/anime/domain/entities/theme_song_model.dart';
 import 'package:denuanime/features/anime/domain/entities/title_model.dart';
 import 'package:denuanime/features/anime/domain/entities/trailer_model.dart';
+import 'package:denuanime/features/anime/presentation/anime_details_view.dart';
 import 'package:denuanime/features/anime/presentation/common/anime_horizontal_card_item.dart';
 import 'package:denuanime/features/common/entities/base_image_model.dart';
 import 'package:denuanime/features/common/entities/image_type_model.dart';
@@ -215,15 +216,24 @@ class _HomeViewState extends State<HomeView> {
     Navigator.pop(context);
   }
 
+  void _onNavigateToAnimeDetails(AnimeDetailsModel animeDetails) {
+    print("egwgw");
+    Navigator.of(context).push(
+      MaterialPageRoute<AnimeDetailsView>(
+        builder: (context) => AnimeDetailsView(animeDetails: animeDetails),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       //* ================= appbar
       appBar: AppBar(
-        title: Text("Home"),
+        title: const Text("Home"),
         actions: [
-          IconButton(onPressed: () {}, icon: Icon(Icons.search)),
-          IconButton(onPressed: () {}, icon: Icon(Icons.favorite)),
+          IconButton(onPressed: () {}, icon: const Icon(Icons.search)),
+          IconButton(onPressed: () {}, icon: const Icon(Icons.favorite)),
         ],
       ),
       //* =============== drawer
@@ -251,14 +261,14 @@ class _HomeViewState extends State<HomeView> {
           //* -------------------- Recents
           SliverToBoxAdapter(child: _RecentHeaderSection(context)),
           SliverPadding(
-            padding: EdgeInsetsGeometry.symmetric(horizontal: 8),
+            padding: const EdgeInsetsGeometry.symmetric(horizontal: 8),
             sliver: SliverList.builder(
               itemCount: 5,
               itemBuilder: (context, index) {
                 return AnimeHorizontalCardItem(
                   model: RecentEpisodesModel(
                     entry: animeDetails,
-                    episodes: [
+                    episodes: const [
                       EpisodeModel(
                         malId: 1,
                         url: "url",
@@ -364,9 +374,9 @@ class _HomeViewState extends State<HomeView> {
               },
             ),
             // Text("Filter", style: TextStyle(color: primaryDark)),
-            SizedBox(width: 8),
+            const SizedBox(width: 8),
 
-            SizedBox(
+            const SizedBox(
               height: 22,
               child: VerticalDivider(
                 width: 1,
@@ -374,7 +384,7 @@ class _HomeViewState extends State<HomeView> {
                 color: inversePrimary,
               ),
             ),
-            SizedBox(width: 8),
+            const SizedBox(width: 8),
 
             Expanded(
               child: SizedBox(
@@ -408,18 +418,19 @@ class _HomeViewState extends State<HomeView> {
   Widget _CarouselSection(BuildContext context) {
     return Column(
       children: [
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
         Container(
           width: double.infinity,
           height: 500,
-          decoration: BoxDecoration(color: Colors.black),
+          decoration: const BoxDecoration(color: Colors.black),
 
           child: CarouselView.weighted(
             enableSplash: true,
+            onTap: (index) => _onNavigateToAnimeDetails(animeDetails),
             backgroundColor: Colors.red,
             itemSnapping: true,
             flexWeights: [6, 1],
-            shape: RoundedRectangleBorder(),
+            shape: const RoundedRectangleBorder(),
             scrollDirection: Axis.horizontal,
 
             onIndexChanged: (index) {

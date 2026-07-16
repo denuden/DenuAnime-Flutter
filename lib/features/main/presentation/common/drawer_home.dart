@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class HomeDrawer extends StatelessWidget {
   final int selected;
-  final Function(int) onSelect;
+  final void Function(int) onSelect;
 
   const HomeDrawer({super.key, required this.selected, required this.onSelect});
 
@@ -28,7 +28,7 @@ class HomeDrawer extends StatelessWidget {
             selected: selected == 0,
             selectedTileColor: primary,
             selectedColor: inversePrimary,
-            leading: Icon(Icons.home_filled),
+            leading: const Icon(Icons.home_filled),
           ),
           ListTile(
             title: const Text("Favorites"),
@@ -39,7 +39,7 @@ class HomeDrawer extends StatelessWidget {
             selected: selected == 1,
             selectedTileColor: primary,
             selectedColor: inversePrimary,
-            leading: Icon(Icons.favorite),
+            leading: const Icon(Icons.favorite),
           ),
           ListTile(
             title: const Text("Recents"),
@@ -50,7 +50,7 @@ class HomeDrawer extends StatelessWidget {
             selected: selected == 2,
             selectedTileColor: primary,
             selectedColor: inversePrimary,
-            leading: Icon(Icons.history),
+            leading: const Icon(Icons.history),
           ),
         ],
       ),

@@ -1,11 +1,11 @@
 import 'package:denuanime/features/anime/domain/entities/anime_details_model.dart';
+import 'package:denuanime/features/common/presentation/custom_image_network.dart';
 import 'package:denuanime/theme/dark_mode.dart';
 import 'package:flutter/material.dart';
 
 class AnimeCarouselItem extends StatelessWidget {
   final AnimeDetailsModel animeDetails;
   final bool shouldShowDetails;
-
   const AnimeCarouselItem({
     super.key,
     required this.animeDetails,
@@ -19,56 +19,16 @@ class AnimeCarouselItem extends StatelessWidget {
       child: Stack(
         children: [
           //* picture
-          SizedBox(
+          CustomImageNetwork(
+            animeDetails.images?.jpg?.largeImageUrl ?? '',
             height: 500,
-            width: double.infinity,
-            child: Image.network(
-              frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-                if (wasSynchronouslyLoaded || frame != null) {
-                  return child;
-                }
-
-                return Container(
-                  color: Theme.of(context).colorScheme.secondary,
-                  alignment: Alignment.center,
-                  child: const CircularProgressIndicator(),
-                );
-              },
-              loadingBuilder: (context, child, loadingProgress) {
-                if (loadingProgress == null) {
-                  return child;
-                }
-
-                return Container(
-                  color: Theme.of(context).colorScheme.secondary,
-                  alignment: Alignment.center,
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      value: loadingProgress.expectedTotalBytes != null
-                          ? loadingProgress.cumulativeBytesLoaded /
-                                loadingProgress.expectedTotalBytes!
-                          : null,
-                    ),
-                  ),
-                );
-              },
-              errorBuilder: (context, error, stackTrace) {
-                return Container(
-                  color: Theme.of(context).colorScheme.secondary,
-                  alignment: Alignment.center,
-                  child: const Icon(Icons.broken_image),
-                );
-              },
-              fit: BoxFit.cover,
-              animeDetails.images?.jpg?.largeImageUrl ?? '',
-            ),
           ),
 
           //* gradient
           Container(
             height: 500,
             width: double.infinity,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               gradient: LinearGradient(
                 begin: AlignmentGeometry.topCenter,
                 end: AlignmentGeometry.bottomCenter,
@@ -90,7 +50,7 @@ class AnimeCarouselItem extends StatelessWidget {
                     backgroundColor: primarySoft,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadiusGeometry.circular(8),
-                      side: BorderSide(color: Colors.transparent),
+                      side: const BorderSide(color: Colors.transparent),
                     ),
                     padding: EdgeInsets.zero,
                     label: Text(
@@ -122,7 +82,7 @@ class AnimeCarouselItem extends StatelessWidget {
                     ),
                     maxLines: 4,
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -153,7 +113,7 @@ class AnimeCarouselItem extends StatelessWidget {
                       ),
                     ],
                   ),
-                  SizedBox(height: 4),
+                  const SizedBox(height: 4),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
