@@ -113,7 +113,7 @@ class _HomeViewState extends State<HomeView> {
     members: 1954770,
     favorites: 42701,
     synopsis:
-        "At the renowned Shuchiin Academy, Miyuki Shirogane and Kaguya Shinomiya are the student body's top representatives...",
+        "At the renowned Shuchiin Academy, Miyuki Shirogane and Kaguya Shinomiya are the student body's top representatives. Ranked the top student in the nation and respected by peers and mentors alike, Miyuki serves as the student council president. Alongside him, the vice president Kaguya—eldest daughter of the wealthy Shinomiya family—excels in every field imaginable. They are the envy of the entire student body, regarded as the perfect couple.\n\nHowever, despite both having already developed feelings for the other, neither are willing to admit them. The first to confess loses, will be looked down upon, and will be considered the lesser. With their honor and pride at stake, Miyuki and Kaguya are both equally determined to be the one to emerge victorious on the battlefield of love!",
     background: "",
     season: "winter",
     year: 2019,
@@ -453,10 +453,10 @@ class _HomeViewState extends State<HomeView> {
   Widget _RecommendationSection(BuildContext context) {
     return Column(
       children: [
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
 
         Padding(
-          padding: EdgeInsetsGeometry.symmetric(horizontal: 8),
+          padding: const EdgeInsetsGeometry.symmetric(horizontal: 8),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -477,7 +477,7 @@ class _HomeViewState extends State<HomeView> {
                 ],
               ),
 
-              Spacer(),
+              const Spacer(),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size(0, 36),

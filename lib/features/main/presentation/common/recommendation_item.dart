@@ -34,8 +34,8 @@ class RecommendationItem extends StatelessWidget {
                     ],
                   ),
 
-                  Divider(height: 1, thickness: 0.2),
-                  SizedBox(height: 16),
+                  const Divider(height: 1, thickness: 0.2),
+                  const SizedBox(height: 16),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 4.0),
                     child: Row(
@@ -46,15 +46,15 @@ class RecommendationItem extends StatelessWidget {
                             shape: BoxShape.circle,
                             border: BoxBorder.all(width: 0.3, color: white),
                           ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
+                          child: const Padding(
+                            padding: EdgeInsets.all(8.0),
                             child: Icon(
                               Icons.lightbulb_outlined,
                               color: primary,
                             ),
                           ),
                         ),
-                        SizedBox(width: 16),
+                        const SizedBox(width: 16),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
