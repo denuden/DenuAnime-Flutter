@@ -51,7 +51,7 @@ class _LoginViewState extends State<LoginView> {
           children: [
             //* main layout
             Image.asset("assets/full.png", height: 140),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
 
             Expanded(
               child: SizedBox(
@@ -73,7 +73,7 @@ class _LoginViewState extends State<LoginView> {
 
                         const SizedBox(height: 10),
 
-                        Text(
+                        const Text(
                           "Manage your favorite animes",
                           style: TextStyle(fontWeight: FontWeight.w400),
                           textAlign: TextAlign.center,
@@ -85,7 +85,7 @@ class _LoginViewState extends State<LoginView> {
                           controller: _email,
                           hint: "Email",
                           isPassword: false,
-                          suffixIcon: Icon(Icons.email),
+                          suffixIcon: const Icon(Icons.email),
                           type: TextInputType.emailAddress,
                         ),
 
@@ -139,12 +139,12 @@ class _LoginViewState extends State<LoginView> {
                         ),
 
                         //*======= social login
-                        SizedBox(height: 24),
-                        SizedBox(
+                        const SizedBox(height: 24),
+                        const SizedBox(
                           width: 50,
                           child: Divider(height: 0.5, thickness: 0.2),
                         ),
-                        SizedBox(height: 16),
+                        const SizedBox(height: 16),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -154,7 +154,7 @@ class _LoginViewState extends State<LoginView> {
                               height: 64,
                               child: Card(
                                 child: Padding(
-                                  padding: EdgeInsetsGeometry.all(8),
+                                  padding: const EdgeInsetsGeometry.all(8),
                                   child: Center(
                                     child: Image.asset(
                                       'assets/icons/ic_facebook.png',
@@ -168,7 +168,7 @@ class _LoginViewState extends State<LoginView> {
                               height: 64,
                               child: Card(
                                 child: Padding(
-                                  padding: EdgeInsetsGeometry.all(8),
+                                  padding: const EdgeInsetsGeometry.all(8),
                                   child: Center(
                                     child: Image.asset(
                                       'assets/icons/ic_google.png',

@@ -39,6 +39,7 @@ analyzer:
   strong-mode: # prefer Object? and explicit casts
     implicit-casts: false
   errors:
+    non_constant_identifier_names: ignore
     todo: ignore # Ignore TODOs in analysis
   exclude:
     - build/**

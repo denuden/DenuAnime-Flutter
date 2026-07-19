@@ -7,6 +7,7 @@ import 'package:denuanime/features/anime/presentation/common/scores_section.dart
 import 'package:denuanime/features/anime/presentation/common/sypnosis_section.dart';
 import 'package:denuanime/features/common/presentation/custom_image_network.dart';
 import 'package:denuanime/features/main/presentation/common/genre_item.dart';
+import 'package:denuanime/features/people/presentation/common/person_card_item.dart';
 import 'package:denuanime/theme/dark_mode.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -98,7 +99,32 @@ class AnimeDetailsView extends StatelessWidget {
                 _OtherInfo(context, animeDetails),
               ],
             ),
-          ],
+
+            //* anime characters
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Text(
+                  "Characters",
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyLarge?.copyWith(color: white),
+                ),
+                const Spacer(),
+                TextButton(
+                  onPressed: () {
+                    //TODO
+                  },
+                  child: const Text("See all"),
+                ),
+              ],
+            ),
+            PersonCardItem(),
+            PersonCardItem(),
+            PersonCardItem(),
+
+            const SizedBox(height: 32),
+          ], //*end
         ),
       ),
     );
@@ -153,7 +179,7 @@ class AnimeDetailsView extends StatelessWidget {
                   ScoresSection(animeDetails: animeDetails),
 
                   //* stars
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 12),
 
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -176,8 +202,9 @@ class AnimeDetailsView extends StatelessWidget {
         ),
 
         //* broadcast
+        const SizedBox(height: 4),
         Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: BroadcastSection(animeDetails: animeDetails),
         ),
       ],

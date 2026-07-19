@@ -46,8 +46,8 @@ class DropdownMenuFilter extends StatelessWidget {
     'All',
     'G - All Ages',
     'PG - Children',
-    'PG-13 - Teens 13 or Older',
-    'R - 17+ (Violence & Profanity)',
+    'PG-13 - Teens 13 or older',
+    'R - 17+ (violence & profanity)',
     'R+ - Mild Nudity',
     'Rx - Hentai',
   ];

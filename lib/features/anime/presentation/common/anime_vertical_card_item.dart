@@ -18,7 +18,7 @@ class AnimeVerticalCardItem extends StatelessWidget {
             height: 160,
             width: double.infinity,
             child: ClipRRect(
-              borderRadius: BorderRadiusGeometry.only(
+              borderRadius: const BorderRadiusGeometry.only(
                 topLeft: Radius.circular(12),
                 topRight: Radius.circular(12),
               ),
@@ -28,7 +28,7 @@ class AnimeVerticalCardItem extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
 
           Padding(
             padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 16),
@@ -41,12 +41,12 @@ class AnimeVerticalCardItem extends StatelessWidget {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
 
                 Row(
                   children: [
-                    Icon(Icons.calendar_today_rounded, size: 16),
-                    SizedBox(width: 8),
+                    const Icon(Icons.calendar_today_rounded, size: 16),
+                    const SizedBox(width: 8),
                     Text('${animeDetailsModel.year ?? '---'}'),
                   ],
                 ),
@@ -59,7 +59,7 @@ class AnimeVerticalCardItem extends StatelessWidget {
                       itemCount: 5,
                       itemSize: 16,
                     ),
-                    SizedBox(width: 8),
+                    const SizedBox(width: 8),
 
                     Text('${animeDetailsModel.score ?? '0.0'}'),
                   ],

@@ -43,7 +43,7 @@ class ScoresSection extends StatelessWidget {
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 8),
-                        const Icon(Icons.star, size: 20),
+                        const Icon(Icons.star, size: 12),
                         const SizedBox(height: 4),
 
                         Text(
