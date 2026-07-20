@@ -1,35 +1,35 @@
 class BaseImagesModel {
-  final String? imageUrl;
-  final String? smallImageUrl;
-  final String? mediumImageUrl;
-  final String? largeImageUrl;
-  final String? maximumImageUrl;
+  final String? image_url;
+  final String? small_image_url;
+  final String? medium_image_url;
+  final String? large_image_url;
+  final String? maximum_image_url;
 
   const BaseImagesModel({
-    this.imageUrl,
-    this.smallImageUrl,
-    this.mediumImageUrl,
-    this.largeImageUrl,
-    this.maximumImageUrl,
+    this.image_url,
+    this.small_image_url,
+    this.medium_image_url,
+    this.large_image_url,
+    this.maximum_image_url,
   });
 
   factory BaseImagesModel.fromJson(Map<String, dynamic> json) {
     return BaseImagesModel(
-      imageUrl: json['image_url'] as String?,
-      smallImageUrl: json['small_image_url'] as String?,
-      mediumImageUrl: json['medium_image_url'] as String?,
-      largeImageUrl: json['large_image_url'] as String?,
-      maximumImageUrl: json['maximum_image_url'] as String?,
+      image_url: json['image_url'] as String?,
+      small_image_url: json['small_image_url'] as String?,
+      medium_image_url: json['medium_image_url'] as String?,
+      large_image_url: json['large_image_url'] as String?,
+      maximum_image_url: json['maximum_image_url'] as String?,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'image_url': imageUrl,
-      'small_image_url': smallImageUrl,
-      'medium_image_url': mediumImageUrl,
-      'large_image_url': largeImageUrl,
-      'maximum_image_url': maximumImageUrl,
+      'image_url': image_url,
+      'small_image_url': small_image_url,
+      'medium_image_url': medium_image_url,
+      'large_image_url': large_image_url,
+      'maximum_image_url': maximum_image_url,
     };
   }
 }

@@ -13,16 +13,16 @@ import 'package:denuanime/features/anime/domain/entities/trailer_model.dart';
 import 'package:denuanime/features/common/entities/image_type_model.dart';
 
 class AnimeDetailsModel {
-  final int? malId;
+  final int? mal_id;
   final String? url;
   final ImageTypeModel? images;
   final TrailerModel? trailer;
   final bool? approved;
   final List<TitleModel>? titles;
   final String? title;
-  final String? titleEnglish;
-  final String? titleJapanese;
-  final List<String>? titleSynonyms;
+  final String? title_english;
+  final String? title_japanese;
+  final List<String>? title_synonyms;
   final String? type;
   final String? source;
   final int? episodes;
@@ -32,7 +32,7 @@ class AnimeDetailsModel {
   final String? duration;
   final String? rating;
   final double? score;
-  final int? scoredBy;
+  final int? scored_by;
   final int? rank;
   final int? popularity;
   final int? members;
@@ -46,7 +46,7 @@ class AnimeDetailsModel {
   final List<LicensorModel>? licensors;
   final List<StudioModel>? studios;
   final List<GenreModel>? genres;
-  final List<dynamic>? explicitGenres;
+  final List<dynamic>? explicit_genres;
   final List<GenreModel>? themes;
   final List<GenreModel>? demographics;
   final List<RelationModel>? relations;
@@ -55,16 +55,16 @@ class AnimeDetailsModel {
   final List<StreamingModel>? streaming;
 
   const AnimeDetailsModel({
-    this.malId,
+    this.mal_id,
     this.url,
     this.images,
     this.trailer,
     this.approved,
     this.titles,
     this.title,
-    this.titleEnglish,
-    this.titleJapanese,
-    this.titleSynonyms,
+    this.title_english,
+    this.title_japanese,
+    this.title_synonyms,
     this.type,
     this.source,
     this.episodes,
@@ -74,7 +74,7 @@ class AnimeDetailsModel {
     this.duration,
     this.rating,
     this.score,
-    this.scoredBy,
+    this.scored_by,
     this.rank,
     this.popularity,
     this.members,
@@ -88,7 +88,7 @@ class AnimeDetailsModel {
     this.licensors,
     this.studios,
     this.genres,
-    this.explicitGenres,
+    this.explicit_genres,
     this.themes,
     this.demographics,
     this.relations,
@@ -99,7 +99,7 @@ class AnimeDetailsModel {
 
   factory AnimeDetailsModel.fromJson(Map<String, dynamic> json) {
     return AnimeDetailsModel(
-      malId: json['mal_id'] as int?,
+      mal_id: json['mal_id'] as int?,
       url: json['url'] as String?,
       images: json['images'] != null
           ? ImageTypeModel.fromJson(json['images'] as Map<String, dynamic>)
@@ -112,9 +112,9 @@ class AnimeDetailsModel {
           ?.map((e) => TitleModel.fromJson(e as Map<String, dynamic>))
           .toList(),
       title: json['title'] as String?,
-      titleEnglish: json['title_english'] as String?,
-      titleJapanese: json['title_japanese'] as String?,
-      titleSynonyms: (json['title_synonyms'] as List?)
+      title_english: json['title_english'] as String?,
+      title_japanese: json['title_japanese'] as String?,
+      title_synonyms: (json['title_synonyms'] as List?)
           ?.map((e) => e as String)
           .toList(),
       type: json['type'] as String?,
@@ -128,7 +128,7 @@ class AnimeDetailsModel {
       duration: json['duration'] as String?,
       rating: json['rating'] as String?,
       score: (json['score'] as num?)?.toDouble(),
-      scoredBy: json['scored_by'] as int?,
+      scored_by: json['scored_by'] as int?,
       rank: json['rank'] as int?,
       popularity: json['popularity'] as int?,
       members: json['members'] as int?,
@@ -152,7 +152,7 @@ class AnimeDetailsModel {
       genres: (json['genres'] as List?)
           ?.map((e) => GenreModel.fromJson(e as Map<String, dynamic>))
           .toList(),
-      explicitGenres: json['explicit_genres'] as List?,
+      explicit_genres: json['explicit_genres'] as List?,
       themes: (json['themes'] as List?)
           ?.map((e) => GenreModel.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -176,16 +176,16 @@ class AnimeDetailsModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'mal_id': malId,
+      'mal_id': mal_id,
       'url': url,
       'images': images?.toJson(),
       'trailer': trailer?.toJson(),
       'approved': approved,
       'titles': titles?.map((e) => e.toJson()).toList(),
       'title': title,
-      'title_english': titleEnglish,
-      'title_japanese': titleJapanese,
-      'title_synonyms': titleSynonyms,
+      'title_english': title_english,
+      'title_japanese': title_japanese,
+      'title_synonyms': title_synonyms,
       'type': type,
       'source': source,
       'episodes': episodes,
@@ -195,7 +195,7 @@ class AnimeDetailsModel {
       'duration': duration,
       'rating': rating,
       'score': score,
-      'scored_by': scoredBy,
+      'scored_by': scored_by,
       'rank': rank,
       'popularity': popularity,
       'members': members,
@@ -209,7 +209,7 @@ class AnimeDetailsModel {
       'licensors': licensors?.map((e) => e.toJson()).toList(),
       'studios': studios?.map((e) => e.toJson()).toList(),
       'genres': genres?.map((e) => e.toJson()).toList(),
-      'explicit_genres': explicitGenres,
+      'explicit_genres': explicit_genres,
       'themes': themes?.map((e) => e.toJson()).toList(),
       'demographics': demographics?.map((e) => e.toJson()).toList(),
       'relations': relations?.map((e) => e.toJson()).toList(),

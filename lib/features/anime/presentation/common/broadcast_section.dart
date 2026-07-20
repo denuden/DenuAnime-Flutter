@@ -218,13 +218,13 @@ class BroadcastSection extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              "R+",
+              first,
               style: Theme.of(
                 context,
               ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             Text(
-              "17+",
+              second,
               style: Theme.of(
                 context,
               ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),

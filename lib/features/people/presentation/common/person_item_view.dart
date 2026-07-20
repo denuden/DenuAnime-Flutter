@@ -15,7 +15,7 @@ class PersonItemView extends StatelessWidget {
       children: [
         ClipOval(
           child: Image.network(
-            people.images?.jpg?.imageUrl ?? "",
+            people.images?.jpg?.image_url ?? "",
             height: 70,
             width: 70,
             fit: BoxFit.cover,

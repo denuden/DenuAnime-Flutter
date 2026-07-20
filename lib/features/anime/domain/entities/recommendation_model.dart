@@ -2,14 +2,14 @@ import 'package:denuanime/features/anime/domain/entities/anime_details_model.dar
 import 'package:denuanime/features/common/entities/user_model.dart';
 
 class RecommendationModel {
-  final int? malId;
+  final int? mal_id;
   final List<AnimeDetailsModel>? entry;
   final String? content;
   final String? date;
   final UserModel? user;
 
   const RecommendationModel({
-    required this.malId,
+    required this.mal_id,
     required this.entry,
     required this.content,
     required this.date,
@@ -18,7 +18,7 @@ class RecommendationModel {
 
   factory RecommendationModel.fromJson(Map<String, dynamic> json) {
     return RecommendationModel(
-      malId: json['mal_id'] as int,
+      mal_id: json['mal_id'] as int,
       entry: (json['entry'] as List?)
           ?.map((e) => AnimeDetailsModel.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -32,7 +32,7 @@ class RecommendationModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'mal_id': malId,
+      'mal_id': mal_id,
       'entry': entry?.map((e) => e.toJson()).toList(),
       'content': content,
       'date': date,

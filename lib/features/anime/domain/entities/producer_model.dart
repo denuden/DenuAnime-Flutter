@@ -1,14 +1,14 @@
 class ProducerModel {
-  final int? malId;
+  final int? mal_id;
   final String? type;
   final String? name;
   final String? url;
 
-  const ProducerModel({this.malId, this.type, this.name, this.url});
+  const ProducerModel({this.mal_id, this.type, this.name, this.url});
 
   factory ProducerModel.fromJson(Map<String, dynamic> json) {
     return ProducerModel(
-      malId: json['mal_id'] as int?,
+      mal_id: json['mal_id'] as int?,
       type: json['type'] as String?,
       name: json['name'] as String?,
       url: json['url'] as String?,
@@ -16,6 +16,6 @@ class ProducerModel {
   }
 
   Map<String, dynamic> toJson() {
-    return {'mal_id': malId, 'type': type, 'name': name, 'url': url};
+    return {'mal_id': mal_id, 'type': type, 'name': name, 'url': url};
   }
 }

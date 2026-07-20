@@ -1,21 +1,21 @@
 class PaginationModel {
-  final int? lastVisiblePage;
-  final bool? hasNextPage;
-  final int? currentPage;
+  final int? last_visible_page;
+  final bool? has_next_page;
+  final int? current_page;
   final Items? items;
 
   const PaginationModel({
-    this.lastVisiblePage,
-    this.hasNextPage,
-    this.currentPage,
+    this.last_visible_page,
+    this.has_next_page,
+    this.current_page,
     this.items,
   });
 
   factory PaginationModel.fromJson(Map<String, dynamic> json) {
     return PaginationModel(
-      lastVisiblePage: json['last_visible_page'] as int?,
-      hasNextPage: json['has_next_page'] as bool?,
-      currentPage: json['current_page'] as int?,
+      last_visible_page: json['last_visible_page'] as int?,
+      has_next_page: json['has_next_page'] as bool?,
+      current_page: json['current_page'] as int?,
       items: json['items'] != null
           ? Items.fromJson(json['items'] as Map<String, dynamic>)
           : null,
@@ -24,9 +24,9 @@ class PaginationModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'last_visible_page': lastVisiblePage,
-      'has_next_page': hasNextPage,
-      'current_page': currentPage,
+      'last_visible_page': last_visible_page,
+      'has_next_page': has_next_page,
+      'current_page': current_page,
       'items': items?.toJson(),
     };
   }

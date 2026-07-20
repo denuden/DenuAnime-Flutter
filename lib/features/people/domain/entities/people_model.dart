@@ -3,14 +3,14 @@ import 'package:denuanime/features/people/domain/entities/people_anime_model.dar
 import 'package:denuanime/features/people/domain/entities/voices_model.dart';
 
 class PeopleModel {
-  final int? malId;
+  final int? mal_id;
   final String? url;
-  final String? websiteUrl;
+  final String? website_url;
   final ImageTypeModel? images;
   final String? name;
-  final String? givenName;
-  final String? familyName;
-  final List<String?>? alternateNames;
+  final String? given_name;
+  final String? family_name;
+  final List<String?>? alternate_names;
   final String? birthday;
   final int? favorites;
   final String? about;
@@ -19,14 +19,14 @@ class PeopleModel {
   final List<VoicesModel>? voices;
 
   const PeopleModel({
-    this.malId,
+    this.mal_id,
     this.url,
-    this.websiteUrl,
+    this.website_url,
     this.images,
     this.name,
-    this.givenName,
-    this.familyName,
-    this.alternateNames,
+    this.given_name,
+    this.family_name,
+    this.alternate_names,
     this.birthday,
     this.favorites,
     this.about,
@@ -37,16 +37,16 @@ class PeopleModel {
 
   factory PeopleModel.fromJson(Map<String, dynamic> json) {
     return PeopleModel(
-      malId: json['mal_id'] as int?,
+      mal_id: json['mal_id'] as int?,
       url: json['url'] as String?,
-      websiteUrl: json['website_url'] as String?,
+      website_url: json['website_url'] as String?,
       images: json['images'] != null
           ? ImageTypeModel.fromJson(json['images'] as Map<String, dynamic>)
           : null,
       name: json['name'] as String?,
-      givenName: json['given_name'] as String?,
-      familyName: json['family_name'] as String?,
-      alternateNames: (json['alternate_names'] as List?)
+      given_name: json['given_name'] as String?,
+      family_name: json['family_name'] as String?,
+      alternate_names: (json['alternate_names'] as List?)
           ?.map((e) => e as String?)
           .toList(),
       birthday: json['birthday'] as String?,
@@ -66,14 +66,14 @@ class PeopleModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'mal_id': malId,
+      'mal_id': mal_id,
       'url': url,
-      'website_url': websiteUrl,
+      'website_url': website_url,
       'images': images?.toJson(),
       'name': name,
-      'given_name': givenName,
-      'family_name': familyName,
-      'alternate_names': alternateNames,
+      'given_name': given_name,
+      'family_name': family_name,
+      'alternate_names': alternate_names,
       'birthday': birthday,
       'favorites': favorites,
       'about': about,

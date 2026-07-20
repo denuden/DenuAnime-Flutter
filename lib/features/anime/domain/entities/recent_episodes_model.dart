@@ -4,12 +4,12 @@ import 'package:denuanime/features/anime/domain/entities/episode_model.dart';
 class RecentEpisodesModel {
   final AnimeDetailsModel? entry;
   final List<EpisodeModel>? episodes;
-  final bool? regionLocked;
+  final bool? region_locked;
 
   const RecentEpisodesModel({
     required this.entry,
     required this.episodes,
-    required this.regionLocked,
+    required this.region_locked,
   });
 
   factory RecentEpisodesModel.fromJson(Map<String, dynamic> json) {
@@ -20,7 +20,7 @@ class RecentEpisodesModel {
       episodes: (json['episodes'] as List<dynamic>?)
           ?.map((e) => EpisodeModel.fromJson(e as Map<String, dynamic>))
           .toList(),
-      regionLocked: json['region_locked'] as bool?,
+      region_locked: json['region_locked'] as bool?,
     );
   }
 
@@ -28,7 +28,7 @@ class RecentEpisodesModel {
     return {
       'entry': entry?.toJson(),
       'episodes': episodes?.map((e) => e.toJson()).toList(),
-      'region_locked': regionLocked,
+      'region_locked': region_locked,
     };
   }
 }

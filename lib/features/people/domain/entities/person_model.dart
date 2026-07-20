@@ -1,16 +1,16 @@
 import 'package:denuanime/features/common/entities/image_type_model.dart';
 
-class CharacterModel {
+class PersonModel {
   final int? mal_id;
   final String? url;
   final ImageTypeModel? images;
   final String? name;
 
-  const CharacterModel({this.mal_id, this.url, this.images, this.name});
+  PersonModel({this.mal_id, this.url, this.images, this.name});
 
-  factory CharacterModel.fromJson(Map<String, dynamic> json) {
-    return CharacterModel(
-      mal_id: json['mal_id'] as int?,
+  factory PersonModel.fromJson(Map<String, dynamic> json) {
+    return PersonModel(
+      mal_id: json['malId'] as int?,
       url: json['url'] as String?,
       images: json['images'] != null
           ? ImageTypeModel.fromJson(json['images'] as Map<String, dynamic>)

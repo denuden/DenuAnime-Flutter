@@ -20,20 +20,20 @@ class Background extends StatelessWidget {
           Container(color: background),
 
           // top right glow
-          Positioned(
+          const Positioned(
             top: -100,
             right: -20,
             child: BackgroundGlow(color: primaryGlow, size: 250),
           ),
 
           // bottom left glow
-          Positioned(
+          const Positioned(
             bottom: -60,
             left: -60,
             child: BackgroundGlow(color: primaryDark, size: 220),
           ),
 
-          Positioned(
+          const Positioned(
             top: 270,
             right: -90,
             child: BackgroundGlow(color: primarySoft, size: 180),
@@ -62,7 +62,7 @@ class Background extends StatelessWidget {
                   child: Container(
                     height: double.infinity,
                     width: double.infinity,
-                    padding: EdgeInsets.all(24),
+                    padding: const EdgeInsets.all(24),
                     //*border
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),

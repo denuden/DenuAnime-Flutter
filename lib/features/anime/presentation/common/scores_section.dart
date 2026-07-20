@@ -83,7 +83,7 @@ class ScoresSection extends StatelessWidget {
 
                         Text(
                           NumberFormat.decimalPattern().format(
-                            animeDetails.scoredBy ?? 0,
+                            animeDetails.scored_by ?? 0,
                           ),
                           style: Theme.of(
                             context,

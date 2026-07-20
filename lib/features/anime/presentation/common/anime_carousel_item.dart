@@ -20,7 +20,7 @@ class AnimeCarouselItem extends StatelessWidget {
         children: [
           //* picture
           CustomImageNetwork(
-            animeDetails.images?.jpg?.largeImageUrl ?? '',
+            animeDetails.images?.jpg?.large_image_url ?? '',
             height: 500,
           ),
 

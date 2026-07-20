@@ -1,23 +1,23 @@
 class GenreModel {
-  final int? malId;
+  final int? mal_id;
   final String? type;
   final String? name;
   final int? count;
   final String? url;
-  final bool isSelected;
+  final bool is_selected;
 
   const GenreModel({
-    this.malId,
+    this.mal_id,
     this.type,
     this.name,
     this.count,
     this.url,
-    this.isSelected = false,
+    this.is_selected = false,
   });
 
   factory GenreModel.fromJson(Map<String, dynamic> json) {
     return GenreModel(
-      malId: json['mal_id'] as int?,
+      mal_id: json['mal_id'] as int?,
       type: json['type'] as String?,
       name: json['name'] as String?,
       count: json['count'] as int?,
@@ -27,12 +27,12 @@ class GenreModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'mal_id': malId,
+      'mal_id': mal_id,
       'type': type,
       'name': name,
       'count': count,
       'url': url,
-      'isSelected': isSelected,
+      'isSelected': is_selected,
     };
   }
 }

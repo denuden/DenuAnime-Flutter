@@ -69,7 +69,7 @@ class DropdownMenuFilter extends StatelessWidget {
         shape: WidgetStatePropertyAll(
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(32),
-            side: BorderSide(color: white, width: 1),
+            side: const BorderSide(color: white, width: 1),
           ),
         ),
       ),
@@ -148,7 +148,7 @@ class DropdownMenuFilter extends StatelessWidget {
 
         Expanded(
           child: ListView.builder(
-            physics: BouncingScrollPhysics(),
+            physics: const BouncingScrollPhysics(),
             padding: EdgeInsets.zero,
             itemCount: labels.length,
             itemBuilder: (context, index) {

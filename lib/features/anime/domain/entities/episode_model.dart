@@ -1,11 +1,11 @@
 class EpisodeModel {
-  final int? malId;
+  final int? mal_id;
   final String? url;
   final String? title;
   final bool? premium;
 
   const EpisodeModel({
-    required this.malId,
+    required this.mal_id,
     required this.url,
     required this.title,
     required this.premium,
@@ -13,7 +13,7 @@ class EpisodeModel {
 
   factory EpisodeModel.fromJson(Map<String, dynamic> json) {
     return EpisodeModel(
-      malId: json['mal_id'] as int?,
+      mal_id: json['mal_id'] as int?,
       url: json['url'] as String?,
       title: json['title'] as String?,
       premium: json['premium'] as bool?,
@@ -21,6 +21,6 @@ class EpisodeModel {
   }
 
   Map<String, dynamic> toJson() {
-    return {'mal_id': malId, 'url': url, 'title': title, 'premium': premium};
+    return {'mal_id': mal_id, 'url': url, 'title': title, 'premium': premium};
   }
 }

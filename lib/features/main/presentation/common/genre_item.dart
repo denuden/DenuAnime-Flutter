@@ -51,13 +51,13 @@ class GenreItem extends StatelessWidget {
       labelStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
         fontSize: isSmall ? 10 : 12,
         fontWeight: FontWeight.w500,
-        color: genre.isSelected
+        color: genre.is_selected
             ? (selectedTextColor ?? background)
             : (textColor ?? inversePrimary),
       ),
 
       label: Text(genre.name ?? "---"),
-      selected: genre.isSelected,
+      selected: genre.is_selected,
       onSelected: onSelect,
     );
   }

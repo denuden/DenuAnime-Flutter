@@ -22,12 +22,12 @@ class AnimeHorizontalCardItem extends StatelessWidget {
               ),
               child: Image.network(
                 fit: BoxFit.cover,
-                model.entry?.images?.jpg?.imageUrl ?? '',
+                model.entry?.images?.jpg?.image_url ?? '',
               ),
             ),
           ),
 
-          SizedBox(width: 16),
+          const SizedBox(width: 16),
 
           Expanded(
             child: Column(
@@ -37,7 +37,7 @@ class AnimeHorizontalCardItem extends StatelessWidget {
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
 
-                SizedBox(height: 12),
+                const SizedBox(height: 12),
 
                 Row(
                   children:
@@ -49,12 +49,12 @@ class AnimeHorizontalCardItem extends StatelessWidget {
                               ),
                               child: Text(
                                 episode.title ?? '',
-                                style: TextStyle(color: primary),
+                                style: const TextStyle(color: primary),
                               ),
                             ),
                           )
                           .toList() ??
-                      [Text("No recent episodes")],
+                      [const Text("No recent episodes")],
                 ),
               ],
             ),

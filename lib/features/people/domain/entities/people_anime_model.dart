@@ -9,11 +9,13 @@ class PeopleAnimeModel {
   factory PeopleAnimeModel.fromJson(Map<String, dynamic> json) {
     return PeopleAnimeModel(
       position: json['position'] as String?,
-      anime: json['anime'] as AnimeDetailsModel?,
+      anime: json['anime'] != null
+          ? AnimeDetailsModel.fromJson(json['anime'] as Map<String, dynamic>)
+          : null,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'position': position, 'anime': AnimeDetailsModel};
+    return {'position': position, 'anime': anime?.toJson()};
   }
 }

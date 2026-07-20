@@ -42,7 +42,7 @@ enum RecentSegmentedButton { recent, ongoing, upcoming }
 
 class _HomeViewState extends State<HomeView> {
   final animeDetails = AnimeDetailsModel(
-    malId: 37999,
+    mal_id: 37999,
     url:
         "https://myanimelist.net/anime/37999/Kaguya-sama_wa_Kokurasetai__Tensai-tachi_no_Renai_Zunousen",
     images: ImageTypeModel.fromJson({
@@ -77,17 +77,17 @@ class _HomeViewState extends State<HomeView> {
     }),
     approved: true,
     titles: [
-      TitleModel(
+      const TitleModel(
         type: "Default",
         title: "Kaguya-sama wa Kokurasetai: Tensai-tachi no Renai Zunousen",
       ),
-      TitleModel(type: "English", title: "Kaguya-sama: Love is War"),
-      TitleModel(type: "Japanese", title: "かぐや様は告らせたい～天才たちの恋愛頭脳戦～"),
+      const TitleModel(type: "English", title: "Kaguya-sama: Love is War"),
+      const TitleModel(type: "Japanese", title: "かぐや様は告らせたい～天才たちの恋愛頭脳戦～"),
     ],
     title: "Kaguya-sama wa Kokurasetai: Tensai-tachi no Renai Zunousen",
-    titleEnglish: "Kaguya-sama: Love is War",
-    titleJapanese: "かぐや様は告らせたい～天才たちの恋愛頭脳戦～",
-    titleSynonyms: [
+    title_english: "Kaguya-sama: Love is War",
+    title_japanese: "かぐや様は告らせたい～天才たちの恋愛頭脳戦～",
+    title_synonyms: [
       "Kaguya Wants to be Confessed To: The Geniuses' War of Love and Brains",
     ],
     type: "TV",
@@ -107,7 +107,7 @@ class _HomeViewState extends State<HomeView> {
     duration: "25 min per ep",
     rating: "PG-13 - Teens 13 or older",
     score: 8.4,
-    scoredBy: 1221648,
+    scored_by: 1221648,
     rank: 229,
     popularity: 51,
     members: 1954770,
@@ -124,31 +124,37 @@ class _HomeViewState extends State<HomeView> {
       "string": "Saturdays at 23:30 (JST)",
     }),
     producers: [
-      ProducerModel(malId: 17, type: "anime", name: "Aniplex"),
-      ProducerModel(
-        malId: 143,
+      const ProducerModel(mal_id: 17, type: "anime", name: "Aniplex"),
+      const ProducerModel(
+        mal_id: 143,
         type: "anime",
         name: "Mainichi Broadcasting System",
       ),
-      ProducerModel(malId: 306, type: "anime", name: "Magic Capsule"),
-      ProducerModel(malId: 1365, type: "anime", name: "Shueisha"),
-      ProducerModel(
-        malId: 1501,
+      const ProducerModel(mal_id: 306, type: "anime", name: "Magic Capsule"),
+      const ProducerModel(mal_id: 1365, type: "anime", name: "Shueisha"),
+      const ProducerModel(
+        mal_id: 1501,
         type: "anime",
         name: "JR East Marketing & Communications",
       ),
     ],
     licensors: [
-      LicensorModel(malId: 493, type: "anime", name: "Aniplex of America"),
+      const LicensorModel(
+        mal_id: 493,
+        type: "anime",
+        name: "Aniplex of America",
+      ),
     ],
-    studios: [StudioModel(malId: 56, type: "anime", name: "A-1 Pictures")],
+    studios: [
+      const StudioModel(mal_id: 56, type: "anime", name: "A-1 Pictures"),
+    ],
     genres: [
-      GenreModel(malId: 4, type: "anime", name: "Comedy"),
-      GenreModel(malId: 22, type: "anime", name: "Romance"),
+      const GenreModel(mal_id: 4, type: "anime", name: "Comedy"),
+      const GenreModel(mal_id: 22, type: "anime", name: "Romance"),
     ],
-    explicitGenres: [],
-    themes: [GenreModel(malId: 23, type: "anime", name: "School")],
-    demographics: [GenreModel(malId: 42, type: "anime", name: "Seinen")],
+    explicit_genres: [],
+    themes: [const GenreModel(mal_id: 23, type: "anime", name: "School")],
+    demographics: [const GenreModel(mal_id: 42, type: "anime", name: "Seinen")],
     relations: [
       RelationModel.fromJson({
         "relation": "Sequel",
@@ -185,18 +191,21 @@ class _HomeViewState extends State<HomeView> {
       ],
     }),
     external: [
-      ExternalModel(name: "Official Site", url: "https://kaguya.love/1st/"),
-      ExternalModel(
+      const ExternalModel(
+        name: "Official Site",
+        url: "https://kaguya.love/1st/",
+      ),
+      const ExternalModel(
         name: "@anime_kaguya",
         url: "https://twitter.com/anime_kaguya",
       ),
     ],
     streaming: [
-      StreamingModel(
+      const StreamingModel(
         name: "Crunchyroll",
         url: "http://www.crunchyroll.com/series-277391",
       ),
-      StreamingModel(name: "Netflix", url: "https://www.netflix.com/"),
+      const StreamingModel(name: "Netflix", url: "https://www.netflix.com/"),
     ],
   );
   //? =========== variable
@@ -270,19 +279,19 @@ class _HomeViewState extends State<HomeView> {
                     entry: animeDetails,
                     episodes: const [
                       EpisodeModel(
-                        malId: 1,
+                        mal_id: 1,
                         url: "url",
                         title: "Episode 1",
                         premium: true,
                       ),
                       EpisodeModel(
-                        malId: 1,
+                        mal_id: 1,
                         url: "url",
                         title: "Episode 2",
                         premium: true,
                       ),
                     ],
-                    regionLocked: true,
+                    region_locked: true,
                   ),
                 );
               },
@@ -309,11 +318,11 @@ class _HomeViewState extends State<HomeView> {
                 ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
               ),
             ),
-            Spacer(),
+            const Spacer(),
             TextButton.icon(
               onPressed: () {},
-              label: Text("View all"),
-              icon: Icon(Icons.keyboard_arrow_right),
+              label: const Text("View all"),
+              icon: const Icon(Icons.keyboard_arrow_right),
               iconAlignment: IconAlignment.end,
               style: TextButton.styleFrom(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -331,15 +340,15 @@ class _HomeViewState extends State<HomeView> {
           child: ListView.builder(
             itemCount: 4,
             itemBuilder: (context, index) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              return const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8.0),
                 child: PersonItemView(
                   people: PeopleModel(
                     name: "Tomokazu Seki",
                     birthday: "1972-09-08T00:00:00+00:00",
                     images: ImageTypeModel(
                       jpg: BaseImagesModel(
-                        imageUrl:
+                        image_url:
                             "https://cdn.myanimelist.net/r/84x124/images/characters/7/618735.jpg?s=9902344694bb6579f0f271c3b9729ed0",
                       ),
                     ),
@@ -351,8 +360,8 @@ class _HomeViewState extends State<HomeView> {
           ),
         ),
 
-        SizedBox(height: 8),
-        Divider(thickness: 0.2),
+        const SizedBox(height: 8),
+        const Divider(thickness: 0.2),
       ],
     );
   }
@@ -401,7 +410,7 @@ class _HomeViewState extends State<HomeView> {
                         },
                         genre: GenreModel(
                           name: "Action",
-                          isSelected: index == 1 ? true : false,
+                          is_selected: index == 1 ? true : false,
                         ),
                       ),
                     );
@@ -495,27 +504,27 @@ class _HomeViewState extends State<HomeView> {
 
         RecommendationItem(
           recommendationModel: RecommendationModel(
-            malId: 0,
+            mal_id: 0,
             entry: [animeDetails, animeDetails],
             content:
                 "Similar chill vibes. A lot of focus on the food recipe and preparation itself, sometimes even mentioning some dishes' history and stuff. Instead of Shirou, we have a maid doing it all.",
             date: "",
-            user: UserModel(
+            user: const UserModel(
               url: "https://myanimelist.net/profile/Zm00sp",
               username: "Zm00sp",
             ),
           ),
         ),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
 
         RecommendationItem(
           recommendationModel: RecommendationModel(
-            malId: 0,
+            mal_id: 0,
             entry: [animeDetails, animeDetails],
             content:
                 "Similar chill vibes. A lot of focus on the food recipe and preparation itself, sometimes even mentioning some dishes' history and stuff. Instead of Shirou, we have a maid doing it all.",
             date: "",
-            user: UserModel(
+            user: const UserModel(
               url: "https://myanimelist.net/profile/Zm00sp",
               username: "Zm00sp",
             ),
@@ -528,7 +537,7 @@ class _HomeViewState extends State<HomeView> {
   Widget _RecentHeaderSection(BuildContext context) {
     return Column(
       children: [
-        SizedBox(height: 12),
+        const SizedBox(height: 12),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16),
           child: SegmentedButton<RecentSegmentedButton>(

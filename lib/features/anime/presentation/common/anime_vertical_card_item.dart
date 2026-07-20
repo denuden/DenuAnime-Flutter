@@ -24,7 +24,7 @@ class AnimeVerticalCardItem extends StatelessWidget {
               ),
               child: Image.network(
                 fit: BoxFit.cover,
-                animeDetailsModel.images?.jpg?.imageUrl ?? '',
+                animeDetailsModel.images?.jpg?.image_url ?? '',
               ),
             ),
           ),

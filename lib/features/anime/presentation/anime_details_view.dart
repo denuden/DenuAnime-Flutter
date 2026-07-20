@@ -30,7 +30,7 @@ class AnimeDetailsView extends StatelessWidget {
             Stack(
               children: [
                 CustomImageNetwork(
-                  animeDetails.images?.jpg?.largeImageUrl ?? '',
+                  animeDetails.images?.jpg?.large_image_url ?? '',
                   height: 300,
                 ),
                 Align(
@@ -62,11 +62,11 @@ class AnimeDetailsView extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  animeDetails.titleJapanese ?? 'No japanese title',
+                  animeDetails.title_japanese ?? 'No japanese title',
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 Text(
-                  animeDetails.titleEnglish ?? 'No english title',
+                  animeDetails.title_english ?? 'No english title',
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
 
@@ -81,7 +81,7 @@ class AnimeDetailsView extends StatelessWidget {
                       },
                       genre: const GenreModel(
                         name: "Action",
-                        isSelected: false,
+                        is_selected: false,
                       ),
                       size: GenreItemSize.small,
                       side: BorderSide.none,
@@ -119,9 +119,9 @@ class AnimeDetailsView extends StatelessWidget {
                 ),
               ],
             ),
-            PersonCardItem(),
-            PersonCardItem(),
-            PersonCardItem(),
+            const PersonCardItem(),
+            const PersonCardItem(),
+            const PersonCardItem(),
 
             const SizedBox(height: 32),
           ], //*end

@@ -49,21 +49,21 @@ class _LandingViewState extends State<LandingView> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Image.asset("assets/full.png", height: 224),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
 
                     Chip(
-                      avatar: Icon(
+                      avatar: const Icon(
                         Icons.waving_hand_rounded,
                         color: primaryLight,
                         size: 18,
                       ),
-                      labelStyle: TextStyle(
+                      labelStyle: const TextStyle(
                         color: primaryLight,
                         fontWeight: FontWeight.w600,
                       ),
                       backgroundColor: glass,
-                      label: Text("Welcome Back!"),
-                      labelPadding: EdgeInsets.symmetric(
+                      label: const Text("Welcome Back!"),
+                      labelPadding: const EdgeInsets.symmetric(
                         vertical: 8,
                         horizontal: 16,
                       ),
@@ -76,7 +76,7 @@ class _LandingViewState extends State<LandingView> {
                       ),
                     ),
 
-                    SizedBox(height: 24),
+                    const SizedBox(height: 24),
                     ShaderMask(
                       blendMode: BlendMode.srcIn,
                       shaderCallback: (bounds) => const LinearGradient(
@@ -84,10 +84,10 @@ class _LandingViewState extends State<LandingView> {
                         end: Alignment.bottomCenter,
                         colors: [primaryLight, primary, primaryDeep],
                       ).createShader(bounds),
-                      child: Text(
+                      child: const Text(
                         "YOUR ANIME COMPANION APP",
                         textAlign: TextAlign.center,
-                        style: const TextStyle(
+                        style: TextStyle(
                           height: 0.9,
                           fontSize: 42,
                           fontWeight: FontWeight.bold,
@@ -95,7 +95,7 @@ class _LandingViewState extends State<LandingView> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
 
                     Text(
                       "Track, discover, and save your favorite anime.\nFind your next obsession, one episode at a time.",
@@ -103,7 +103,7 @@ class _LandingViewState extends State<LandingView> {
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
 
-                    SizedBox(height: 32),
+                    const SizedBox(height: 32),
 
                     TextButton(
                       style: TextButton.styleFrom(
@@ -112,10 +112,10 @@ class _LandingViewState extends State<LandingView> {
                       onPressed: () {
                         navigateToHome();
                       },
-                      child: Text("Explore the app"),
+                      child: const Text("Explore the app"),
                     ),
 
-                    Row(
+                    const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       spacing: 12,
                       children: [
@@ -137,7 +137,7 @@ class _LandingViewState extends State<LandingView> {
                       ],
                     ),
 
-                    SizedBox(height: 12),
+                    const SizedBox(height: 12),
 
                     SizedBox(
                       width: double.infinity,
@@ -148,17 +148,17 @@ class _LandingViewState extends State<LandingView> {
                         onPressed: () {
                           navigateToLogin();
                         },
-                        child: Text("Login"),
+                        child: const Text("Login"),
                       ),
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     SizedBox(
                       width: double.infinity,
                       child: FilledButton(
                         onPressed: () {
                           navigateToRegister();
                         },
-                        child: Text("Register"),
+                        child: const Text("Register"),
                       ),
                     ),
                   ],

@@ -75,8 +75,8 @@ class RecommendationItem extends StatelessWidget {
                                       fontWeight: FontWeight.w300,
                                     ),
                               ),
-                              SizedBox(height: 4),
-                              Text(
+                              const SizedBox(height: 4),
+                              const Text(
                                 "Similar chill vibes. A lot of focus on the food recipe and preparation itself, sometimes even mentioning some dishes' history and stuff. Instead of Shirou, we have a maid doing it all.",
                               ),
                             ],
@@ -85,11 +85,11 @@ class RecommendationItem extends StatelessWidget {
                       ],
                     ),
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                 ],
               ),
             ),
           )
-        : Text('No entry found for recommendation');
+        : const Text('No entry found for recommendation');
   }
 }
