@@ -160,7 +160,19 @@ ThemeData darkMode = ThemeData(
     ),
 
     titleLarge: TextStyle(
+      fontSize: 28,
+      fontWeight: FontWeight.w700,
+      color: inversePrimary,
+    ),
+
+    titleMedium: TextStyle(
       fontSize: 22,
+      fontWeight: FontWeight.w700,
+      color: inversePrimary,
+    ),
+
+    titleSmall: TextStyle(
+      fontSize: 16,
       fontWeight: FontWeight.w700,
       color: inversePrimary,
     ),

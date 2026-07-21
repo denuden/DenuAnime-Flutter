@@ -47,7 +47,7 @@ class AnimeCarouselItem extends StatelessWidget {
                 children: List.generate(
                   5,
                   (index) => FilterChip(
-                    backgroundColor: primarySoft,
+                    backgroundColor: primaryDark,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadiusGeometry.circular(8),
                       side: const BorderSide(color: Colors.transparent),
@@ -56,7 +56,7 @@ class AnimeCarouselItem extends StatelessWidget {
                     label: Text(
                       'Adventure',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: secondary,
+                        color: white,
                         fontSize: 10,
                       ),
                     ),

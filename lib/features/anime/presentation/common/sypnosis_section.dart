@@ -24,7 +24,7 @@ class _SypnosisSectionState extends State<SypnosisSection> {
             widget.synopsis.isEmpty ? "Nondescript" : widget.synopsis,
             style: Theme.of(
               context,
-            ).textTheme.bodySmall?.copyWith(color: white),
+            ).textTheme.bodyMedium?.copyWith(color: white, height: 1.5),
             maxLines: _expanded ? null : 5,
             overflow: _expanded ? TextOverflow.visible : TextOverflow.ellipsis,
           ),

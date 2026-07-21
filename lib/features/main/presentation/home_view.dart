@@ -26,7 +26,7 @@ import 'package:denuanime/features/main/presentation/common/drawer_home.dart';
 import 'package:denuanime/features/main/presentation/common/dropdown_menu_filter.dart';
 import 'package:denuanime/features/main/presentation/common/genre_item.dart';
 import 'package:denuanime/features/main/presentation/common/recommendation_item.dart';
-import 'package:denuanime/features/people/presentation/common/person_item_view.dart';
+import 'package:denuanime/features/people/presentation/common/person_avatar_item_.dart';
 import 'package:denuanime/features/people/domain/entities/people_model.dart';
 import 'package:denuanime/theme/dark_mode.dart';
 import 'package:flutter/material.dart';
@@ -405,6 +405,7 @@ class _HomeViewState extends State<HomeView> {
                     return Padding(
                       padding: const EdgeInsets.only(right: 8),
                       child: GenreItem(
+                        selectedBackgroundColor: primary,
                         onSelect: (value) {
                           // list[index].isSelected = value
                         },

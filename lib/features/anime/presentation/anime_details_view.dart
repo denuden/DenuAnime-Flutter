@@ -1,5 +1,8 @@
 // ignore_for_file: non_constant_identifier_names
 
+import 'dart:convert';
+
+import 'package:denuanime/features/anime/domain/entities/anime_characters_model.dart';
 import 'package:denuanime/features/anime/domain/entities/anime_details_model.dart';
 import 'package:denuanime/features/anime/domain/entities/genre_model.dart';
 import 'package:denuanime/features/anime/presentation/common/broadcast_section.dart';
@@ -7,19 +10,23 @@ import 'package:denuanime/features/anime/presentation/common/scores_section.dart
 import 'package:denuanime/features/anime/presentation/common/sypnosis_section.dart';
 import 'package:denuanime/features/common/presentation/custom_image_network.dart';
 import 'package:denuanime/features/main/presentation/common/genre_item.dart';
-import 'package:denuanime/features/people/presentation/common/person_card_item.dart';
+import 'package:denuanime/features/people/presentation/common/person_card_with_character_item.dart';
+import 'package:denuanime/json/anime_character.dart';
 import 'package:denuanime/theme/dark_mode.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class AnimeDetailsView extends StatelessWidget {
   final AnimeDetailsModel animeDetails;
-  const AnimeDetailsView({super.key, required this.animeDetails});
+
+  final AnimeCharactersModel animeCharactersModel =
+      AnimeCharactersModel.fromJson(
+        jsonDecode(anime_character_json) as Map<String, dynamic>,
+      );
+  AnimeDetailsView({super.key, required this.animeDetails});
 
   @override
   Widget build(BuildContext context) {
-    print(animeDetails.synopsis ?? 'f');
-
     return Scaffold(
       appBar: AppBar(title: const Text("Anime Details")),
       body: SingleChildScrollView(
@@ -119,9 +126,16 @@ class AnimeDetailsView extends StatelessWidget {
                 ),
               ],
             ),
-            const PersonCardItem(),
-            const PersonCardItem(),
-            const PersonCardItem(),
+
+            PersonCardWithCharacterItem(
+              animeCharactersModel: animeCharactersModel,
+            ),
+            PersonCardWithCharacterItem(
+              animeCharactersModel: animeCharactersModel,
+            ),
+            PersonCardWithCharacterItem(
+              animeCharactersModel: animeCharactersModel,
+            ),
 
             const SizedBox(height: 32),
           ], //*end
