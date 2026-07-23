@@ -3,7 +3,13 @@ import 'package:flutter/material.dart';
 class CustomImageNetwork extends StatelessWidget {
   final String imageUrl;
   final double height;
-  const CustomImageNetwork(this.imageUrl, {super.key, required this.height});
+  final BoxFit? boxFit;
+  const CustomImageNetwork(
+    this.imageUrl, {
+    super.key,
+    required this.height,
+    this.boxFit,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +53,7 @@ class CustomImageNetwork extends StatelessWidget {
             child: const Icon(Icons.broken_image),
           );
         },
-        fit: BoxFit.cover,
+        fit: boxFit ?? BoxFit.cover,
         imageUrl,
       ),
     );

@@ -76,7 +76,9 @@ class DropdownMenuFilter extends StatelessWidget {
       animated: true,
       builder: (context, controller, child) {
         return FilledButton.icon(
-          style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(primary)),
+          style: const ButtonStyle(
+            backgroundColor: WidgetStatePropertyAll(primary),
+          ),
           onPressed: enabled
               ? () {
                   controller.isOpen ? controller.close() : controller.open();
