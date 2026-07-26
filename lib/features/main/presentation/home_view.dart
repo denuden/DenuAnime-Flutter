@@ -28,6 +28,7 @@ import 'package:denuanime/features/main/presentation/common/genre_item.dart';
 import 'package:denuanime/features/main/presentation/common/recommendation_item.dart';
 import 'package:denuanime/features/people/presentation/common/person_avatar_item_.dart';
 import 'package:denuanime/features/people/domain/entities/people_model.dart';
+import 'package:denuanime/features/people/presentation/person_details_view.dart';
 import 'package:denuanime/theme/dark_mode.dart';
 import 'package:flutter/material.dart';
 
@@ -226,10 +227,17 @@ class _HomeViewState extends State<HomeView> {
   }
 
   void _onNavigateToAnimeDetails(AnimeDetailsModel animeDetails) {
-    print("egwgw");
     Navigator.of(context).push(
       MaterialPageRoute<AnimeDetailsView>(
         builder: (context) => AnimeDetailsView(animeDetails: animeDetails),
+      ),
+    );
+  }
+
+  void _onNavigateToPeopleDetails(PeopleModel peopleModel) {
+    Navigator.of(context).push(
+      MaterialPageRoute<PersonDetailsView>(
+        builder: (context) => PersonDetailsView(peopleModel: peopleModel),
       ),
     );
   }
@@ -340,16 +348,33 @@ class _HomeViewState extends State<HomeView> {
           child: ListView.builder(
             itemCount: 4,
             itemBuilder: (context, index) {
-              return const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8.0),
-                child: PersonItemView(
-                  people: PeopleModel(
-                    name: "Tomokazu Seki",
-                    birthday: "1972-09-08T00:00:00+00:00",
-                    images: ImageTypeModel(
-                      jpg: BaseImagesModel(
-                        image_url:
-                            "https://cdn.myanimelist.net/r/84x124/images/characters/7/618735.jpg?s=9902344694bb6579f0f271c3b9729ed0",
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(16),
+                  onTap: () {
+                    _onNavigateToPeopleDetails(
+                      const PeopleModel(
+                        name: "Tomokazu Seki",
+                        birthday: "1972-09-08T00:00:00+00:00",
+                        images: ImageTypeModel(
+                          jpg: BaseImagesModel(
+                            image_url:
+                                "https://cdn.myanimelist.net/r/84x124/images/characters/7/618735.jpg?s=9902344694bb6579f0f271c3b9729ed0",
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                  child: const PersonItemView(
+                    people: PeopleModel(
+                      name: "Tomokazu Seki",
+                      birthday: "1972-09-08T00:00:00+00:00",
+                      images: ImageTypeModel(
+                        jpg: BaseImagesModel(
+                          image_url:
+                              "https://cdn.myanimelist.net/r/84x124/images/characters/7/618735.jpg?s=9902344694bb6579f0f271c3b9729ed0",
+                        ),
                       ),
                     ),
                   ),
