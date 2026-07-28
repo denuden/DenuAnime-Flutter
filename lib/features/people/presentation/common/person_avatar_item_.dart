@@ -1,6 +1,7 @@
 import 'package:denuanime/features/people/domain/entities/people_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class PersonItemView extends StatelessWidget {
   final PeopleModel people;
@@ -14,11 +15,14 @@ class PersonItemView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         ClipOval(
-          child: Image.network(
-            people.images?.jpg?.image_url ?? "",
-            height: 80,
-            width: 80,
-            fit: BoxFit.cover,
+          child: Skeleton.replace(
+            replacement: const Bone.circle(size: 80),
+            child: Image.network(
+              people.images?.jpg?.image_url ?? '',
+              width: 80,
+              height: 80,
+              fit: BoxFit.cover,
+            ),
           ),
         ),
         const SizedBox(height: 2),

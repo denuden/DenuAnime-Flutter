@@ -1,5 +1,6 @@
 // ignore_for_file: non_constant_identifier_names
 
+import 'package:denuanime/features/anime/data/request/search_anime_request.dart';
 import 'package:denuanime/features/anime/domain/entities/aired_model.dart';
 import 'package:denuanime/features/anime/domain/entities/anime_details_model.dart';
 import 'package:denuanime/features/anime/domain/entities/broadcast_model.dart';
@@ -21,11 +22,15 @@ import 'package:denuanime/features/anime/presentation/common/anime_horizontal_ca
 import 'package:denuanime/features/common/entities/image_type_model.dart';
 import 'package:denuanime/features/anime/presentation/common/anime_carousel_item.dart';
 import 'package:denuanime/features/common/entities/user_model.dart';
+import 'package:denuanime/features/common/presentation/skeleton/home_genre_items_skeleton.dart';
+import 'package:denuanime/features/common/presentation/skeleton/home_people_items_skeleton.dart';
 import 'package:denuanime/features/main/presentation/common/drawer_home.dart';
 import 'package:denuanime/features/main/presentation/common/dropdown_menu_filter.dart';
 import 'package:denuanime/features/main/presentation/common/genre_item.dart';
 import 'package:denuanime/features/main/presentation/common/recommendation_item.dart';
 import 'package:denuanime/features/people/data/request/search_people_request.dart';
+import 'package:denuanime/features/anime/domain/cubits/anime_cubit.dart';
+import 'package:denuanime/features/anime/domain/cubits/anime_state.dart';
 import 'package:denuanime/features/people/presentation/common/person_avatar_item_.dart';
 import 'package:denuanime/features/people/domain/entities/people_model.dart';
 import 'package:denuanime/features/people/presentation/cubits/people_cubit.dart';
@@ -246,6 +251,10 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
+  void _toggleGenreSelection(int mal_id, bool selected) {
+    context.read<AnimeCubit>().toggleGenre(mal_id, selected);
+  }
+
   @override
   void initState() {
     //call people list
@@ -254,6 +263,20 @@ class _HomeViewState extends State<HomeView> {
         order_by: "favorites",
         limit: "15",
         sort: "desc",
+      ),
+    );
+
+    //call genre list
+    // context.read<AnimeCubit>().getAllGenres();
+
+    // call anime list
+    context.read<AnimeCubit>().searchAnime(
+      const SearchAnimeRequest(
+        type: "tv",
+        status: "airing",
+        order_by: "popularity",
+        limit: "10",
+        sort: "asc",
       ),
     );
     super.initState();
@@ -364,7 +387,10 @@ class _HomeViewState extends State<HomeView> {
           builder: (context, state) {
             //* Bloc builder
             if (state is PeopleLoading) {
-              return const Center(child: CircularProgressIndicator());
+              return const SizedBox(
+                height: 120,
+                child: HomePeopleItemsSkeleton(isLoading: true),
+              );
             }
             if (state is PeopleListLoaded) {
               return SizedBox(
@@ -434,27 +460,40 @@ class _HomeViewState extends State<HomeView> {
             const SizedBox(width: 8),
 
             Expanded(
-              child: SizedBox(
-                height: 40,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 10,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: GenreItem(
-                        selectedBackgroundColor: primary,
-                        onSelect: (value) {
-                          // list[index].isSelected = value
+              child: BlocBuilder<AnimeCubit, AnimeState>(
+                builder: (context, state) {
+                  if (state is GenreListLoading) {
+                    return const HomeGenreItemsSkeleton(isLoading: true);
+                  }
+
+                  if (state is GenreListLoaded) {
+                    return SizedBox(
+                      height: 40,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: state.genres.length,
+                        itemBuilder: (context, index) {
+                          final genre = state.genres[index];
+                          return Padding(
+                            padding: const EdgeInsets.only(right: 8),
+                            child: GenreItem(
+                              selectedBackgroundColor: primary,
+                              onSelect: (value) {
+                                _toggleGenreSelection(genre.mal_id!, value);
+                              },
+                              genre: genre,
+                            ),
+                          );
                         },
-                        genre: GenreModel(
-                          name: "Action",
-                          is_selected: index == 1 ? true : false,
-                        ),
                       ),
                     );
-                  },
-                ),
+                  }
+
+                  if (state is GenreError) {
+                    return Text(state.message);
+                  }
+                  return const SizedBox();
+                },
               ),
             ),
           ],
@@ -472,26 +511,44 @@ class _HomeViewState extends State<HomeView> {
           height: 500,
           decoration: const BoxDecoration(color: Colors.black),
 
-          child: CarouselView.weighted(
-            enableSplash: true,
-            onTap: (index) => _onNavigateToAnimeDetails(animeDetails),
-            backgroundColor: Colors.red,
-            itemSnapping: true,
-            flexWeights: [6, 1],
-            shape: const RoundedRectangleBorder(),
-            scrollDirection: Axis.horizontal,
+          child: BlocBuilder<AnimeCubit, AnimeState>(
+            builder: (context, state) {
+              if (state is AnimeLoading) {
+                return CircularProgressIndicator();
+              }
 
-            onIndexChanged: (index) {
-              setState(() {
-                currentCarouselIndex = index;
-              });
+              if (state is AnimeListLoaded) {
+                return CarouselView.weighted(
+                  enableSplash: true,
+                  onTap: (index) =>
+                      _onNavigateToAnimeDetails(state.animes[index]),
+                  backgroundColor: Colors.red,
+                  itemSnapping: true,
+                  flexWeights: [6, 1],
+                  shape: const RoundedRectangleBorder(),
+                  scrollDirection: Axis.horizontal,
+
+                  onIndexChanged: (index) {
+                    setState(() {
+                      currentCarouselIndex = index;
+                    });
+                  },
+                  children: List<Widget>.generate(state.animes.length, (
+                    int index,
+                  ) {
+                    return AnimeCarouselItem(
+                      animeDetails: state.animes[index],
+                      shouldShowDetails: index == currentCarouselIndex,
+                    );
+                  }),
+                );
+              }
+
+              if (state is AnimeError) {
+                return Text(state.message);
+              }
+              return SizedBox();
             },
-            children: List<Widget>.generate(10, (int index) {
-              return AnimeCarouselItem(
-                animeDetails: animeDetails,
-                shouldShowDetails: index == currentCarouselIndex,
-              );
-            }),
           ),
         ),
       ],

@@ -35,4 +35,15 @@ class GenreModel {
       'isSelected': is_selected,
     };
   }
+
+  GenreModel copyWith({bool? is_selected}) {
+    return GenreModel(
+      mal_id: mal_id,
+      type: type,
+      name: name,
+      count: count,
+      url: url,
+      is_selected: is_selected ?? this.is_selected,
+    );
+  }
 }

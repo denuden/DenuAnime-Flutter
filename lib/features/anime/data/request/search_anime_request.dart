@@ -42,4 +42,29 @@ class SearchAnimeRequest {
     this.start_date,
     this.end_date,
   });
+
+  Map<String, dynamic> toQueryParameters() {
+    return {
+      if (q != null) "q": q,
+      if (page != null) "page": page,
+      if (limit != null) "limit": limit,
+      if (type != null) "type": type,
+      if (status != null) "status": status,
+      if (rating != null) "rating": rating,
+      if (sfw != null) "sfw": sfw,
+      if (sfw_strict != null) "sfw_strict": sfw_strict,
+      if (unapproved != null) "unapproved": unapproved,
+      if (score != null) "score": score,
+      if (min_score != null) "min_score": min_score,
+      if (max_score != null) "max_score": max_score,
+      if (genres != null) "genres": genres,
+      if (genres_exclude != null) "genres_exclude": genres_exclude,
+      if (order_by != null) "order_by": order_by,
+      if (sort != null) "sort": sort,
+      if (letter != null) "letter": letter,
+      if (producers != null) "producers": producers,
+      if (start_date != null) "start_date": start_date,
+      if (end_date != null) "end_date": end_date,
+    };
+  }
 }

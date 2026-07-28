@@ -1,6 +1,10 @@
+import 'package:denuanime/features/anime/data/datasource/anime_api_datasource.dart';
+import 'package:denuanime/features/anime/data/repositories/anime_api_repo_impl.dart';
+import 'package:denuanime/features/anime/domain/repositories/anime_repo.dart';
 import 'package:denuanime/features/auth/presentation/views/landing_view.dart';
 import 'package:denuanime/features/people/data/datasource/people_api_datasource.dart';
 import 'package:denuanime/features/people/data/repositories/people_api_repo_impl.dart';
+import 'package:denuanime/features/anime/domain/cubits/anime_cubit.dart';
 import 'package:denuanime/features/people/domain/repositories/people_repo.dart';
 import 'package:denuanime/features/people/presentation/cubits/people_cubit.dart';
 import 'package:denuanime/theme/dark_mode.dart';
@@ -21,16 +25,24 @@ class MainApp extends StatelessWidget {
   //* ==== DIO for API calls
   final Dio dio = ApiClient.create();
 
-  //* ------ People Datasource
+  //* ------ People API
   late final PeopleApiDatasource peopleApiDatasource = PeopleApiDatasource(dio);
   late final PeopleRepo peopleRepo = PeopleApiRepoImpl(peopleApiDatasource);
+  //* -------------------------
 
+  //* ------ Anime API
+  late final AnimeApiDatasource animeApiDatasource = AnimeApiDatasource(dio);
+  late final AnimeRepo animeRepo = AnimeApiRepoImpl(animeApiDatasource);
+
+  //* -------------------------
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
         //* People Cubit
         BlocProvider(create: (context) => PeopleCubit(peopleRepo: peopleRepo)),
+        //* Anime Cubit
+        BlocProvider(create: (context) => AnimeCubit(animeRepo: animeRepo)),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
