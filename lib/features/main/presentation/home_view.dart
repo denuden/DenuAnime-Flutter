@@ -18,7 +18,6 @@ import 'package:denuanime/features/anime/domain/entities/title_model.dart';
 import 'package:denuanime/features/anime/domain/entities/trailer_model.dart';
 import 'package:denuanime/features/anime/presentation/anime_details_view.dart';
 import 'package:denuanime/features/anime/presentation/common/anime_horizontal_card_item.dart';
-import 'package:denuanime/features/common/entities/base_image_model.dart';
 import 'package:denuanime/features/common/entities/image_type_model.dart';
 import 'package:denuanime/features/anime/presentation/common/anime_carousel_item.dart';
 import 'package:denuanime/features/common/entities/user_model.dart';
@@ -26,11 +25,15 @@ import 'package:denuanime/features/main/presentation/common/drawer_home.dart';
 import 'package:denuanime/features/main/presentation/common/dropdown_menu_filter.dart';
 import 'package:denuanime/features/main/presentation/common/genre_item.dart';
 import 'package:denuanime/features/main/presentation/common/recommendation_item.dart';
+import 'package:denuanime/features/people/data/request/search_people_request.dart';
 import 'package:denuanime/features/people/presentation/common/person_avatar_item_.dart';
 import 'package:denuanime/features/people/domain/entities/people_model.dart';
+import 'package:denuanime/features/people/presentation/cubits/people_cubit.dart';
+import 'package:denuanime/features/people/presentation/cubits/people_state.dart';
 import 'package:denuanime/features/people/presentation/person_details_view.dart';
 import 'package:denuanime/theme/dark_mode.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -217,6 +220,7 @@ class _HomeViewState extends State<HomeView> {
   int selectedType = 0;
   int selectedRating = 0;
   //? ============ functions
+
   void _onMenuSelection(int index) {
     setState(() {
       _selectedMenuIndex = index;
@@ -240,6 +244,19 @@ class _HomeViewState extends State<HomeView> {
         builder: (context) => PersonDetailsView(peopleModel: peopleModel),
       ),
     );
+  }
+
+  @override
+  void initState() {
+    //call people list
+    context.read<PeopleCubit>().searchPeople(
+      const SearchPeopleRequest(
+        order_by: "favorites",
+        limit: "15",
+        sort: "desc",
+      ),
+    );
+    super.initState();
   }
 
   @override
@@ -343,46 +360,42 @@ class _HomeViewState extends State<HomeView> {
           ],
         ),
 
-        SizedBox(
-          height: 110,
-          child: ListView.builder(
-            itemCount: 4,
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(16),
-                  onTap: () {
-                    _onNavigateToPeopleDetails(
-                      const PeopleModel(
-                        name: "Tomokazu Seki",
-                        birthday: "1972-09-08T00:00:00+00:00",
-                        images: ImageTypeModel(
-                          jpg: BaseImagesModel(
-                            image_url:
-                                "https://cdn.myanimelist.net/r/84x124/images/characters/7/618735.jpg?s=9902344694bb6579f0f271c3b9729ed0",
-                          ),
-                        ),
+        BlocBuilder<PeopleCubit, PeopleState>(
+          builder: (context, state) {
+            //* Bloc builder
+            if (state is PeopleLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (state is PeopleListLoaded) {
+              return SizedBox(
+                height: 120,
+                child: ListView.builder(
+                  itemCount: state.people.length,
+                  itemBuilder: (context, index) {
+                    final person = state.people[index];
+
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(16),
+                        onTap: () {
+                          _onNavigateToPeopleDetails(person);
+                        },
+                        child: PersonItemView(people: person),
                       ),
                     );
                   },
-                  child: const PersonItemView(
-                    people: PeopleModel(
-                      name: "Tomokazu Seki",
-                      birthday: "1972-09-08T00:00:00+00:00",
-                      images: ImageTypeModel(
-                        jpg: BaseImagesModel(
-                          image_url:
-                              "https://cdn.myanimelist.net/r/84x124/images/characters/7/618735.jpg?s=9902344694bb6579f0f271c3b9729ed0",
-                        ),
-                      ),
-                    ),
-                  ),
+                  scrollDirection: Axis.horizontal,
                 ),
               );
-            },
-            scrollDirection: Axis.horizontal,
-          ),
+            }
+
+            if (state is PeopleError) {
+              return Center(child: Text(state.message));
+            }
+
+            return const SizedBox();
+          },
         ),
 
         const SizedBox(height: 8),

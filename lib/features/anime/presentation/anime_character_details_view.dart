@@ -78,14 +78,27 @@ class _AnimeCharacterDetailsViewState extends State<AnimeCharacterDetailsView> {
             pinned: true,
             backgroundColor: Colors.black,
 
-            leading: const BackButton(),
+            leading: const BackButton(
+              style: ButtonStyle(
+                backgroundColor: WidgetStatePropertyAll(Colors.black38),
+              ),
+            ),
 
             actions: [
               IconButton(
+                style: const ButtonStyle(
+                  backgroundColor: WidgetStatePropertyAll(Colors.black38),
+                ),
                 icon: const Icon(Icons.favorite_border),
                 onPressed: () {},
               ),
-              IconButton(icon: const Icon(Icons.share), onPressed: () {}),
+              IconButton(
+                style: const ButtonStyle(
+                  backgroundColor: WidgetStatePropertyAll(Colors.black38),
+                ),
+                icon: const Icon(Icons.share),
+                onPressed: () {},
+              ),
             ],
 
             flexibleSpace: Stack(
