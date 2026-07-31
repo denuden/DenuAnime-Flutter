@@ -45,7 +45,7 @@ class AnimeCarouselItem extends StatelessWidget {
                 spacing: 4,
                 runSpacing: -8,
                 children: List.generate(
-                  5,
+                  animeDetails.genres?.length ?? 0,
                   (index) => FilterChip(
                     backgroundColor: primaryDark,
                     shape: RoundedRectangleBorder(
@@ -54,7 +54,7 @@ class AnimeCarouselItem extends StatelessWidget {
                     ),
                     padding: EdgeInsets.zero,
                     label: Text(
-                      'Adventure',
+                      animeDetails.genres?[index].name ?? "---",
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: white,
                         fontSize: 10,
@@ -74,13 +74,16 @@ class AnimeCarouselItem extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
-                    animeDetails.title ?? "---",
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white,
+                  Align(
+                    alignment: AlignmentGeometry.topLeft,
+                    child: Text(
+                      animeDetails.title_english ?? "No english title",
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                      ),
+                      maxLines: 4,
                     ),
-                    maxLines: 4,
                   ),
                   const SizedBox(height: 16),
                   Row(

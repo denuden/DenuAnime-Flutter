@@ -1,25 +1,32 @@
 import 'package:denuanime/features/people/domain/entities/people_model.dart';
 
-abstract class PeopleState {}
+class PeopleState {
+  final List<PeopleModel> peopleList;
+  final PeopleModel peopleDetails;
 
-class PeopleInitial extends PeopleState {}
+  final bool isPeopleLoading;
 
-class PeopleLoading extends PeopleState {}
+  final String peopleListError;
 
-class PeopleListLoaded extends PeopleState {
-  final List<PeopleModel> people;
+  const PeopleState({
+    this.peopleList = const [],
+    this.peopleDetails = const PeopleModel(),
+    this.isPeopleLoading = false,
+    this.peopleListError = "",
+  });
 
-  PeopleListLoaded(this.people);
-}
+  PeopleState copyWith({
+    List<PeopleModel>? peopleList,
 
-class PeopleDetailsLoaded extends PeopleState {
-  final PeopleModel people;
-
-  PeopleDetailsLoaded(this.people);
-}
-
-class PeopleError extends PeopleState {
-  final String message;
-
-  PeopleError(this.message);
+    PeopleModel? peopleDetails,
+    bool? isPeopleLoading,
+    String? peopleListError,
+  }) {
+    return PeopleState(
+      peopleList: peopleList ?? this.peopleList,
+      peopleDetails: peopleDetails ?? this.peopleDetails,
+      isPeopleLoading: isPeopleLoading ?? this.isPeopleLoading,
+      peopleListError: peopleListError ?? this.peopleListError,
+    );
+  }
 }

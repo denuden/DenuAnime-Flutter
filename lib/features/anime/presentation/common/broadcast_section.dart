@@ -79,7 +79,7 @@ class BroadcastSection extends StatelessWidget {
                         const SizedBox(height: 4),
 
                         Text(
-                          "${animeDetails.episodes ?? 0}",
+                          "${animeDetails.episodes ?? 'Not available or Unfinished'}",
                           style: Theme.of(
                             context,
                           ).textTheme.bodySmall?.copyWith(color: white),

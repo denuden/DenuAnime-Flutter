@@ -16,6 +16,7 @@ class _SypnosisSectionState extends State<SypnosisSection> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         AnimatedSize(
           duration: const Duration(milliseconds: 300),

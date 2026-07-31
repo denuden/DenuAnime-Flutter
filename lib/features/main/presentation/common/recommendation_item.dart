@@ -18,17 +18,20 @@ class RecommendationItem extends StatelessWidget {
               child: Column(
                 children: [
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
                         flex: 1,
                         child: AnimeVerticalCardItem(
                           animeDetailsModel: recommendationModel.entry![0],
+                          isFromRecommendationEndpoint: true,
                         ),
                       ),
                       Expanded(
                         flex: 1,
                         child: AnimeVerticalCardItem(
                           animeDetailsModel: recommendationModel.entry![1],
+                          isFromRecommendationEndpoint: true,
                         ),
                       ),
                     ],
@@ -76,8 +79,9 @@ class RecommendationItem extends StatelessWidget {
                                     ),
                               ),
                               const SizedBox(height: 4),
-                              const Text(
-                                "Similar chill vibes. A lot of focus on the food recipe and preparation itself, sometimes even mentioning some dishes' history and stuff. Instead of Shirou, we have a maid doing it all.",
+                              Text(
+                                recommendationModel.content ??
+                                    'Nothing to compare.',
                               ),
                             ],
                           ),

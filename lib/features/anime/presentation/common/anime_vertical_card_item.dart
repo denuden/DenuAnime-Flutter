@@ -5,7 +5,12 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class AnimeVerticalCardItem extends StatelessWidget {
   final AnimeDetailsModel animeDetailsModel;
-  const AnimeVerticalCardItem({super.key, required this.animeDetailsModel});
+  final bool isFromRecommendationEndpoint;
+  const AnimeVerticalCardItem({
+    super.key,
+    required this.animeDetailsModel,
+    required this.isFromRecommendationEndpoint,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -13,15 +18,15 @@ class AnimeVerticalCardItem extends StatelessWidget {
       color: tertiary,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+
         children: [
+          //*image
           SizedBox(
             height: 160,
             width: double.infinity,
             child: ClipRRect(
-              borderRadius: const BorderRadiusGeometry.only(
-                topLeft: Radius.circular(12),
-                topRight: Radius.circular(12),
-              ),
+              borderRadius: BorderRadiusGeometry.circular(12),
               child: Image.network(
                 fit: BoxFit.cover,
                 animeDetailsModel.images?.jpg?.image_url ?? '',
@@ -29,41 +34,52 @@ class AnimeVerticalCardItem extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-
+          //*title
           Padding(
-            padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 16),
+            padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 0),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Text(
                   animeDetailsModel.title ?? 'Unknown Title',
+                  overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: white,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                const SizedBox(height: 8),
+                if (isFromRecommendationEndpoint)
+                  TextButton(
+                    onPressed: () {
+                      //TODO
+                    },
+                    child: const Text("Learn more"),
+                  ),
 
-                Row(
-                  children: [
-                    const Icon(Icons.calendar_today_rounded, size: 16),
-                    const SizedBox(width: 8),
-                    Text('${animeDetailsModel.year ?? '---'}'),
-                  ],
-                ),
-                Row(
-                  children: [
-                    RatingBarIndicator(
-                      rating: (animeDetailsModel.score ?? 0.0) / 2,
-                      itemBuilder: (context, index) =>
-                          const Icon(Icons.star, color: Colors.amber),
-                      itemCount: 5,
-                      itemSize: 16,
-                    ),
-                    const SizedBox(width: 8),
+                if (!isFromRecommendationEndpoint)
+                  Row(
+                    children: [
+                      const Icon(Icons.calendar_today_rounded, size: 16),
+                      const SizedBox(width: 8),
+                      Text('${animeDetailsModel.year ?? '---'}'),
+                    ],
+                  ),
+                if (!isFromRecommendationEndpoint)
+                  Row(
+                    children: [
+                      RatingBarIndicator(
+                        rating: (animeDetailsModel.score ?? 0.0) / 2,
+                        itemBuilder: (context, index) =>
+                            const Icon(Icons.star, color: Colors.amber),
+                        itemCount: 5,
+                        itemSize: 16,
+                      ),
+                      const SizedBox(width: 8),
 
-                    Text('${animeDetailsModel.score ?? '0.0'}'),
-                  ],
-                ),
+                      Text('${animeDetailsModel.score ?? '0.0'}'),
+                    ],
+                  ),
               ],
             ),
           ),

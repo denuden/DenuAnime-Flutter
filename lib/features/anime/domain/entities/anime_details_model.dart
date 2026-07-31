@@ -1,3 +1,5 @@
+import 'package:flutter/widgets.dart';
+
 import 'package:denuanime/features/anime/domain/entities/aired_model.dart';
 import 'package:denuanime/features/anime/domain/entities/broadcast_model.dart';
 import 'package:denuanime/features/anime/domain/entities/external_model.dart';
@@ -217,5 +219,99 @@ class AnimeDetailsModel {
       'external': external?.map((e) => e.toJson()).toList(),
       'streaming': streaming?.map((e) => e.toJson()).toList(),
     };
+  }
+
+  AnimeDetailsModel copyWith({
+    ValueGetter<int?>? mal_id,
+    ValueGetter<String?>? url,
+    ValueGetter<ImageTypeModel?>? images,
+    ValueGetter<TrailerModel?>? trailer,
+    ValueGetter<bool?>? approved,
+    ValueGetter<List<TitleModel>?>? titles,
+    ValueGetter<String?>? title,
+    ValueGetter<String?>? title_english,
+    ValueGetter<String?>? title_japanese,
+    ValueGetter<List<String>?>? title_synonyms,
+    ValueGetter<String?>? type,
+    ValueGetter<String?>? source,
+    ValueGetter<int?>? episodes,
+    ValueGetter<String?>? status,
+    ValueGetter<bool?>? airing,
+    ValueGetter<AiredModel?>? aired,
+    ValueGetter<String?>? duration,
+    ValueGetter<String?>? rating,
+    ValueGetter<double?>? score,
+    ValueGetter<int?>? scored_by,
+    ValueGetter<int?>? rank,
+    ValueGetter<int?>? popularity,
+    ValueGetter<int?>? members,
+    ValueGetter<int?>? favorites,
+    ValueGetter<String?>? synopsis,
+    ValueGetter<String?>? background,
+    ValueGetter<String?>? season,
+    ValueGetter<int?>? year,
+    ValueGetter<BroadcastModel?>? broadcast,
+    ValueGetter<List<ProducerModel>?>? producers,
+    ValueGetter<List<LicensorModel>?>? licensors,
+    ValueGetter<List<StudioModel>?>? studios,
+    ValueGetter<List<GenreModel>?>? genres,
+    ValueGetter<List<dynamic>?>? explicit_genres,
+    ValueGetter<List<GenreModel>?>? themes,
+    ValueGetter<List<GenreModel>?>? demographics,
+    ValueGetter<List<RelationModel>?>? relations,
+    ValueGetter<ThemeSongModel?>? theme,
+    ValueGetter<List<ExternalModel>?>? external,
+    ValueGetter<List<StreamingModel>?>? streaming,
+  }) {
+    return AnimeDetailsModel(
+      mal_id: mal_id != null ? mal_id() : this.mal_id,
+      url: url != null ? url() : this.url,
+      images: images != null ? images() : this.images,
+      trailer: trailer != null ? trailer() : this.trailer,
+      approved: approved != null ? approved() : this.approved,
+      titles: titles != null ? titles() : this.titles,
+      title: title != null ? title() : this.title,
+      title_english: title_english != null
+          ? title_english()
+          : this.title_english,
+      title_japanese: title_japanese != null
+          ? title_japanese()
+          : this.title_japanese,
+      title_synonyms: title_synonyms != null
+          ? title_synonyms()
+          : this.title_synonyms,
+      type: type != null ? type() : this.type,
+      source: source != null ? source() : this.source,
+      episodes: episodes != null ? episodes() : this.episodes,
+      status: status != null ? status() : this.status,
+      airing: airing != null ? airing() : this.airing,
+      aired: aired != null ? aired() : this.aired,
+      duration: duration != null ? duration() : this.duration,
+      rating: rating != null ? rating() : this.rating,
+      score: score != null ? score() : this.score,
+      scored_by: scored_by != null ? scored_by() : this.scored_by,
+      rank: rank != null ? rank() : this.rank,
+      popularity: popularity != null ? popularity() : this.popularity,
+      members: members != null ? members() : this.members,
+      favorites: favorites != null ? favorites() : this.favorites,
+      synopsis: synopsis != null ? synopsis() : this.synopsis,
+      background: background != null ? background() : this.background,
+      season: season != null ? season() : this.season,
+      year: year != null ? year() : this.year,
+      broadcast: broadcast != null ? broadcast() : this.broadcast,
+      producers: producers != null ? producers() : this.producers,
+      licensors: licensors != null ? licensors() : this.licensors,
+      studios: studios != null ? studios() : this.studios,
+      genres: genres != null ? genres() : this.genres,
+      explicit_genres: explicit_genres != null
+          ? explicit_genres()
+          : this.explicit_genres,
+      themes: themes != null ? themes() : this.themes,
+      demographics: demographics != null ? demographics() : this.demographics,
+      relations: relations != null ? relations() : this.relations,
+      theme: theme != null ? theme() : this.theme,
+      external: external != null ? external() : this.external,
+      streaming: streaming != null ? streaming() : this.streaming,
+    );
   }
 }

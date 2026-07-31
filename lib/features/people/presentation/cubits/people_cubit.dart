@@ -6,17 +6,25 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class PeopleCubit extends Cubit<PeopleState> {
   final PeopleRepo peopleRepo;
 
-  PeopleCubit({required this.peopleRepo}) : super(PeopleInitial());
+  PeopleCubit({required this.peopleRepo}) : super(const PeopleState());
 
   Future<void> searchPeople(SearchPeopleRequest request) async {
-    emit(PeopleLoading());
+    emit(state.copyWith(isPeopleLoading: true, peopleListError: ""));
 
     try {
       final people = await peopleRepo.searchPeople(request);
 
-      emit(PeopleListLoaded(people));
+      emit(
+        state.copyWith(
+          peopleList: people,
+          isPeopleLoading: false,
+          peopleListError: "",
+        ),
+      );
     } catch (e) {
-      emit(PeopleError(e.toString()));
+      emit(
+        state.copyWith(isPeopleLoading: false, peopleListError: e.toString()),
+      );
     }
   }
 }

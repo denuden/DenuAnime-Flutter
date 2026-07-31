@@ -52,7 +52,7 @@ class SearchAnimeRequest {
       if (status != null) "status": status,
       if (rating != null) "rating": rating,
       if (sfw != null) "sfw": sfw,
-      if (sfw_strict != null) "sfw_strict": sfw_strict,
+      if (sfw_strict != null) "sfw-strict": sfw_strict,
       if (unapproved != null) "unapproved": unapproved,
       if (score != null) "score": score,
       if (min_score != null) "min_score": min_score,
