@@ -43,9 +43,11 @@ class BroadcastSection extends StatelessWidget {
 
                         Text(
                           animeDetails.broadcast?.string ?? '-----',
-                          style: Theme.of(
-                            context,
-                          ).textTheme.bodySmall?.copyWith(color: white),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                color: white,
+                                fontWeight: FontWeight.bold,
+                              ),
                           textAlign: TextAlign.center,
                         ),
                       ],
@@ -80,9 +82,11 @@ class BroadcastSection extends StatelessWidget {
 
                         Text(
                           "${animeDetails.episodes ?? 'Not available or Unfinished'}",
-                          style: Theme.of(
-                            context,
-                          ).textTheme.bodySmall?.copyWith(color: white),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                color: white,
+                                fontWeight: FontWeight.bold,
+                              ),
                           textAlign: TextAlign.center,
                         ),
                       ],
@@ -118,9 +122,11 @@ class BroadcastSection extends StatelessWidget {
 
                         Text(
                           "${animeDetails.duration ?? 0}",
-                          style: Theme.of(
-                            context,
-                          ).textTheme.bodySmall?.copyWith(color: white),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                color: white,
+                                fontWeight: FontWeight.bold,
+                              ),
                           textAlign: TextAlign.center,
                         ),
                       ],

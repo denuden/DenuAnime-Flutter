@@ -18,157 +18,222 @@ class ScoresSection extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(2.0),
         child: IntrinsicHeight(
-          //* ==== broadcast cards
+          //* ==== score cards
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              //? Score
               Expanded(
                 flex: 1,
                 child: Container(
                   decoration: BoxDecoration(
-                    color: secondary,
+                    color: Colors.black,
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 16.0,
-                      horizontal: 4,
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "RATING",
-                          style: Theme.of(context).textTheme.bodySmall,
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 8),
-                        const Icon(Icons.star, size: 12),
-                        const SizedBox(height: 4),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "SCORE",
+                        style: Theme.of(
+                          context,
+                        ).textTheme.bodyMedium?.copyWith(color: primary),
+                      ),
 
-                        Text(
-                          "${animeDetails.score ?? '0.0'}",
-                          style: Theme.of(
-                            context,
-                          ).textTheme.bodySmall?.copyWith(color: white),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
+                      const SizedBox(height: 8),
+
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.star, color: primary),
+                          const SizedBox(width: 4),
+                          Text(
+                            (animeDetails.score ?? 0.0).toString(),
+                            style: Theme.of(
+                              context,
+                            ).textTheme.titleLarge?.copyWith(color: white),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        "${NumberFormat.decimalPattern().format(animeDetails.scored_by ?? 0)}\nusers",
+                      ),
+                    ],
                   ),
                 ),
               ),
               const SizedBox(width: 4),
+
+              //? === RANK  & MEMBERS
               Expanded(
                 flex: 1,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: secondary,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 16.0,
-                      horizontal: 4,
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "SCORED BY",
-                          style: Theme.of(context).textTheme.bodySmall,
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 4),
-
-                        Text(
-                          NumberFormat.decimalPattern().format(
-                            animeDetails.scored_by ?? 0,
+                child: Column(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: secondary,
+                            borderRadius: BorderRadius.circular(8),
                           ),
-                          style: Theme.of(
-                            context,
-                          ).textTheme.bodySmall?.copyWith(color: white),
-                          textAlign: TextAlign.center,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 16.0,
+                              horizontal: 4,
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "RANK",
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                  textAlign: TextAlign.center,
+                                ),
+                                const SizedBox(height: 8),
+
+                                Text(
+                                  "#${animeDetails.rank ?? '#--'}",
+                                  style: Theme.of(context).textTheme.titleSmall
+                                      ?.copyWith(color: white),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
-                      ],
+                      ),
                     ),
-                  ),
+                    const SizedBox(height: 4),
+
+                    Expanded(
+                      flex: 1,
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: secondary,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 16.0,
+                              horizontal: 4,
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "MEMBERS",
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                  textAlign: TextAlign.center,
+                                ),
+                                const SizedBox(height: 4),
+
+                                Text(
+                                  NumberFormat.decimalPattern().format(
+                                    animeDetails.members ?? 0,
+                                  ),
+                                  style: Theme.of(context).textTheme.titleSmall
+                                      ?.copyWith(color: white),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
 
               const SizedBox(width: 4),
+
+              //?==== Popularity & Favotires
               Expanded(
                 flex: 1,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: secondary,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 16.0,
-                      horizontal: 4,
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "RANK",
-                          style: Theme.of(context).textTheme.bodySmall,
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 4),
-
-                        Text(
-                          NumberFormat.decimalPattern().format(
-                            animeDetails.rank ?? 0,
+                child: Column(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: secondary,
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                          style: Theme.of(
-                            context,
-                          ).textTheme.bodySmall?.copyWith(color: white),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 16.0,
+                              horizontal: 4,
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "POPULARITY",
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                  textAlign: TextAlign.center,
+                                ),
+                                const SizedBox(height: 4),
 
-              const SizedBox(width: 4),
-              Expanded(
-                flex: 1,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: secondary,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 16.0,
-                      horizontal: 4,
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "POPULARITY",
-                          style: Theme.of(context).textTheme.bodySmall,
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 4),
-
-                        Text(
-                          NumberFormat.decimalPattern().format(
-                            animeDetails.popularity ?? 0,
+                                Text(
+                                  "#${NumberFormat.decimalPattern().format(animeDetails.popularity ?? '#--')}",
+                                  style: Theme.of(context).textTheme.titleSmall
+                                      ?.copyWith(color: white),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
                           ),
-                          style: Theme.of(
-                            context,
-                          ).textTheme.bodySmall?.copyWith(color: white),
-                          textAlign: TextAlign.center,
                         ),
-                      ],
+                      ),
                     ),
-                  ),
+                    const SizedBox(height: 4),
+                    Expanded(
+                      flex: 1,
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: secondary,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 16.0,
+                              horizontal: 4,
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "FAVORITES",
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                  textAlign: TextAlign.center,
+                                ),
+                                const SizedBox(height: 4),
+
+                                Text(
+                                  NumberFormat.decimalPattern().format(
+                                    animeDetails.favorites ?? '0',
+                                  ),
+                                  style: Theme.of(context).textTheme.titleSmall
+                                      ?.copyWith(color: white),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
 
