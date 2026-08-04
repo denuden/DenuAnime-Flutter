@@ -1,35 +1,28 @@
+import 'dart:convert';
+
 import 'package:denuanime/features/anime/domain/entities/anime_characters_model.dart';
-import 'package:denuanime/features/anime/presentation/anime_character_details_view.dart';
+import 'package:denuanime/json/anime_character.dart';
 import 'package:denuanime/theme/dark_mode.dart';
 import 'package:flutter/material.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
-class PersonCardWithCharacterItem extends StatelessWidget {
-  final AnimeCharactersModel animeCharactersModel;
-  const PersonCardWithCharacterItem({
-    super.key,
-    required this.animeCharactersModel,
-  });
+class AnimeDetailsCharactersItemsSkeleton extends StatelessWidget {
+  final bool isLoading;
+  final AnimeCharactersModel animeCharactersModel =
+      AnimeCharactersModel.fromJson(
+        jsonDecode(anime_character_json) as Map<String, dynamic>,
+      );
+
+  AnimeDetailsCharactersItemsSkeleton({super.key, required this.isLoading});
 
   @override
   Widget build(BuildContext context) {
-    final voiceActors = animeCharactersModel.voice_actors;
+    final jpVA = animeCharactersModel.voice_actors?.firstWhere(
+      (va) => va.language == "Japanese",
+    );
 
-    final jpVA =
-        voiceActors?.where((va) => va.language == "Japanese").firstOrNull ??
-        voiceActors?.firstOrNull;
-
-    return InkWell(
-      onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute<AnimeCharacterDetailsView>(
-            builder: (context) {
-              return AnimeCharacterDetailsView(
-                animeCharactersModel: animeCharactersModel,
-              );
-            },
-          ),
-        );
-      },
+    return Skeletonizer(
+      enabled: isLoading,
       child: Card.filled(
         elevation: 16,
         shape: RoundedRectangleBorder(
@@ -47,19 +40,7 @@ class PersonCardWithCharacterItem extends StatelessWidget {
                 flex: 5,
                 child: Row(
                   children: [
-                    ClipOval(
-                      child: Image.network(
-                        animeCharactersModel
-                                .character
-                                ?.images
-                                ?.jpg
-                                ?.image_url ??
-                            '',
-                        width: 80,
-                        height: 80,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
+                    const Bone.circle(size: 80),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Column(
@@ -104,51 +85,44 @@ class PersonCardWithCharacterItem extends StatelessWidget {
                           horizontal: 4,
                         ),
                         //*=== details
-                        child: jpVA == null
-                            ? const Center(child: Text("No VA found"))
-                            : Row(
+                        child: Row(
+                          children: [
+                            ClipOval(
+                              child: Image.network(
+                                jpVA?.person?.images?.jpg?.image_url ?? '',
+                                width: 50,
+                                height: 50,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+
+                            const SizedBox(width: 8),
+
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  ClipOval(
-                                    child: Image.network(
-                                      jpVA.person?.images?.jpg?.image_url ?? '',
-                                      width: 50,
-                                      height: 50,
-                                      fit: BoxFit.cover,
-                                    ),
+                                  Text(
+                                    jpVA?.language ?? '---',
+                                    style: Theme.of(context).textTheme.bodySmall
+                                        ?.copyWith(
+                                          color: primaryLight,
+                                          fontWeight: FontWeight.w500,
+                                        ),
                                   ),
-
-                                  const SizedBox(width: 8),
-
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          jpVA.language ?? '---',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodySmall
-                                              ?.copyWith(
-                                                color: primaryLight,
-                                                fontWeight: FontWeight.w500,
-                                              ),
+                                  Text(
+                                    jpVA?.person?.name ?? '---',
+                                    style: Theme.of(context).textTheme.bodySmall
+                                        ?.copyWith(
+                                          color: white,
+                                          fontWeight: FontWeight.w700,
                                         ),
-                                        Text(
-                                          jpVA.person?.name ?? '---',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodySmall
-                                              ?.copyWith(
-                                                color: white,
-                                                fontWeight: FontWeight.w700,
-                                              ),
-                                        ),
-                                      ],
-                                    ),
                                   ),
                                 ],
                               ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
 

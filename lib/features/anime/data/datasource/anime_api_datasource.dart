@@ -2,6 +2,7 @@ import 'package:denuanime/features/anime/data/request/get_anime_details_full_req
 import 'package:denuanime/features/anime/data/request/get_recommendations_request.dart';
 import 'package:denuanime/features/anime/data/request/search_anime_request.dart';
 import 'package:denuanime/features/anime/data/response/get_all_genre_response.dart';
+import 'package:denuanime/features/anime/data/response/get_anime_characters_response.dart';
 import 'package:denuanime/features/anime/data/response/get_anime_details_full_response.dart';
 import 'package:denuanime/features/anime/data/response/get_recommendations_response.dart';
 import 'package:denuanime/features/anime/data/response/search_anime_response.dart';
@@ -48,6 +49,18 @@ class AnimeApiDatasource {
     );
 
     return GetAnimeDetailsFullResponse.fromJson(
+      response.data as Map<String, dynamic>,
+    );
+  }
+
+  Future<GetAnimeCharactersResponse> getAnimeCharacters(
+    GetAnimeDetailsFullRequest request,
+  ) async {
+    final response = await dio.get<Map<String, dynamic>>(
+      "/anime/${request.id}/characters",
+    );
+
+    return GetAnimeCharactersResponse.fromJson(
       response.data as Map<String, dynamic>,
     );
   }

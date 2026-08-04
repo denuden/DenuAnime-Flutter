@@ -4,6 +4,7 @@ import 'package:denuanime/features/anime/data/datasource/anime_api_datasource.da
 import 'package:denuanime/features/anime/data/request/get_anime_details_full_request.dart';
 import 'package:denuanime/features/anime/data/request/get_recommendations_request.dart';
 import 'package:denuanime/features/anime/data/request/search_anime_request.dart';
+import 'package:denuanime/features/anime/domain/entities/anime_characters_model.dart';
 import 'package:denuanime/features/anime/domain/entities/anime_details_model.dart';
 import 'package:denuanime/features/anime/domain/entities/genre_model.dart';
 import 'package:denuanime/features/anime/domain/entities/recommendation_model.dart';
@@ -59,6 +60,19 @@ class AnimeApiRepoImpl implements AnimeRepo {
 
     if (response.data != null) {
       return response.data ?? const AnimeDetailsModel();
+    } else {
+      throw HttpException("Cannot find anime with id of ${request.id}");
+    }
+  }
+
+  @override
+  Future<List<AnimeCharactersModel>> getAnimeCharacters(
+    GetAnimeDetailsFullRequest request,
+  ) async {
+    final response = await api.getAnimeCharacters(request);
+
+    if (response.data != null) {
+      return response.data ?? [];
     } else {
       throw HttpException("Cannot find anime with id of ${request.id}");
     }

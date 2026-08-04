@@ -97,6 +97,31 @@ class AnimeCubit extends Cubit<AnimeState> {
     }
   }
 
+  Future<void> getAnimeCharacters(GetAnimeDetailsFullRequest request) async {
+    emit(
+      state.copyWith(isCharactersListLoading: true, charactersListError: ""),
+    );
+
+    try {
+      final characters = await animeRepo.getAnimeCharacters(request);
+
+      emit(
+        state.copyWith(
+          charactersList: characters,
+          isCharactersListLoading: false,
+          charactersListError: "",
+        ),
+      );
+    } catch (e) {
+      emit(
+        state.copyWith(
+          charactersListError: e.toString(),
+          isCharactersListLoading: false,
+        ),
+      );
+    }
+  }
+
   //? ====================== local calls
   void toggleGenre(int malId, bool selected) {
     final updatedGenres = state.genresList.map((genre) {
