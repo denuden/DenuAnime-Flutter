@@ -18,6 +18,7 @@ dependencies:
   flutter_bloc: ^9.1.1
   skeletonizer: ^2.1.3
   pretty_dio_logger: ^1.4.0
+  webview_flutter: ^4.14.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -39,6 +40,10 @@ flutter:
     - assets/full.png
     - assets/icons/ic_facebook.png
     - assets/icons/ic_google.png
+    - assets/icons/ic_certificate.svg
+    - assets/icons/ic_cinema.svg
+    - assets/icons/ic_external_link.svg
+    - assets/icons/ic_music.svg
 # ICONS
 flutter_launcher_icons:
   android: "launcher_icon"
