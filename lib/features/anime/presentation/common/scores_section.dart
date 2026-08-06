@@ -58,6 +58,7 @@ class ScoresSection extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
+                        textAlign: TextAlign.center,
                         "${NumberFormat.decimalPattern().format(animeDetails.scored_by ?? 0)}\nusers",
                       ),
                     ],

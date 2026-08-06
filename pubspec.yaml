@@ -44,6 +44,9 @@ flutter:
     - assets/icons/ic_cinema.svg
     - assets/icons/ic_external_link.svg
     - assets/icons/ic_music.svg
+    - assets/icons/ic_live.svg
+    - assets/icons/ic_wave_sound.svg
+    - assets/icons/ic_camera.svg
 # ICONS
 flutter_launcher_icons:
   android: "launcher_icon"

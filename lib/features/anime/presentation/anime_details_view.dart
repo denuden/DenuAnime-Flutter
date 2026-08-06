@@ -58,7 +58,7 @@ class _AnimeDetailsViewState extends State<AnimeDetailsView> {
 
     //* jump back to top
     _controller.addListener(() {
-      final show = _controller.offset > 1200; // adjust threshold
+      final show = _controller.offset > 2000; // adjust threshold
 
       if (show != _showFab) {
         setState(() {
@@ -70,6 +70,7 @@ class _AnimeDetailsViewState extends State<AnimeDetailsView> {
     //* initialize webview
     webviewControler = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..enableZoom(true)
       ..setNavigationDelegate(
         NavigationDelegate(
           onPageStarted: (_) {
@@ -87,7 +88,6 @@ class _AnimeDetailsViewState extends State<AnimeDetailsView> {
           onWebResourceError: (_) {
             setState(() {
               _isLoading = false;
-              _hasError = true;
             });
           },
           onHttpError: (HttpResponseError error) {
@@ -318,6 +318,8 @@ class _AnimeDetailsViewState extends State<AnimeDetailsView> {
                         onPressed: () {
                           setState(() {
                             _showWebView = false;
+                            _isLoading = false;
+                            _hasError = false;
                           });
                         },
                         icon: const Icon(Icons.close),
@@ -340,8 +342,6 @@ class _AnimeDetailsViewState extends State<AnimeDetailsView> {
         if (_hasError) const Center(child: Text("Cannot load website")),
       ],
     );
-
-    ;
   }
 
   //?================== other info
