@@ -1,6 +1,7 @@
 import 'package:denuanime/features/anime/domain/entities/voice_actor_model.dart';
 import 'package:denuanime/theme/dark_mode.dart';
 import 'package:flutter/material.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class PersonCardLanguageItem extends StatelessWidget {
   final VoiceActorModel voiceActorModel;
@@ -28,11 +29,14 @@ class PersonCardLanguageItem extends StatelessWidget {
                 children: [
                   //*Image
                   ClipOval(
-                    child: Image.network(
-                      voiceActorModel.person?.images?.jpg?.image_url ?? '',
-                      width: 100,
-                      height: 100,
-                      fit: BoxFit.cover,
+                    child: Skeleton.replace(
+                      replacement: const Bone.circle(size: 80),
+                      child: Image.network(
+                        voiceActorModel.person?.images?.jpg?.image_url ?? '',
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
 

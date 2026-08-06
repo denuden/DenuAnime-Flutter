@@ -24,7 +24,8 @@ class PersonCardWithCharacterItem extends StatelessWidget {
           MaterialPageRoute<AnimeCharacterDetailsView>(
             builder: (context) {
               return AnimeCharacterDetailsView(
-                animeCharactersModel: animeCharactersModel,
+                id: animeCharactersModel.character?.mal_id ?? 0,
+                role: animeCharactersModel.role ?? '---',
               );
             },
           ),

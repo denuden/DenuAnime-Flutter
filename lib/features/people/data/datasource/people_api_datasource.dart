@@ -1,4 +1,5 @@
 import 'package:denuanime/features/people/data/request/search_people_request.dart';
+import 'package:denuanime/features/people/data/response/get_people_details_response.dart';
 import 'package:denuanime/features/people/data/response/search_people_response.dart';
 import 'package:dio/dio.dart';
 
@@ -14,5 +15,13 @@ class PeopleApiDatasource {
     );
 
     return SearchPeopleResponse.fromJson(response.data as Map<String, dynamic>);
+  }
+
+  Future<GetPeopleDetailsResponse> getPeopleDetails(int id) async {
+    final response = await dio.get<Map<String, dynamic>>("/people/$id");
+
+    return GetPeopleDetailsResponse.fromJson(
+      response.data as Map<String, dynamic>,
+    );
   }
 }

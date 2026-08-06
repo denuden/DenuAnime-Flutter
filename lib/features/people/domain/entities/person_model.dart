@@ -10,7 +10,7 @@ class PersonModel {
 
   factory PersonModel.fromJson(Map<String, dynamic> json) {
     return PersonModel(
-      mal_id: json['malId'] as int?,
+      mal_id: json['mal_id'] as int?,
       url: json['url'] as String?,
       images: json['images'] != null
           ? ImageTypeModel.fromJson(json['images'] as Map<String, dynamic>)

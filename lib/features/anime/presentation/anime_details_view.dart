@@ -1,6 +1,7 @@
 // ignore_for_file: non_constant_identifier_names
 
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:denuanime/features/anime/data/request/get_anime_details_full_request.dart';
 import 'package:denuanime/features/anime/domain/cubits/anime_cubit.dart';
@@ -22,6 +23,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:photo_opener/photo_opener.dart';
 
 class AnimeDetailsView extends StatefulWidget {
   final int id;
@@ -169,7 +171,18 @@ class _AnimeDetailsViewState extends State<AnimeDetailsView> {
                                     ),
                                     splashColor: white,
                                     onPressed: () {
-                                      //TODO
+                                      //? open photo
+                                      onOpenPhoto(
+                                        context: context,
+                                        images: [
+                                          animeDetails
+                                                  .images
+                                                  ?.jpg
+                                                  ?.large_image_url ??
+                                              '',
+                                        ],
+                                        type: PhotoType.network,
+                                      );
                                     },
                                     icon: const Icon(
                                       Icons.open_in_full_rounded,
@@ -287,7 +300,7 @@ class _AnimeDetailsViewState extends State<AnimeDetailsView> {
 
                           final characters = state.charactersList;
                           return SliverList.builder(
-                            itemCount: characters.length,
+                            itemCount: min(characters.length, 10),
                             itemBuilder: (context, index) {
                               return PersonCardWithCharacterItem(
                                 animeCharactersModel: characters[index],

@@ -20,4 +20,15 @@ class PeopleApiRepoImpl implements PeopleRepo {
       throw const HttpException("No people found matching the details.");
     }
   }
+
+  @override
+  Future<PeopleModel> getPeopleDetails(int id) async {
+    final response = await api.getPeopleDetails(id);
+
+    if (response.data != null) {
+      return response.data ?? const PeopleModel();
+    } else {
+      throw HttpException("No people found with id $id");
+    }
+  }
 }

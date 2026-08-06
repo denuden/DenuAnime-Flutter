@@ -14,7 +14,7 @@ class CharacterFullModel {
   final List<CharacterRolesModel>? anime;
   final List<VoiceActorModel>? voices;
 
-  CharacterFullModel({
+  const CharacterFullModel({
     this.mal_id,
     this.url,
     this.images,
@@ -61,5 +61,31 @@ class CharacterFullModel {
       'anime': anime?.map((e) => e.toJson()).toList(),
       'voices': voices?.map((e) => e.toJson()).toList(),
     };
+  }
+
+  CharacterFullModel copyWith({
+    int? mal_id,
+    String? url,
+    ImageTypeModel? images,
+    String? name,
+    String? name_kanji,
+    List<String>? nicknames,
+    int? favorites,
+    String? about,
+    List<CharacterRolesModel>? anime,
+    List<VoiceActorModel>? voices,
+  }) {
+    return CharacterFullModel(
+      mal_id: mal_id ?? this.mal_id,
+      url: url ?? this.url,
+      images: images ?? this.images,
+      name: name ?? this.name,
+      name_kanji: name_kanji ?? this.name_kanji,
+      nicknames: nicknames ?? this.nicknames,
+      favorites: favorites ?? this.favorites,
+      about: about ?? this.about,
+      anime: anime ?? this.anime,
+      voices: voices ?? this.voices,
+    );
   }
 }

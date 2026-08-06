@@ -7,12 +7,14 @@ class PeopleState {
   final bool isPeopleLoading;
 
   final String peopleListError;
+  final String peopleError;
 
   const PeopleState({
     this.peopleList = const [],
     this.peopleDetails = const PeopleModel(),
     this.isPeopleLoading = false,
     this.peopleListError = "",
+    this.peopleError = "",
   });
 
   PeopleState copyWith({
@@ -21,12 +23,14 @@ class PeopleState {
     PeopleModel? peopleDetails,
     bool? isPeopleLoading,
     String? peopleListError,
+    String? peopleError,
   }) {
     return PeopleState(
       peopleList: peopleList ?? this.peopleList,
       peopleDetails: peopleDetails ?? this.peopleDetails,
       isPeopleLoading: isPeopleLoading ?? this.isPeopleLoading,
       peopleListError: peopleListError ?? this.peopleListError,
+      peopleError: peopleError ?? this.peopleError,
     );
   }
 }

@@ -2,11 +2,15 @@ import 'package:denuanime/features/anime/data/datasource/anime_api_datasource.da
 import 'package:denuanime/features/anime/data/repositories/anime_api_repo_impl.dart';
 import 'package:denuanime/features/anime/domain/repositories/anime_repo.dart';
 import 'package:denuanime/features/auth/presentation/views/landing_view.dart';
+import 'package:denuanime/features/character/data/datasource/character_api_datasource.dart';
+import 'package:denuanime/features/character/data/repositories/character_api_repo_impl.dart';
+import 'package:denuanime/features/character/domain/cubits/character_cubit.dart';
+import 'package:denuanime/features/character/domain/repositories/character_repo.dart';
 import 'package:denuanime/features/people/data/datasource/people_api_datasource.dart';
 import 'package:denuanime/features/people/data/repositories/people_api_repo_impl.dart';
 import 'package:denuanime/features/anime/domain/cubits/anime_cubit.dart';
 import 'package:denuanime/features/people/domain/repositories/people_repo.dart';
-import 'package:denuanime/features/people/presentation/cubits/people_cubit.dart';
+import 'package:denuanime/features/people/domain/cubits/people_cubit.dart';
 import 'package:denuanime/theme/dark_mode.dart';
 import 'package:denuanime/utils/api_client.dart';
 import 'package:dio/dio.dart';
@@ -33,7 +37,14 @@ class MainApp extends StatelessWidget {
   //* ------ Anime API
   late final AnimeApiDatasource animeApiDatasource = AnimeApiDatasource(dio);
   late final AnimeRepo animeRepo = AnimeApiRepoImpl(animeApiDatasource);
+  //* -------------------------
 
+  //* ------ Character API
+  late final CharacterApiDatasource characterApiDatasource =
+      CharacterApiDatasource(dio);
+  late final CharacterRepo characterRepo = CharacterApiRepoImpl(
+    characterApiDatasource,
+  );
   //* -------------------------
   @override
   Widget build(BuildContext context) {
@@ -43,6 +54,13 @@ class MainApp extends StatelessWidget {
         BlocProvider(create: (context) => PeopleCubit(peopleRepo: peopleRepo)),
         //* Anime Cubit
         BlocProvider(create: (context) => AnimeCubit(animeRepo: animeRepo)),
+        //* Character Cubit
+        BlocProvider(
+          create: (context) => CharacterCubit(
+            characterRepo: characterRepo,
+            peopleRepo: peopleRepo,
+          ),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

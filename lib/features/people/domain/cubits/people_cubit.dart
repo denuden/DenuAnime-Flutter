@@ -1,6 +1,6 @@
 import 'package:denuanime/features/people/data/request/search_people_request.dart';
 import 'package:denuanime/features/people/domain/repositories/people_repo.dart';
-import 'package:denuanime/features/people/presentation/cubits/people_state.dart';
+import 'package:denuanime/features/people/domain/cubits/people_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PeopleCubit extends Cubit<PeopleState> {
@@ -25,6 +25,24 @@ class PeopleCubit extends Cubit<PeopleState> {
       emit(
         state.copyWith(isPeopleLoading: false, peopleListError: e.toString()),
       );
+    }
+  }
+
+  Future<void> getPeopleDetails(int id) async {
+    emit(state.copyWith(isPeopleLoading: true, peopleError: ""));
+
+    try {
+      final people = await peopleRepo.getPeopleDetails(id);
+
+      emit(
+        state.copyWith(
+          peopleDetails: people,
+          isPeopleLoading: false,
+          peopleError: "",
+        ),
+      );
+    } catch (e) {
+      emit(state.copyWith(isPeopleLoading: false, peopleError: e.toString()));
     }
   }
 }

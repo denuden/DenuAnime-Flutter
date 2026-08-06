@@ -3,4 +3,5 @@ import 'package:denuanime/features/people/domain/entities/people_model.dart';
 
 abstract class PeopleRepo {
   Future<List<PeopleModel>> searchPeople(SearchPeopleRequest request);
+  Future<PeopleModel> getPeopleDetails(int id);
 }
