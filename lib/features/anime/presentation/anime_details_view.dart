@@ -41,12 +41,11 @@ class _AnimeDetailsViewState extends State<AnimeDetailsView> {
 
   final ScrollController _controller = ScrollController();
   bool _showFab = false;
-  bool _showWebView = false;
 
+  bool _showWebView = false;
   bool _isLoading = false;
   bool _hasError = false;
-
-  late final WebViewController webviewControler;
+  late final WebViewController _webviewControler;
 
   //? ============= function
   @override
@@ -70,7 +69,7 @@ class _AnimeDetailsViewState extends State<AnimeDetailsView> {
     });
 
     //* initialize webview
-    webviewControler = WebViewController()
+    _webviewControler = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..enableZoom(true)
       ..setNavigationDelegate(
@@ -245,7 +244,7 @@ class _AnimeDetailsViewState extends State<AnimeDetailsView> {
                                 AnimeExternalInfoSection(
                                   data: animeDetails,
                                   onTap: (url) {
-                                    webviewControler.loadRequest(
+                                    _webviewControler.loadRequest(
                                       Uri.parse(url),
                                     );
 
@@ -344,7 +343,7 @@ class _AnimeDetailsViewState extends State<AnimeDetailsView> {
                     ],
                   ),
 
-                  Expanded(child: WebViewWidget(controller: webviewControler)),
+                  Expanded(child: WebViewWidget(controller: _webviewControler)),
                 ],
               ),
             ),

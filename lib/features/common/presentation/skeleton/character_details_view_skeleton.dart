@@ -160,6 +160,7 @@ class CharacterDetailsViewSkeleton extends StatelessWidget {
                             voiceActorModel: VoiceActorModel(),
                             isSelected: false,
                             onSelect: () {},
+                            onClickWebProfile: (_) {},
                           ),
                         );
                       },

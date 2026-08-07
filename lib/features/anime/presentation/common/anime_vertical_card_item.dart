@@ -33,7 +33,7 @@ class AnimeVerticalCardItem extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 12),
           //*title
           Padding(
             padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 0),

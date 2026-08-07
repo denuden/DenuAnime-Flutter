@@ -12,9 +12,9 @@ class RecommendationItem extends StatelessWidget {
     return recommendationModel.entry?.isNotEmpty == true &&
             recommendationModel.entry?.length == 2
         ? Card.filled(
-            color: tertiary,
+            color: secondary,
             child: Padding(
-              padding: const EdgeInsets.all(4.0),
+              padding: const EdgeInsets.all(6.0),
               child: Column(
                 children: [
                   Row(
@@ -36,6 +36,7 @@ class RecommendationItem extends StatelessWidget {
                       ),
                     ],
                   ),
+                  const SizedBox(height: 16),
 
                   const Divider(height: 1, thickness: 0.2),
                   const SizedBox(height: 16),
@@ -89,7 +90,7 @@ class RecommendationItem extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 16),
                 ],
               ),
             ),

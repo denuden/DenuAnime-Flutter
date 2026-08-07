@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:denuanime/features/common/entities/image_type_model.dart';
 import 'package:denuanime/features/people/data/datasource/people_api_datasource.dart';
 import 'package:denuanime/features/people/data/request/search_people_request.dart';
 import 'package:denuanime/features/people/domain/entities/people_model.dart';
@@ -29,6 +30,28 @@ class PeopleApiRepoImpl implements PeopleRepo {
       return response.data ?? const PeopleModel();
     } else {
       throw HttpException("No people found with id $id");
+    }
+  }
+
+  @override
+  Future<PeopleModel> getFullPeopleDetails(int id) async {
+    final response = await api.getFullPeopleDetails(id);
+
+    if (response.data != null) {
+      return response.data ?? const PeopleModel();
+    } else {
+      throw HttpException("No people found with id $id");
+    }
+  }
+
+  @override
+  Future<List<ImageTypeModel>> getPictures(int id) async {
+    final response = await api.getPictures(id);
+
+    if (response.data != null && response.data?.isNotEmpty == true) {
+      return response.data ?? [];
+    } else {
+      throw const HttpException("No pictures found");
     }
   }
 }

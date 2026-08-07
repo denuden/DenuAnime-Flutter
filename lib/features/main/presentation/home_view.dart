@@ -20,7 +20,6 @@ import 'package:denuanime/features/people/data/request/search_people_request.dar
 import 'package:denuanime/features/anime/domain/cubits/anime_cubit.dart';
 import 'package:denuanime/features/anime/domain/cubits/anime_state.dart';
 import 'package:denuanime/features/people/presentation/common/person_avatar_item_.dart';
-import 'package:denuanime/features/people/domain/entities/people_model.dart';
 import 'package:denuanime/features/people/domain/cubits/people_cubit.dart';
 import 'package:denuanime/features/people/domain/cubits/people_state.dart';
 import 'package:denuanime/features/people/presentation/person_details_view.dart';
@@ -46,6 +45,8 @@ class _HomeViewState extends State<HomeView> {
   bool isFilterEnabled = true;
   int selectedType = 0;
   int selectedRating = 0;
+
+  var filteredGenre = '';
   //? ============ functions
 
   void _onMenuSelection(int index) {
@@ -65,16 +66,32 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  void _onNavigateToPeopleDetails(PeopleModel peopleModel) {
+  void _onNavigateToPeopleDetails(int id) {
     Navigator.of(context).push(
       MaterialPageRoute<PersonDetailsView>(
-        builder: (context) => PersonDetailsView(peopleModel: peopleModel),
+        builder: (context) => PersonDetailsView(id: id),
       ),
     );
   }
 
-  void _toggleGenreSelection(int mal_id, bool selected) {
-    context.read<AnimeCubit>().toggleGenre(mal_id, selected);
+  String _toggleGenreSelection(int mal_id, bool selected) {
+    return context.read<AnimeCubit>().toggleGenre(mal_id, selected);
+  }
+
+  void _searchAnime() {
+    final type = DropdownMenuFilter.typeApiValues[selectedType];
+    final rating = DropdownMenuFilter.ratingApiValues[selectedRating];
+
+    context.read<AnimeCubit>().searchAnime(
+      SearchAnimeRequest(
+        type: type.isEmpty ? "tv" : type,
+        rating: rating.isEmpty ? null : rating,
+        genres: filteredGenre,
+        order_by: "popularity",
+        limit: "10",
+        sort: "asc",
+      ),
+    );
   }
 
   @override
@@ -95,7 +112,6 @@ class _HomeViewState extends State<HomeView> {
     context.read<AnimeCubit>().searchAnime(
       const SearchAnimeRequest(
         type: "tv",
-        status: "airing",
         order_by: "popularity",
         limit: "10",
         sort: "asc",
@@ -234,7 +250,7 @@ class _HomeViewState extends State<HomeView> {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(16),
                       onTap: () {
-                        _onNavigateToPeopleDetails(person);
+                        _onNavigateToPeopleDetails(person.mal_id ?? -1);
                       },
                       child: PersonItemView(people: person),
                     ),
@@ -265,6 +281,7 @@ class _HomeViewState extends State<HomeView> {
                 setState(() {
                   selectedType = typeIndex;
                   selectedRating = ratingIndex;
+                  _searchAnime();
                 });
               },
             ),
@@ -300,9 +317,14 @@ class _HomeViewState extends State<HomeView> {
                         return Padding(
                           padding: const EdgeInsets.only(right: 8),
                           child: GenreItem(
+                            size: GenreItemSize.small,
                             selectedBackgroundColor: primary,
                             onSelect: (value) {
-                              _toggleGenreSelection(genre.mal_id!, value);
+                              filteredGenre = _toggleGenreSelection(
+                                genre.mal_id!,
+                                value,
+                              );
+                              _searchAnime();
                             },
                             genre: genre,
                           ),
@@ -424,8 +446,11 @@ class _HomeViewState extends State<HomeView> {
 
             return Column(
               children: List.generate(recommendations.length, (index) {
-                return RecommendationItem(
-                  recommendationModel: recommendations[index],
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4.0),
+                  child: RecommendationItem(
+                    recommendationModel: recommendations[index],
+                  ),
                 );
               }),
             );

@@ -123,7 +123,7 @@ class AnimeCubit extends Cubit<AnimeState> {
   }
 
   //? ====================== local calls
-  void toggleGenre(int malId, bool selected) {
+  String toggleGenre(int malId, bool selected) {
     final updatedGenres = state.genresList.map((genre) {
       if (genre.mal_id == malId) {
         return genre.copyWith(is_selected: selected);
@@ -132,5 +132,10 @@ class AnimeCubit extends Cubit<AnimeState> {
     }).toList();
 
     emit(state.copyWith(genresList: updatedGenres));
+
+    return updatedGenres
+        .where((g) => g.is_selected)
+        .map((g) => g.mal_id.toString())
+        .join(',');
   }
 }

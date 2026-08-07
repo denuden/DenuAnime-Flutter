@@ -94,19 +94,21 @@ class AnimeExternalInfoSection extends StatelessWidget {
               Wrap(
                 spacing: 8,
                 direction: Axis.horizontal,
-                children: List.generate(data.producers?.length ?? 0, (index) {
-                  return ActionChip(
-                    onPressed: () {
-                      onTap(data.producers![index].url ?? '--');
-                    },
-                    label: Text(data.producers![index].name ?? "---"),
-                    color: const WidgetStatePropertyAll(tertiary),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadiusGeometry.circular(8),
-                      side: const BorderSide(color: primary, width: 1),
-                    ),
-                  );
-                }),
+                children: data.producers?.isNotEmpty == true
+                    ? List.generate(data.producers?.length ?? 0, (index) {
+                        return ActionChip(
+                          onPressed: () {
+                            onTap(data.producers![index].url ?? '--');
+                          },
+                          label: Text(data.producers![index].name ?? "---"),
+                          color: const WidgetStatePropertyAll(tertiary),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadiusGeometry.circular(8),
+                            side: const BorderSide(color: primary, width: 1),
+                          ),
+                        );
+                      })
+                    : [const Text("No producers found.")],
               ),
             ],
           ),
@@ -139,21 +141,22 @@ class AnimeExternalInfoSection extends StatelessWidget {
               const SizedBox(height: 8),
               Wrap(
                 spacing: 8,
-
                 direction: Axis.horizontal,
-                children: List.generate(data.licensors?.length ?? 0, (index) {
-                  return ActionChip(
-                    onPressed: () {
-                      onTap(data.licensors![index].url ?? '--');
-                    },
-                    label: Text(data.licensors![index].name ?? "---"),
-                    color: const WidgetStatePropertyAll(tertiary),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadiusGeometry.circular(8),
-                      side: const BorderSide(color: primary, width: 1),
-                    ),
-                  );
-                }),
+                children: data.licensors?.isNotEmpty == true
+                    ? List.generate(data.licensors?.length ?? 0, (index) {
+                        return ActionChip(
+                          onPressed: () {
+                            onTap(data.licensors![index].url ?? '--');
+                          },
+                          label: Text(data.licensors![index].name ?? "---"),
+                          color: const WidgetStatePropertyAll(tertiary),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadiusGeometry.circular(8),
+                            side: const BorderSide(color: primary, width: 1),
+                          ),
+                        );
+                      })
+                    : [const Text("No licensors found.")],
               ),
             ],
           ),
@@ -188,19 +191,21 @@ class AnimeExternalInfoSection extends StatelessWidget {
               Wrap(
                 spacing: 8,
                 direction: Axis.horizontal,
-                children: List.generate(data.streaming?.length ?? 0, (index) {
-                  return ActionChip(
-                    onPressed: () {
-                      onTap(data.streaming![index].url ?? '--');
-                    },
-                    label: Text(data.streaming![index].name ?? "---"),
-                    color: const WidgetStatePropertyAll(tertiary),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadiusGeometry.circular(8),
-                      side: const BorderSide(color: primary, width: 1),
-                    ),
-                  );
-                }),
+                children: data.streaming?.isNotEmpty == true
+                    ? List.generate(data.streaming?.length ?? 0, (index) {
+                        return ActionChip(
+                          onPressed: () {
+                            onTap(data.streaming![index].url ?? '--');
+                          },
+                          label: Text(data.streaming![index].name ?? "---"),
+                          color: const WidgetStatePropertyAll(tertiary),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadiusGeometry.circular(8),
+                            side: const BorderSide(color: primary, width: 1),
+                          ),
+                        );
+                      })
+                    : [const Text("No streaming platform found.")],
               ),
             ],
           ),
@@ -235,19 +240,21 @@ class AnimeExternalInfoSection extends StatelessWidget {
               Wrap(
                 spacing: 8,
                 direction: Axis.horizontal,
-                children: List.generate(data.external?.length ?? 0, (index) {
-                  return ActionChip(
-                    onPressed: () {
-                      onTap(data.external![index].url ?? '--');
-                    },
-                    label: Text(data.external![index].name ?? "---"),
-                    color: const WidgetStatePropertyAll(tertiary),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadiusGeometry.circular(8),
-                      side: const BorderSide(color: primary, width: 1),
-                    ),
-                  );
-                }),
+                children: data.external?.isNotEmpty == true
+                    ? List.generate(data.external?.length ?? 0, (index) {
+                        return ActionChip(
+                          onPressed: () {
+                            onTap(data.external![index].url ?? '--');
+                          },
+                          label: Text(data.external![index].name ?? "---"),
+                          color: const WidgetStatePropertyAll(tertiary),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadiusGeometry.circular(8),
+                            side: const BorderSide(color: primary, width: 1),
+                          ),
+                        );
+                      })
+                    : [const Text("No external found.")],
               ),
             ],
           ),

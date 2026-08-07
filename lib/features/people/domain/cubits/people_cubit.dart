@@ -45,4 +45,23 @@ class PeopleCubit extends Cubit<PeopleState> {
       emit(state.copyWith(isPeopleLoading: false, peopleError: e.toString()));
     }
   }
+
+  Future<void> getFullPeopleDetails(int id) async {
+    emit(state.copyWith(isPeopleLoading: true, peopleError: ""));
+
+    try {
+      final people = await peopleRepo.getFullPeopleDetails(id);
+      final pictures = await peopleRepo.getPictures(people.mal_id ?? -1);
+      emit(
+        state.copyWith(
+          peopleDetails: people,
+          pictures: pictures,
+          isPeopleLoading: false,
+          peopleError: "",
+        ),
+      );
+    } catch (e) {
+      emit(state.copyWith(isPeopleLoading: false, peopleError: e.toString()));
+    }
+  }
 }

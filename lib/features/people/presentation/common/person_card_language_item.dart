@@ -7,11 +7,13 @@ class PersonCardLanguageItem extends StatelessWidget {
   final VoiceActorModel voiceActorModel;
   final bool isSelected;
   final void Function() onSelect;
+  final void Function(String) onClickWebProfile;
   const PersonCardLanguageItem({
     super.key,
     required this.voiceActorModel,
     required this.isSelected,
     required this.onSelect,
+    required this.onClickWebProfile,
   });
 
   @override
@@ -49,8 +51,9 @@ class PersonCardLanguageItem extends StatelessWidget {
                       children: [
                         TextButton(
                           onPressed: () {
-                            //TODO
-                            // voiceActorModel.person?.url ?? '---',
+                            onClickWebProfile(
+                              voiceActorModel.person?.url ?? '',
+                            );
                           },
                           child: Text(
                             "Web Profile",

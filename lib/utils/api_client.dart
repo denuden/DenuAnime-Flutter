@@ -25,9 +25,9 @@ class ApiClient {
         enabled: kDebugMode,
         filter: (options, args) {
           if (options.path.contains('/anime')) {
-            return false;
+            return true;
           }
-          return true;
+          return false;
         },
       ),
     );
