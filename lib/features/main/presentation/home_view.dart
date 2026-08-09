@@ -23,6 +23,7 @@ import 'package:denuanime/features/people/presentation/common/person_avatar_item
 import 'package:denuanime/features/people/domain/cubits/people_cubit.dart';
 import 'package:denuanime/features/people/domain/cubits/people_state.dart';
 import 'package:denuanime/features/people/presentation/person_details_view.dart';
+import 'package:denuanime/features/people/presentation/search_person_view.dart';
 import 'package:denuanime/json/anime_details.dart';
 import 'package:denuanime/theme/dark_mode.dart';
 import 'package:flutter/material.dart';
@@ -45,6 +46,7 @@ class _HomeViewState extends State<HomeView> {
   bool isFilterEnabled = true;
   int selectedType = 0;
   int selectedRating = 0;
+  int selectedStatus = 0;
 
   var filteredGenre = '';
   //? ============ functions
@@ -74,6 +76,14 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
+  void _onNavigateToSearchPerson() {
+    Navigator.of(context).push(
+      MaterialPageRoute<SearchPersonView>(
+        builder: (context) => SearchPersonView(),
+      ),
+    );
+  }
+
   String _toggleGenreSelection(int mal_id, bool selected) {
     return context.read<AnimeCubit>().toggleGenre(mal_id, selected);
   }
@@ -81,11 +91,13 @@ class _HomeViewState extends State<HomeView> {
   void _searchAnime() {
     final type = DropdownMenuFilter.typeApiValues[selectedType];
     final rating = DropdownMenuFilter.ratingApiValues[selectedRating];
+    final status = DropdownMenuFilter.statusApiValues[selectedStatus];
 
     context.read<AnimeCubit>().searchAnime(
       SearchAnimeRequest(
-        type: type.isEmpty ? "tv" : type,
+        type: type.isEmpty ? null : type,
         rating: rating.isEmpty ? null : rating,
+        status: status.isEmpty ? null : status,
         genres: filteredGenre,
         order_by: "popularity",
         limit: "10",
@@ -211,7 +223,9 @@ class _HomeViewState extends State<HomeView> {
             ),
             const Spacer(),
             TextButton.icon(
-              onPressed: () {},
+              onPressed: () {
+                _onNavigateToSearchPerson();
+              },
               label: const Text("View all"),
               icon: const Icon(Icons.keyboard_arrow_right),
               iconAlignment: IconAlignment.end,
@@ -277,10 +291,12 @@ class _HomeViewState extends State<HomeView> {
               enabled: isFilterEnabled,
               selectedType: selectedType,
               selectedRating: selectedRating,
-              onFilterChanged: (typeIndex, ratingIndex) {
+              selectedStatus: selectedStatus,
+              onFilterChanged: (typeIndex, ratingIndex, statusIndex) {
                 setState(() {
                   selectedType = typeIndex;
                   selectedRating = ratingIndex;
+                  selectedStatus = statusIndex;
                   _searchAnime();
                 });
               },
@@ -356,7 +372,19 @@ class _HomeViewState extends State<HomeView> {
                 return const HomeCarouselItemsSkeleton(isLoading: true);
               }
               if (state.animeListError.isNotEmpty) {
-                return Text(state.animeListError);
+                return Center(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: secondary,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+
+                    child: const Padding(
+                      padding: EdgeInsetsGeometry.all(50),
+                      child: Text("No animes found"),
+                    ),
+                  ),
+                );
               }
               return CarouselView.weighted(
                 enableSplash: true,

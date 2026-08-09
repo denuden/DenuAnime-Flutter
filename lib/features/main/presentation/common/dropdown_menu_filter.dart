@@ -6,15 +6,18 @@ class DropdownMenuFilter extends StatelessWidget {
     super.key,
     required this.selectedType,
     required this.selectedRating,
+    required this.selectedStatus,
     required this.onFilterChanged,
     this.enabled = true,
   });
 
   final int selectedType;
   final int selectedRating;
+  final int selectedStatus;
   final bool enabled;
 
-  final void Function(int typeIndex, int ratingIndex) onFilterChanged;
+  final void Function(int typeIndex, int ratingIndex, int statusIndex)
+  onFilterChanged;
 
   static const List<String> typeLabels = [
     'All',
@@ -62,6 +65,20 @@ class DropdownMenuFilter extends StatelessWidget {
     'rx',
   ];
 
+  static const List<String> statusLabels = [
+    'All',
+    'Airing',
+    'Completed',
+    'Upcoming',
+  ];
+
+  static const List<String> statusApiValues = [
+    '',
+    'airing',
+    'complete',
+    'airing',
+  ];
+
   @override
   Widget build(BuildContext context) {
     return MenuAnchor(
@@ -95,33 +112,111 @@ class DropdownMenuFilter extends StatelessWidget {
         SizedBox(
           width: MediaQuery.of(context).size.width - 20,
           height: 360,
-          child: Row(
+          child: Column(
             children: [
-              SizedBox(
-                width: (MediaQuery.of(context).size.width / 2) - 11,
-                child: _buildColumn(
+              //* ==========status
+              const SizedBox(height: 4),
+              Text(
+                "STATUS",
+                style: Theme.of(
                   context,
-                  title: "Type",
-                  labels: typeLabels,
-                  selectedIndex: selectedType,
-                  onTap: (index) {
-                    onFilterChanged(index, selectedRating);
+                ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 4),
+
+              const Divider(height: 1, thickness: 0.4),
+
+              SizedBox(
+                height: 70,
+                width: double.infinity,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  physics: const BouncingScrollPhysics(),
+                  padding: EdgeInsets.zero,
+                  itemCount: statusLabels.length,
+                  itemBuilder: (context, index) {
+                    return InkWell(
+                      onTap: () =>
+                          onFilterChanged(selectedType, selectedRating, index),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 12,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                width: 22,
+                                child: selectedStatus == index
+                                    ? Icon(
+                                        Icons.check,
+                                        size: 18,
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.primary,
+                                      )
+                                    : null,
+                              ),
+
+                              const SizedBox(width: 10),
+
+                              Text(
+                                statusLabels[index],
+                                softWrap: true,
+                                overflow: TextOverflow.visible,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
                   },
                 ),
               ),
 
-              const VerticalDivider(width: 1, thickness: 0.4),
+              const Divider(height: 1, thickness: 0.4),
 
-              SizedBox(
-                width: (MediaQuery.of(context).size.width / 2) - 11,
-                child: _buildColumn(
-                  context,
-                  title: "Rating",
-                  labels: ratingLabels,
-                  selectedIndex: selectedRating,
-                  onTap: (index) {
-                    onFilterChanged(selectedType, index);
-                  },
+              //* & ======= type and rating
+              Expanded(
+                child: Row(
+                  children: [
+                    //* ===== type
+                    SizedBox(
+                      width: (MediaQuery.of(context).size.width / 2) - 11,
+                      child: _buildColumn(
+                        context,
+                        title: "Type",
+                        labels: typeLabels,
+                        selectedIndex: selectedType,
+                        onTap: (index) {
+                          onFilterChanged(
+                            index,
+                            selectedRating,
+                            selectedStatus,
+                          );
+                        },
+                      ),
+                    ),
+
+                    const VerticalDivider(width: 1, thickness: 0.4),
+
+                    //* ======= rating
+                    SizedBox(
+                      width: (MediaQuery.of(context).size.width / 2) - 11,
+                      child: _buildColumn(
+                        context,
+                        title: "Rating",
+                        labels: ratingLabels,
+                        selectedIndex: selectedRating,
+                        onTap: (index) {
+                          onFilterChanged(selectedType, index, selectedStatus);
+                        },
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -146,7 +241,7 @@ class DropdownMenuFilter extends StatelessWidget {
             title,
             style: Theme.of(
               context,
-            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+            ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
           ),
         ),
 

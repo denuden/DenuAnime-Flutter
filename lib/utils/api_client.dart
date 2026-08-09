@@ -24,7 +24,7 @@ class ApiClient {
         maxWidth: 90,
         enabled: kDebugMode,
         filter: (options, args) {
-          if (options.path.contains('/anime')) {
+          if (options.path.contains('/people')) {
             return true;
           }
           return false;

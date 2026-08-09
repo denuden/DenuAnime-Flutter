@@ -14,7 +14,7 @@ class CharacterApiRepoImpl implements CharacterRepo {
     final response = await api.getCharacterDetails(id);
 
     if (response.data != null) {
-      return response.data ?? CharacterFullModel();
+      return response.data ?? const CharacterFullModel();
     } else {
       throw HttpException("Cannot find character with id of $id");
     }

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:denuanime/features/people/data/request/search_people_request.dart';
 import 'package:denuanime/features/people/domain/repositories/people_repo.dart';
 import 'package:denuanime/features/people/domain/cubits/people_state.dart';
@@ -19,6 +21,13 @@ class PeopleCubit extends Cubit<PeopleState> {
           peopleList: people,
           isPeopleLoading: false,
           peopleListError: "",
+        ),
+      );
+    } on HttpException catch (e) {
+      emit(
+        state.copyWith(
+          isPeopleLoading: false,
+          peopleListError: e.message.toString(),
         ),
       );
     } catch (e) {

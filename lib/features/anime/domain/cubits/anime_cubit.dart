@@ -131,6 +131,16 @@ class AnimeCubit extends Cubit<AnimeState> {
       return genre;
     }).toList();
 
+    updatedGenres.sort((a, b) {
+      // Selected first
+      if (a.is_selected != b.is_selected) {
+        return a.is_selected ? -1 : 1;
+      }
+
+      // Alphabetical within each group
+      return a.name!.compareTo(b.name!);
+    });
+
     emit(state.copyWith(genresList: updatedGenres));
 
     return updatedGenres
