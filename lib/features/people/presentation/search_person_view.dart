@@ -5,6 +5,7 @@ import 'package:denuanime/features/people/data/request/search_people_request.dar
 import 'package:denuanime/features/people/domain/cubits/people_cubit.dart';
 import 'package:denuanime/features/people/domain/cubits/people_state.dart';
 import 'package:denuanime/features/people/presentation/common/person_card_search_item.dart';
+import 'package:denuanime/features/people/presentation/person_details_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -64,13 +65,16 @@ class _SearchPersonViewState extends State<SearchPersonView> {
     });
   }
 
+  void _onNavigateToPeopleDetails(int id) {
+    Navigator.of(context).push(
+      MaterialPageRoute<PersonDetailsView>(
+        builder: (context) => PersonDetailsView(id: id),
+      ),
+    );
+  }
+
   @override
   void initState() {
-    //call initial search
-    context.read<PeopleCubit>().searchPeople(
-      const SearchPeopleRequest(order_by: "favorites", sort: "desc"),
-    );
-
     searchController.addListener(_onSearchChanged);
     super.initState();
   }
@@ -93,6 +97,9 @@ class _SearchPersonViewState extends State<SearchPersonView> {
             viewHintText: "Search people...",
             searchController: searchController,
             isFullScreen: false,
+            textInputAction: TextInputAction.done,
+            keyboardType: TextInputType.text,
+
             builder: (context, controller) {
               return IconButton(
                 icon: const Icon(Icons.search),
@@ -112,13 +119,19 @@ class _SearchPersonViewState extends State<SearchPersonView> {
             viewTrailing: [
               IconButton(
                 onPressed: () {
-                  searchController.closeView(searchController.text);
                   searchPeople(searchController.text);
+                  searchController.closeView(searchController.text);
                   searchController.clear();
                 },
                 icon: const Icon(Icons.search),
               ),
             ],
+            viewOnSubmitted: (value) {
+              searchPeople(value);
+
+              searchController.closeView(value);
+              searchController.clear();
+            },
             suggestionsBuilder: (context, controller) {
               return _previousSearches.map((query) {
                 return ListTile(
@@ -161,6 +174,11 @@ class _SearchPersonViewState extends State<SearchPersonView> {
                     itemBuilder: (context, index) {
                       return PersonCardSearchItem(
                         peopleModel: peopleList[index],
+                        onClick: () {
+                          _onNavigateToPeopleDetails(
+                            peopleList[index].mal_id ?? -1,
+                          );
+                        },
                       );
                     },
                   ),
