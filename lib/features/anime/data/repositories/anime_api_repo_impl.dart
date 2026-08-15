@@ -77,4 +77,15 @@ class AnimeApiRepoImpl implements AnimeRepo {
       throw HttpException("Cannot find anime with id of ${request.id}");
     }
   }
+
+  @override
+  Future<List<AnimeDetailsModel>> getLatestSchedules() async {
+    final response = await api.getLatestSchedules();
+
+    if (response.data != null) {
+      return response.data ?? [];
+    } else {
+      throw const HttpException("Cannot find latest schedules of anime");
+    }
+  }
 }

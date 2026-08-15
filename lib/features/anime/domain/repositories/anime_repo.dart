@@ -18,4 +18,6 @@ abstract class AnimeRepo {
   Future<List<AnimeCharactersModel>> getAnimeCharacters(
     GetAnimeDetailsFullRequest request,
   );
+
+  Future<List<AnimeDetailsModel>> getLatestSchedules();
 }

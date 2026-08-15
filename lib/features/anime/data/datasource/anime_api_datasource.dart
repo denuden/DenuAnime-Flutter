@@ -4,6 +4,7 @@ import 'package:denuanime/features/anime/data/request/search_anime_request.dart'
 import 'package:denuanime/features/anime/data/response/get_all_genre_response.dart';
 import 'package:denuanime/features/anime/data/response/get_anime_characters_response.dart';
 import 'package:denuanime/features/anime/data/response/get_anime_details_full_response.dart';
+import 'package:denuanime/features/anime/data/response/get_latest_schedules_response.dart';
 import 'package:denuanime/features/anime/data/response/get_recommendations_response.dart';
 import 'package:denuanime/features/anime/data/response/search_anime_response.dart';
 import 'package:dio/dio.dart';
@@ -61,6 +62,14 @@ class AnimeApiDatasource {
     );
 
     return GetAnimeCharactersResponse.fromJson(
+      response.data as Map<String, dynamic>,
+    );
+  }
+
+  Future<GetLatestSchedulesResponse> getLatestSchedules() async {
+    final response = await dio.get<Map<String, dynamic>>("/schedules");
+
+    return GetLatestSchedulesResponse.fromJson(
       response.data as Map<String, dynamic>,
     );
   }

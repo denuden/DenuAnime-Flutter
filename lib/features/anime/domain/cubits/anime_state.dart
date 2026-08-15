@@ -9,18 +9,21 @@ class AnimeState {
   final List<RecommendationModel> recommendationList;
   final AnimeDetailsModel animeDetails;
   final List<AnimeCharactersModel> charactersList;
+  final List<AnimeDetailsModel> latestSchedulesList;
 
   final bool isAnimeLoading;
   final bool isGenreLoading;
   final bool isRecommendationLoading;
   final bool isAnimeDetailsLoading;
   final bool isCharactersListLoading;
+  final bool isLatestSchedulesLoading;
 
   final String animeListError;
   final String genreListError;
   final String recommendationListError;
   final String animeDetailsError;
   final String charactersListError;
+  final String latestSchedulesListError;
 
   final String animeInitial;
 
@@ -31,16 +34,21 @@ class AnimeState {
     this.recommendationList = const [],
     this.animeDetails = const AnimeDetailsModel(),
     this.charactersList = const [],
+    this.latestSchedulesList = const [],
+
     this.isAnimeLoading = false,
     this.isGenreLoading = false,
     this.isRecommendationLoading = false,
     this.isAnimeDetailsLoading = false,
     this.isCharactersListLoading = false,
+    this.isLatestSchedulesLoading = false,
+
     this.animeListError = "",
     this.genreListError = "",
     this.recommendationListError = "",
     this.animeDetailsError = "",
     this.charactersListError = "",
+    this.latestSchedulesListError = "",
   });
 
   AnimeState copyWith({
@@ -49,16 +57,22 @@ class AnimeState {
     List<RecommendationModel>? recommendationList,
     AnimeDetailsModel? animeDetails,
     List<AnimeCharactersModel>? charactersList,
+    List<AnimeDetailsModel>? latestSchedulesList,
+
     bool? isAnimeLoading,
     bool? isGenreLoading,
     bool? isRecommendationLoading,
     bool? isAnimeDetailsLoading,
     bool? isCharactersListLoading,
+    bool? isLatestSchedulesLoading,
+
     String? animeListError,
     String? genreListError,
     String? recommendationListError,
     String? animeDetailsError,
     String? charactersListError,
+    String? latestSchedulesListError,
+
     String? animeInitial,
   }) {
     return AnimeState(
@@ -67,6 +81,7 @@ class AnimeState {
       recommendationList: recommendationList ?? this.recommendationList,
       animeDetails: animeDetails ?? this.animeDetails,
       charactersList: charactersList ?? this.charactersList,
+      latestSchedulesList: latestSchedulesList ?? this.latestSchedulesList,
 
       isAnimeLoading: isAnimeLoading ?? this.isAnimeLoading,
       isGenreLoading: isGenreLoading ?? this.isGenreLoading,
@@ -76,6 +91,8 @@ class AnimeState {
           isAnimeDetailsLoading ?? this.isAnimeDetailsLoading,
       isCharactersListLoading:
           isCharactersListLoading ?? this.isCharactersListLoading,
+      isLatestSchedulesLoading:
+          isLatestSchedulesLoading ?? this.isLatestSchedulesLoading,
 
       animeListError: animeListError ?? this.animeListError,
       genreListError: genreListError ?? this.genreListError,
@@ -83,6 +100,8 @@ class AnimeState {
           recommendationListError ?? this.recommendationListError,
       animeDetailsError: animeDetailsError ?? this.animeDetailsError,
       charactersListError: charactersListError ?? this.charactersListError,
+      latestSchedulesListError:
+          latestSchedulesListError ?? this.latestSchedulesListError,
 
       animeInitial: animeInitial ?? this.animeInitial,
     );
