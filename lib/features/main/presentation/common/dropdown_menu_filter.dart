@@ -8,15 +8,26 @@ class DropdownMenuFilter extends StatelessWidget {
     required this.selectedRating,
     required this.selectedStatus,
     required this.onFilterChanged,
+    required this.selectedOrder,
+    required this.sortSwitch,
+    required this.onSwitch,
     this.enabled = true,
   });
 
   final int selectedType;
   final int selectedRating;
   final int selectedStatus;
+  final int selectedOrder;
   final bool enabled;
+  final bool sortSwitch;
+  final void Function(bool) onSwitch;
 
-  final void Function(int typeIndex, int ratingIndex, int statusIndex)
+  final void Function(
+    int typeIndex,
+    int ratingIndex,
+    int statusIndex,
+    int orderIndex,
+  )
   onFilterChanged;
 
   static const List<String> typeLabels = [
@@ -79,6 +90,26 @@ class DropdownMenuFilter extends StatelessWidget {
     'airing',
   ];
 
+  static const List<String> orderLabels = [
+    'All',
+    'Score',
+    'Popularity',
+    'Favorites',
+    'Members',
+    'Episodes',
+    'Title',
+  ];
+
+  static const List<String> orderApiValues = [
+    '',
+    'score',
+    'popularity',
+    'favorites',
+    'members',
+    'episodes',
+    'title',
+  ];
+
   @override
   Widget build(BuildContext context) {
     return MenuAnchor(
@@ -111,81 +142,196 @@ class DropdownMenuFilter extends StatelessWidget {
       menuChildren: [
         SizedBox(
           width: MediaQuery.of(context).size.width - 20,
-          height: 360,
+          height: 380,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               //* ==========status
-              const SizedBox(height: 4),
-              Text(
-                "STATUS",
-                style: Theme.of(
-                  context,
-                ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 4),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 4),
 
-              const Divider(height: 1, thickness: 0.4),
-
-              SizedBox(
-                height: 70,
-                width: double.infinity,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  physics: const BouncingScrollPhysics(),
-                  padding: EdgeInsets.zero,
-                  itemCount: statusLabels.length,
-                  itemBuilder: (context, index) {
-                    return InkWell(
-                      onTap: () =>
-                          onFilterChanged(selectedType, selectedRating, index),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 12,
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(12),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SizedBox(
-                                width: 22,
-                                child: selectedStatus == index
-                                    ? Icon(
-                                        Icons.check,
-                                        size: 18,
-                                        color: Theme.of(
-                                          context,
-                                        ).colorScheme.primary,
-                                      )
-                                    : null,
-                              ),
-
-                              const SizedBox(width: 10),
-
-                              Text(
-                                statusLabels[index],
-                                softWrap: true,
-                                overflow: TextOverflow.visible,
-                              ),
-                            ],
-                          ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 16.0),
+                        child: Text(
+                          "STATUS",
+                          style: Theme.of(context).textTheme.titleSmall
+                              ?.copyWith(fontWeight: FontWeight.bold),
                         ),
                       ),
-                    );
-                  },
-                ),
+                      //* ====== DESC or ASC SORT
+                      Padding(
+                        padding: const EdgeInsets.only(right: 16.0),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              "ASC",
+                              style: Theme.of(context).textTheme.bodySmall
+                                  ?.copyWith(
+                                    color: primarySoft,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                            ),
+                            const SizedBox(width: 4),
+                            Switch(
+                              value: sortSwitch,
+                              onChanged: (bool value) {
+                                onSwitch(value);
+                              },
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              "DESC",
+                              style: Theme.of(context).textTheme.bodySmall
+                                  ?.copyWith(
+                                    color: primarySoft,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+
+                  SizedBox(
+                    height: 40,
+                    width: double.infinity,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      physics: const BouncingScrollPhysics(),
+                      padding: EdgeInsets.zero,
+                      itemCount: statusLabels.length,
+                      itemBuilder: (context, index) {
+                        return InkWell(
+                          onTap: () => onFilterChanged(
+                            selectedType,
+                            selectedRating,
+                            index,
+                            selectedOrder,
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  width: 22,
+                                  child: selectedStatus == index
+                                      ? Icon(
+                                          Icons.check,
+                                          size: 18,
+                                          color: Theme.of(
+                                            context,
+                                          ).colorScheme.primary,
+                                        )
+                                      : null,
+                                ),
+
+                                const SizedBox(width: 10),
+
+                                Text(
+                                  statusLabels[index],
+                                  softWrap: true,
+                                  overflow: TextOverflow.visible,
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  const Divider(height: 1, thickness: 0.4),
+                ],
               ),
 
-              const Divider(height: 1, thickness: 0.4),
+              //* ======= ORDER
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 4),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16.0),
+                    child: Text(
+                      "ORDER",
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 4),
 
+                  SizedBox(
+                    height: 40,
+                    width: double.infinity,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      physics: const BouncingScrollPhysics(),
+                      padding: EdgeInsets.zero,
+                      itemCount: orderLabels.length,
+                      itemBuilder: (context, index) {
+                        return InkWell(
+                          onTap: () => onFilterChanged(
+                            selectedType,
+                            selectedRating,
+                            selectedStatus,
+                            index,
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  width: 22,
+                                  child: selectedOrder == index
+                                      ? Icon(
+                                          Icons.check,
+                                          size: 18,
+                                          color: Theme.of(
+                                            context,
+                                          ).colorScheme.primary,
+                                        )
+                                      : null,
+                                ),
+
+                                const SizedBox(width: 10),
+
+                                Text(
+                                  orderLabels[index],
+                                  softWrap: true,
+                                  overflow: TextOverflow.visible,
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  const Divider(height: 1, thickness: 0.4),
+                ],
+              ),
               //* & ======= type and rating
               Expanded(
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     //* ===== type
                     SizedBox(
-                      width: (MediaQuery.of(context).size.width / 2) - 11,
+                      width: (MediaQuery.of(context).size.width / 2) - 40,
                       child: _buildColumn(
                         context,
                         title: "Type",
@@ -196,23 +342,27 @@ class DropdownMenuFilter extends StatelessWidget {
                             index,
                             selectedRating,
                             selectedStatus,
+                            selectedOrder,
                           );
                         },
                       ),
                     ),
 
-                    const VerticalDivider(width: 1, thickness: 0.4),
-
                     //* ======= rating
                     SizedBox(
-                      width: (MediaQuery.of(context).size.width / 2) - 11,
+                      width: (MediaQuery.of(context).size.width / 2),
                       child: _buildColumn(
                         context,
                         title: "Rating",
                         labels: ratingLabels,
                         selectedIndex: selectedRating,
                         onTap: (index) {
-                          onFilterChanged(selectedType, index, selectedStatus);
+                          onFilterChanged(
+                            selectedType,
+                            index,
+                            selectedStatus,
+                            selectedOrder,
+                          );
                         },
                       ),
                     ),
@@ -234,18 +384,20 @@ class DropdownMenuFilter extends StatelessWidget {
     required ValueChanged<int> onTap,
   }) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12),
-          child: Text(
-            title,
-            style: Theme.of(
-              context,
-            ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Padding(
+            padding: const EdgeInsets.only(left: 24.0),
+            child: Text(
+              title,
+              style: Theme.of(
+                context,
+              ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+            ),
           ),
         ),
-
-        const Divider(height: 1, thickness: 0.4),
 
         Expanded(
           child: ListView.builder(
@@ -258,7 +410,7 @@ class DropdownMenuFilter extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 12,
-                    vertical: 12,
+                    vertical: 8,
                   ),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,

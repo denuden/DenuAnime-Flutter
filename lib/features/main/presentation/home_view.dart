@@ -19,6 +19,7 @@ import 'package:denuanime/features/main/presentation/common/recommendation_item.
 import 'package:denuanime/features/people/data/request/search_people_request.dart';
 import 'package:denuanime/features/anime/domain/cubits/anime_cubit.dart';
 import 'package:denuanime/features/anime/domain/cubits/anime_state.dart';
+import 'package:denuanime/features/people/domain/repositories/people_repo.dart';
 import 'package:denuanime/features/people/presentation/common/person_avatar_item_.dart';
 import 'package:denuanime/features/people/domain/cubits/people_cubit.dart';
 import 'package:denuanime/features/people/domain/cubits/people_state.dart';
@@ -47,6 +48,8 @@ class _HomeViewState extends State<HomeView> {
   int selectedType = 0;
   int selectedRating = 0;
   int selectedStatus = 0;
+  int selectedOrder = 0;
+  bool selectedSort = false; // false is asc, true is desc
 
   var filteredGenre = '';
   //? ============ functions
@@ -79,7 +82,13 @@ class _HomeViewState extends State<HomeView> {
   void _onNavigateToSearchPerson() {
     Navigator.of(context).push(
       MaterialPageRoute<SearchPersonView>(
-        builder: (context) => SearchPersonView(),
+        builder: (context) => BlocProvider(
+          create: (_) => PeopleCubit(peopleRepo: context.read<PeopleRepo>())
+            ..searchPeople(
+              const SearchPeopleRequest(order_by: "favorites", sort: "desc"),
+            ),
+          child: const SearchPersonView(),
+        ),
       ),
     );
   }
@@ -89,9 +98,13 @@ class _HomeViewState extends State<HomeView> {
   }
 
   void _searchAnime() {
+    setState(() {
+      currentCarouselIndex = 0;
+    });
     final type = DropdownMenuFilter.typeApiValues[selectedType];
     final rating = DropdownMenuFilter.ratingApiValues[selectedRating];
     final status = DropdownMenuFilter.statusApiValues[selectedStatus];
+    final order = DropdownMenuFilter.orderApiValues[selectedOrder];
 
     context.read<AnimeCubit>().searchAnime(
       SearchAnimeRequest(
@@ -99,9 +112,9 @@ class _HomeViewState extends State<HomeView> {
         rating: rating.isEmpty ? null : rating,
         status: status.isEmpty ? null : status,
         genres: filteredGenre,
-        order_by: "popularity",
-        limit: "10",
-        sort: "asc",
+        order_by: order.isEmpty ? null : order,
+        limit: "25",
+        sort: selectedSort ? "desc" : "asc",
       ),
     );
   }
@@ -112,7 +125,7 @@ class _HomeViewState extends State<HomeView> {
     context.read<PeopleCubit>().searchPeople(
       const SearchPeopleRequest(
         order_by: "favorites",
-        limit: "15",
+        limit: "25",
         sort: "desc",
       ),
     );
@@ -276,7 +289,6 @@ class _HomeViewState extends State<HomeView> {
           },
         ),
 
-        const SizedBox(height: 8),
         const Divider(thickness: 0.2),
       ],
     );
@@ -292,11 +304,21 @@ class _HomeViewState extends State<HomeView> {
               selectedType: selectedType,
               selectedRating: selectedRating,
               selectedStatus: selectedStatus,
-              onFilterChanged: (typeIndex, ratingIndex, statusIndex) {
+              selectedOrder: selectedOrder,
+              sortSwitch: selectedSort,
+              onFilterChanged:
+                  (typeIndex, ratingIndex, statusIndex, orderIndex) {
+                    setState(() {
+                      selectedType = typeIndex;
+                      selectedRating = ratingIndex;
+                      selectedStatus = statusIndex;
+                      selectedOrder = orderIndex;
+                      _searchAnime();
+                    });
+                  },
+              onSwitch: (value) {
                 setState(() {
-                  selectedType = typeIndex;
-                  selectedRating = ratingIndex;
-                  selectedStatus = statusIndex;
+                  selectedSort = value;
                   _searchAnime();
                 });
               },

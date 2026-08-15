@@ -48,24 +48,31 @@ class MainApp extends StatelessWidget {
   //* -------------------------
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
+    return MultiRepositoryProvider(
       providers: [
-        //* People Cubit
-        BlocProvider(create: (context) => PeopleCubit(peopleRepo: peopleRepo)),
-        //* Anime Cubit
-        BlocProvider(create: (context) => AnimeCubit(animeRepo: animeRepo)),
-        //* Character Cubit
-        BlocProvider(
-          create: (context) => CharacterCubit(
-            characterRepo: characterRepo,
-            peopleRepo: peopleRepo,
-          ),
-        ),
+        RepositoryProvider<PeopleRepo>(create: (context) => peopleRepo),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: darkMode,
-        home: const LandingView(),
+      child: MultiBlocProvider(
+        providers: [
+          //* People Cubit
+          BlocProvider(
+            create: (context) => PeopleCubit(peopleRepo: peopleRepo),
+          ),
+          //* Anime Cubit
+          BlocProvider(create: (context) => AnimeCubit(animeRepo: animeRepo)),
+          //* Character Cubit
+          BlocProvider(
+            create: (context) => CharacterCubit(
+              characterRepo: characterRepo,
+              peopleRepo: peopleRepo,
+            ),
+          ),
+        ],
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: darkMode,
+          home: const LandingView(),
+        ),
       ),
     );
   }
