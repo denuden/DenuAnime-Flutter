@@ -1,5 +1,4 @@
 import 'package:denuanime/features/anime/domain/entities/recent_episodes_model.dart';
-import 'package:denuanime/theme/dark_mode.dart';
 import 'package:flutter/material.dart';
 
 class AnimeHorizontalCardItem extends StatelessWidget {
@@ -38,23 +37,9 @@ class AnimeHorizontalCardItem extends StatelessWidget {
                 ),
 
                 const SizedBox(height: 12),
-
-                Row(
-                  children:
-                      model.episodes
-                          ?.map(
-                            (episode) => Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8.0,
-                              ),
-                              child: Text(
-                                episode.title ?? '',
-                                style: const TextStyle(color: primary),
-                              ),
-                            ),
-                          )
-                          .toList() ??
-                      [const Text("No recent episodes")],
+                TextButton(
+                  onPressed: () {},
+                  child: const Text("Youtube Trailer"),
                 ),
               ],
             ),

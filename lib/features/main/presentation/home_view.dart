@@ -3,7 +3,6 @@
 import 'package:denuanime/features/anime/data/request/get_recommendations_request.dart';
 import 'package:denuanime/features/anime/data/request/search_anime_request.dart';
 import 'package:denuanime/features/anime/domain/entities/anime_details_model.dart';
-import 'package:denuanime/features/anime/domain/entities/episode_model.dart';
 import 'package:denuanime/features/anime/domain/entities/recent_episodes_model.dart';
 import 'package:denuanime/features/anime/presentation/anime_details_view.dart';
 import 'package:denuanime/features/anime/presentation/common/anime_horizontal_card_item.dart';
@@ -12,6 +11,7 @@ import 'package:denuanime/features/common/presentation/skeleton/home_carousel_it
 import 'package:denuanime/features/common/presentation/skeleton/home_genre_items_skeleton.dart';
 import 'package:denuanime/features/common/presentation/skeleton/home_people_items_skeleton.dart';
 import 'package:denuanime/features/common/presentation/skeleton/home_recommendation_items_skeleton.dart';
+import 'package:denuanime/features/common/presentation/skeleton/home_schedules_item_skeleton.dart';
 import 'package:denuanime/features/main/presentation/common/drawer_home.dart';
 import 'package:denuanime/features/main/presentation/common/dropdown_menu_filter.dart';
 import 'package:denuanime/features/main/presentation/common/genre_item.dart';
@@ -25,7 +25,6 @@ import 'package:denuanime/features/people/domain/cubits/people_cubit.dart';
 import 'package:denuanime/features/people/domain/cubits/people_state.dart';
 import 'package:denuanime/features/people/presentation/person_details_view.dart';
 import 'package:denuanime/features/people/presentation/search_person_view.dart';
-import 'package:denuanime/json/anime_details.dart';
 import 'package:denuanime/theme/dark_mode.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -121,6 +120,8 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   void initState() {
+    super.initState();
+
     //call people list
     context.read<PeopleCubit>().searchPeople(
       const SearchPeopleRequest(
@@ -147,7 +148,15 @@ class _HomeViewState extends State<HomeView> {
     context.read<AnimeCubit>().getAllRecommendations(
       const GetRecommendationsRequest(limit: "2", sfw: "true"),
     );
-    super.initState();
+
+    //emit loading only
+    context.read<AnimeCubit>().setLatestSchedulesToLoading();
+    //call episodes schedules
+    Future.delayed(const Duration(seconds: 3), () {
+      if (!mounted) return;
+
+      context.read<AnimeCubit>().getLatestSchedules();
+    });
   }
 
   @override
@@ -187,28 +196,32 @@ class _HomeViewState extends State<HomeView> {
           SliverToBoxAdapter(child: _RecentHeaderSection(context)),
           SliverPadding(
             padding: const EdgeInsetsGeometry.symmetric(horizontal: 8),
-            sliver: SliverList.builder(
-              itemCount: 5,
-              itemBuilder: (context, index) {
-                return AnimeHorizontalCardItem(
-                  model: RecentEpisodesModel(
-                    entry: animeDetailsSample,
-                    episodes: const [
-                      EpisodeModel(
-                        mal_id: 1,
-                        url: "url",
-                        title: "Episode 1",
-                        premium: true,
+            sliver: BlocBuilder<AnimeCubit, AnimeState>(
+              builder: (context, state) {
+                if (state.isLatestSchedulesLoading) {
+                  return const SliverToBoxAdapter(
+                    child: HomeSchedulesItemSkeleton(),
+                  );
+                }
+
+                if (state.latestSchedulesListError.isNotEmpty) {
+                  return SliverToBoxAdapter(
+                    child: Center(child: Text(state.latestSchedulesListError)),
+                  );
+                }
+
+                final schedules = state.latestSchedulesList;
+                return SliverList.builder(
+                  itemCount: schedules.length,
+                  itemBuilder: (context, index) {
+                    return AnimeHorizontalCardItem(
+                      model: RecentEpisodesModel(
+                        entry: schedules[index],
+                        episodes: [],
+                        region_locked: true,
                       ),
-                      EpisodeModel(
-                        mal_id: 1,
-                        url: "url",
-                        title: "Episode 2",
-                        premium: true,
-                      ),
-                    ],
-                    region_locked: true,
-                  ),
+                    );
+                  },
                 );
               },
             ),
@@ -263,7 +276,11 @@ class _HomeViewState extends State<HomeView> {
               );
             }
             if (state.peopleListError.isNotEmpty) {
-              Text(state.peopleListError);
+              SizedBox(
+                height: 120,
+                width: 400,
+                child: Text(state.peopleListError),
+              );
             }
             return SizedBox(
               height: 120,

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:denuanime/features/anime/data/request/get_anime_details_full_request.dart';
 import 'package:denuanime/features/anime/data/request/get_recommendations_request.dart';
 import 'package:denuanime/features/anime/data/request/search_anime_request.dart';
@@ -122,6 +124,41 @@ class AnimeCubit extends Cubit<AnimeState> {
     }
   }
 
+  Future<void> getLatestSchedules() async {
+    emit(
+      state.copyWith(
+        isLatestSchedulesLoading: true,
+        latestSchedulesListError: "",
+      ),
+    );
+
+    try {
+      final schedules = await animeRepo.getLatestSchedules();
+
+      emit(
+        state.copyWith(
+          latestSchedulesList: schedules,
+          isLatestSchedulesLoading: false,
+          latestSchedulesListError: "",
+        ),
+      );
+    } on HttpException catch (e) {
+      emit(
+        state.copyWith(
+          latestSchedulesListError: e.message.toString(),
+          isLatestSchedulesLoading: false,
+        ),
+      );
+    } catch (e) {
+      emit(
+        state.copyWith(
+          latestSchedulesListError: e.toString(),
+          isLatestSchedulesLoading: false,
+        ),
+      );
+    }
+  }
+
   //? ====================== local calls
   String toggleGenre(int malId, bool selected) {
     final updatedGenres = state.genresList.map((genre) {
@@ -147,5 +184,9 @@ class AnimeCubit extends Cubit<AnimeState> {
         .where((g) => g.is_selected)
         .map((g) => g.mal_id.toString())
         .join(',');
+  }
+
+  void setLatestSchedulesToLoading() {
+    emit(state.copyWith(isLatestSchedulesLoading: true));
   }
 }
