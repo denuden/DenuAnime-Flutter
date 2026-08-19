@@ -186,6 +186,8 @@ class _HomeViewState extends State<HomeView> {
         slivers: [
           //*--------------- Refresher
           CupertinoSliverRefreshControl(
+            refreshTriggerPullDistance: 180,
+
             onRefresh: () async {
               //call people list
               context.read<PeopleCubit>().searchPeople(

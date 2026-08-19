@@ -11,6 +11,7 @@ import 'package:denuanime/theme/dark_mode.dart';
 import 'package:denuanime/utils/app_web_view.dart';
 import 'package:denuanime/utils/datetime_formatter.dart';
 import 'package:denuanime/utils/truncate_text.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -70,6 +71,9 @@ class _AnimeCharacterDetailsViewState extends State<AnimeCharacterDetailsView> {
 
           //*========= start body
           return CustomScrollView(
+            physics: const BouncingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics(),
+            ),
             slivers: [
               //* ====== appbar
               SliverAppBar(
@@ -149,7 +153,15 @@ class _AnimeCharacterDetailsViewState extends State<AnimeCharacterDetailsView> {
                   ],
                 ),
               ),
+              //* ====== refresh
+              CupertinoSliverRefreshControl(
+                refreshTriggerPullDistance: 180,
 
+                onRefresh: () async {
+                  //get character details full
+                  context.read<CharacterCubit>().loadCharacter(widget.id);
+                },
+              ),
               //* ========== main body
               SliverToBoxAdapter(
                 child: Padding(

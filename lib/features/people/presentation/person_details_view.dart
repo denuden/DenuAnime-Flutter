@@ -8,6 +8,7 @@ import 'package:denuanime/features/people/domain/cubits/people_state.dart';
 import 'package:denuanime/features/people/presentation/common/person_character_item.dart';
 import 'package:denuanime/theme/dark_mode.dart';
 import 'package:denuanime/utils/datetime_formatter.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -87,9 +88,21 @@ class _PersonDetailsViewState extends State<PersonDetailsView> {
           final peopleModel = state.peopleDetails;
 
           return CustomScrollView(
+            physics: const BouncingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics(),
+            ),
             controller: _controller,
             //* body
             slivers: [
+              //* Refresh
+              CupertinoSliverRefreshControl(
+                refreshTriggerPullDistance: 180,
+
+                onRefresh: () async {
+                  //call full details people
+                  context.read<PeopleCubit>().getFullPeopleDetails(widget.id);
+                },
+              ),
               //* Header
               SliverToBoxAdapter(
                 child: SizedBox(

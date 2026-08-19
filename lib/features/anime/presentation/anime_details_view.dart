@@ -20,6 +20,7 @@ import 'package:denuanime/features/people/presentation/common/person_card_with_c
 import 'package:denuanime/json/anime_character.dart';
 import 'package:denuanime/theme/dark_mode.dart';
 import 'package:denuanime/utils/app_web_view.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -104,8 +105,23 @@ class _AnimeDetailsViewState extends State<AnimeDetailsView> {
             children: [
               //* ======== body
               CustomScrollView(
+                physics: const BouncingScrollPhysics(
+                  parent: AlwaysScrollableScrollPhysics(),
+                ),
                 controller: _controller,
                 slivers: [
+                  //* --  refresher
+                  CupertinoSliverRefreshControl(
+                    refreshTriggerPullDistance: 180,
+                    onRefresh: () async {
+                      context.read<AnimeCubit>().getAnimeDetailsFull(
+                        GetAnimeDetailsFullRequest(id: widget.id),
+                      );
+                      context.read<AnimeCubit>().getAnimeCharacters(
+                        GetAnimeDetailsFullRequest(id: widget.id),
+                      );
+                    },
+                  ),
                   SliverToBoxAdapter(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
