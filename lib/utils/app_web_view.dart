@@ -60,7 +60,7 @@ class _AppWebViewState extends State<AppWebView> {
       backgroundColor: secondary,
       appBar: AppBar(
         backgroundColor: secondary,
-        title: const Text('Browser'),
+        title: const Text('In-app Browser'),
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () => Navigator.pop(context),

@@ -26,6 +26,7 @@ import 'package:denuanime/features/people/domain/cubits/people_state.dart';
 import 'package:denuanime/features/people/presentation/person_details_view.dart';
 import 'package:denuanime/features/people/presentation/search_person_view.dart';
 import 'package:denuanime/theme/dark_mode.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -121,7 +122,6 @@ class _HomeViewState extends State<HomeView> {
   @override
   void initState() {
     super.initState();
-
     //call people list
     context.read<PeopleCubit>().searchPeople(
       const SearchPeopleRequest(
@@ -180,7 +180,50 @@ class _HomeViewState extends State<HomeView> {
 
       //* ============== body
       body: CustomScrollView(
+        physics: const BouncingScrollPhysics(
+          parent: AlwaysScrollableScrollPhysics(),
+        ),
         slivers: [
+          //*--------------- Refresher
+          CupertinoSliverRefreshControl(
+            onRefresh: () async {
+              //call people list
+              context.read<PeopleCubit>().searchPeople(
+                const SearchPeopleRequest(
+                  order_by: "favorites",
+                  limit: "25",
+                  sort: "desc",
+                ),
+              );
+
+              //call genre list
+              context.read<AnimeCubit>().getAllGenres();
+
+              // call anime list
+              context.read<AnimeCubit>().searchAnime(
+                const SearchAnimeRequest(
+                  type: "tv",
+                  order_by: "popularity",
+                  limit: "10",
+                  sort: "asc",
+                ),
+              );
+
+              //call recommendataions
+              context.read<AnimeCubit>().getAllRecommendations(
+                const GetRecommendationsRequest(limit: "2", sfw: "true"),
+              );
+
+              //emit loading only
+              context.read<AnimeCubit>().setLatestSchedulesToLoading();
+              //call episodes schedules
+              Future.delayed(const Duration(seconds: 3), () {
+                if (!context.mounted) return;
+
+                context.read<AnimeCubit>().getLatestSchedules();
+              });
+            },
+          ),
           //*-------------- People List
           SliverToBoxAdapter(child: _TopPeopleSection(context)),
           //* ---------------------- Filter

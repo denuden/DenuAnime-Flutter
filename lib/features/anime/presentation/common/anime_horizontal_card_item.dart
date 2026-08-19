@@ -6,6 +6,7 @@ import 'package:denuanime/utils/format_duration.dart';
 import 'package:denuanime/utils/format_shorthand_number.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AnimeHorizontalCardItem extends StatelessWidget {
   final RecentEpisodesModel model;
@@ -214,8 +215,42 @@ class AnimeHorizontalCardItem extends StatelessWidget {
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           visualDensity: VisualDensity.compact,
                         ),
-                        onPressed: () {
-                          //todo
+                        onPressed: () async {
+                          final youtubeId = model.entry?.trailer?.youtube_id;
+
+                          if (youtubeId == null || youtubeId.isEmpty) {
+                            return;
+                          }
+
+                          final youtubeAppUri = Uri.parse(
+                            'youtube://watch?v=$youtubeId',
+                          );
+
+                          final youtubeWebUri = Uri.parse(
+                            model.entry?.trailer?.url ?? '',
+                          );
+                          // debugPrint(
+                          //   (await canLaunchUrl(youtubeWebUri)).toString(),
+                          // );
+                          // debugPrint(
+                          //   (await canLaunchUrl(youtubeAppUri)).toString(),
+                          // );
+                          // await launchUrl(
+                          //   youtubeWebUri,
+                          //   mode: LaunchMode.platformDefault,
+                          // );
+                          // return;
+                          if (await canLaunchUrl(youtubeAppUri)) {
+                            await launchUrl(
+                              youtubeAppUri,
+                              mode: LaunchMode.externalNonBrowserApplication,
+                            );
+                          } else if (await canLaunchUrl(youtubeWebUri)) {
+                            await launchUrl(
+                              youtubeWebUri,
+                              mode: LaunchMode.platformDefault,
+                            );
+                          }
                         },
                         child: Row(
                           children: [
