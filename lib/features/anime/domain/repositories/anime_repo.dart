@@ -20,4 +20,8 @@ abstract class AnimeRepo {
   );
 
   Future<List<AnimeDetailsModel>> getLatestSchedules();
+
+  //* ============ seasons
+  Future<List<AnimeDetailsModel>> getSeasonalAnimeCurrent();
+  Future<List<AnimeDetailsModel>> getSeasonalAnimeUpcoming();
 }

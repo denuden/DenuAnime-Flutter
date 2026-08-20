@@ -82,7 +82,29 @@ class AnimeApiRepoImpl implements AnimeRepo {
   Future<List<AnimeDetailsModel>> getLatestSchedules() async {
     final response = await api.getLatestSchedules();
 
-    if (response.data != null) {
+    if (response.data?.isNotEmpty == true && response.data != null) {
+      return response.data ?? [];
+    } else {
+      throw const HttpException("Cannot find latest schedules of anime");
+    }
+  }
+
+  @override
+  Future<List<AnimeDetailsModel>> getSeasonalAnimeCurrent() async {
+    final response = await api.getSeasonalAnimeCurrent();
+
+    if (response.data?.isNotEmpty == true && response.data != null) {
+      return response.data ?? [];
+    } else {
+      throw const HttpException("Cannot find latest schedules of anime");
+    }
+  }
+
+  @override
+  Future<List<AnimeDetailsModel>> getSeasonalAnimeUpcoming() async {
+    final response = await api.getSeasonalAnimeUpcoming();
+
+    if (response.data?.isNotEmpty == true && response.data != null) {
       return response.data ?? [];
     } else {
       throw const HttpException("Cannot find latest schedules of anime");

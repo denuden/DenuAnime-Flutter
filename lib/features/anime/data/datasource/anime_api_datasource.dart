@@ -6,6 +6,7 @@ import 'package:denuanime/features/anime/data/response/get_anime_characters_resp
 import 'package:denuanime/features/anime/data/response/get_anime_details_full_response.dart';
 import 'package:denuanime/features/anime/data/response/get_latest_schedules_response.dart';
 import 'package:denuanime/features/anime/data/response/get_recommendations_response.dart';
+import 'package:denuanime/features/anime/data/response/get_seasonal_anime_response.dart';
 import 'package:denuanime/features/anime/data/response/search_anime_response.dart';
 import 'package:dio/dio.dart';
 
@@ -70,6 +71,23 @@ class AnimeApiDatasource {
     final response = await dio.get<Map<String, dynamic>>("/schedules");
 
     return GetLatestSchedulesResponse.fromJson(
+      response.data as Map<String, dynamic>,
+    );
+  }
+
+  //* ========= SEASONS
+  Future<GetSeasonalAnimeResponse> getSeasonalAnimeCurrent() async {
+    final response = await dio.get<Map<String, dynamic>>("/seasons/now");
+
+    return GetSeasonalAnimeResponse.fromJson(
+      response.data as Map<String, dynamic>,
+    );
+  }
+
+  Future<GetSeasonalAnimeResponse> getSeasonalAnimeUpcoming() async {
+    final response = await dio.get<Map<String, dynamic>>("/seasons/upcoming");
+
+    return GetSeasonalAnimeResponse.fromJson(
       response.data as Map<String, dynamic>,
     );
   }

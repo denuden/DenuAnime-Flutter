@@ -1,11 +1,17 @@
 import 'package:denuanime/features/anime/domain/entities/recommendation_model.dart';
 import 'package:denuanime/features/anime/presentation/common/anime_vertical_card_item.dart';
 import 'package:denuanime/theme/dark_mode.dart';
+import 'package:denuanime/utils/app_web_view.dart';
 import 'package:flutter/material.dart';
 
 class RecommendationItem extends StatelessWidget {
   final RecommendationModel recommendationModel;
-  const RecommendationItem({super.key, required this.recommendationModel});
+  final void Function(int) onLearnMore;
+  const RecommendationItem({
+    super.key,
+    required this.recommendationModel,
+    required this.onLearnMore,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -17,29 +23,35 @@ class RecommendationItem extends StatelessWidget {
               padding: const EdgeInsets.all(6.0),
               child: Column(
                 children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: AnimeVerticalCardItem(
-                          animeDetailsModel: recommendationModel.entry![0],
-                          isFromRecommendationEndpoint: true,
+                  //* === items with images and title
+                  IntrinsicHeight(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: AnimeVerticalCardItem(
+                            animeDetailsModel: recommendationModel.entry![0],
+                            isFromRecommendationEndpoint: true,
+                            onLearnMore: onLearnMore,
+                          ),
                         ),
-                      ),
-                      Expanded(
-                        flex: 1,
-                        child: AnimeVerticalCardItem(
-                          animeDetailsModel: recommendationModel.entry![1],
-                          isFromRecommendationEndpoint: true,
+                        Expanded(
+                          flex: 1,
+                          child: AnimeVerticalCardItem(
+                            animeDetailsModel: recommendationModel.entry![1],
+                            isFromRecommendationEndpoint: true,
+                            onLearnMore: onLearnMore,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                   const SizedBox(height: 16),
 
                   const Divider(height: 1, thickness: 0.2),
                   const SizedBox(height: 16),
+                  //* recommendation info
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 4.0),
                     child: Row(
@@ -71,13 +83,28 @@ class RecommendationItem extends StatelessWidget {
                                       fontWeight: FontWeight.w600,
                                     ),
                               ),
-                              Text(
-                                "Credits to: ${recommendationModel.user?.url ?? '---'}",
-                                style: Theme.of(context).textTheme.bodySmall
-                                    ?.copyWith(
-                                      color: primarySoft,
-                                      fontWeight: FontWeight.w300,
-                                    ),
+                              InkWell(
+                                borderRadius: BorderRadius.circular(8),
+
+                                onTap: () {
+                                  final url = recommendationModel.user?.url;
+                                  if (url != null || url?.isNotEmpty == true) {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute<AppWebView>(
+                                        builder: (_) => AppWebView(url: url!),
+                                      ),
+                                    );
+                                  }
+                                },
+                                child: Text(
+                                  "Credits to: ${recommendationModel.user?.url ?? '---'}",
+                                  style: Theme.of(context).textTheme.bodySmall
+                                      ?.copyWith(
+                                        color: primarySoft,
+                                        fontWeight: FontWeight.w300,
+                                      ),
+                                ),
                               ),
                               const SizedBox(height: 4),
                               Text(

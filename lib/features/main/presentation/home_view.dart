@@ -2,7 +2,6 @@
 
 import 'package:denuanime/features/anime/data/request/get_recommendations_request.dart';
 import 'package:denuanime/features/anime/data/request/search_anime_request.dart';
-import 'package:denuanime/features/anime/domain/entities/anime_details_model.dart';
 import 'package:denuanime/features/anime/domain/entities/recent_episodes_model.dart';
 import 'package:denuanime/features/anime/presentation/anime_details_view.dart';
 import 'package:denuanime/features/anime/presentation/common/anime_horizontal_card_item.dart';
@@ -63,10 +62,10 @@ class _HomeViewState extends State<HomeView> {
     Navigator.pop(context);
   }
 
-  void _onNavigateToAnimeDetails(AnimeDetailsModel animeDetails) {
+  void _onNavigateToAnimeDetails(int id) {
     Navigator.of(context).push(
       MaterialPageRoute<AnimeDetailsView>(
-        builder: (context) => AnimeDetailsView(id: animeDetails.mal_id ?? -1),
+        builder: (context) => AnimeDetailsView(id: id),
       ),
     );
   }
@@ -222,7 +221,17 @@ class _HomeViewState extends State<HomeView> {
               Future.delayed(const Duration(seconds: 3), () {
                 if (!context.mounted) return;
 
-                context.read<AnimeCubit>().getLatestSchedules();
+                switch (recentSegmentedButton) {
+                  case RecentSegmentedButton.recent:
+                    context.read<AnimeCubit>().getLatestSchedules();
+                    break;
+                  case RecentSegmentedButton.ongoing:
+                    context.read<AnimeCubit>().getSeasonalAnimeCurrent();
+                    break;
+                  case RecentSegmentedButton.upcoming:
+                    context.read<AnimeCubit>().getSeasonalAnimeUpcoming();
+                    break;
+                }
               });
             },
           ),
@@ -260,6 +269,11 @@ class _HomeViewState extends State<HomeView> {
                   itemCount: schedules.length,
                   itemBuilder: (context, index) {
                     return AnimeHorizontalCardItem(
+                      onClickItem: () {
+                        _onNavigateToAnimeDetails(
+                          schedules[index].mal_id ?? -1,
+                        );
+                      },
                       model: RecentEpisodesModel(
                         entry: schedules[index],
                         episodes: [],
@@ -472,8 +486,9 @@ class _HomeViewState extends State<HomeView> {
               }
               return CarouselView.weighted(
                 enableSplash: true,
-                onTap: (index) =>
-                    _onNavigateToAnimeDetails(state.animesList[index]),
+                onTap: (index) => _onNavigateToAnimeDetails(
+                  state.animesList[index].mal_id ?? -1,
+                ),
                 backgroundColor: Colors.red,
                 itemSnapping: true,
                 flexWeights: [6, 1],
@@ -562,6 +577,9 @@ class _HomeViewState extends State<HomeView> {
                   padding: const EdgeInsets.symmetric(vertical: 4.0),
                   child: RecommendationItem(
                     recommendationModel: recommendations[index],
+                    onLearnMore: (id) {
+                      _onNavigateToAnimeDetails(id);
+                    },
                   ),
                 );
               }),
@@ -609,6 +627,18 @@ class _HomeViewState extends State<HomeView> {
             onSelectionChanged: (Set<RecentSegmentedButton> newSelection) {
               setState(() {
                 recentSegmentedButton = newSelection.first;
+
+                switch (recentSegmentedButton) {
+                  case RecentSegmentedButton.recent:
+                    context.read<AnimeCubit>().getLatestSchedules();
+                    break;
+                  case RecentSegmentedButton.ongoing:
+                    context.read<AnimeCubit>().getSeasonalAnimeCurrent();
+                    break;
+                  case RecentSegmentedButton.upcoming:
+                    context.read<AnimeCubit>().getSeasonalAnimeUpcoming();
+                    break;
+                }
               });
             },
           ),

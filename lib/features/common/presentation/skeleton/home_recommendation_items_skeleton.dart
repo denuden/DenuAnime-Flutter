@@ -14,6 +14,7 @@ class HomeRecommendationItemsSkeleton extends StatelessWidget {
     return Skeletonizer(
       enabled: isLoading,
       child: RecommendationItem(
+        onLearnMore: (p0) {},
         recommendationModel: RecommendationModel(
           mal_id: "0",
           entry: [animeDetailsSample, animeDetailsSample],

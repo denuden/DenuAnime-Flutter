@@ -159,6 +159,76 @@ class AnimeCubit extends Cubit<AnimeState> {
     }
   }
 
+  Future<void> getSeasonalAnimeCurrent() async {
+    emit(
+      state.copyWith(
+        isLatestSchedulesLoading: true,
+        latestSchedulesListError: "",
+      ),
+    );
+
+    try {
+      final schedules = await animeRepo.getSeasonalAnimeCurrent();
+
+      emit(
+        state.copyWith(
+          latestSchedulesList: schedules,
+          isLatestSchedulesLoading: false,
+          latestSchedulesListError: "",
+        ),
+      );
+    } on HttpException catch (e) {
+      emit(
+        state.copyWith(
+          latestSchedulesListError: e.message.toString(),
+          isLatestSchedulesLoading: false,
+        ),
+      );
+    } catch (e) {
+      emit(
+        state.copyWith(
+          latestSchedulesListError: e.toString(),
+          isLatestSchedulesLoading: false,
+        ),
+      );
+    }
+  }
+
+  Future<void> getSeasonalAnimeUpcoming() async {
+    emit(
+      state.copyWith(
+        isLatestSchedulesLoading: true,
+        latestSchedulesListError: "",
+      ),
+    );
+
+    try {
+      final schedules = await animeRepo.getSeasonalAnimeUpcoming();
+
+      emit(
+        state.copyWith(
+          latestSchedulesList: schedules,
+          isLatestSchedulesLoading: false,
+          latestSchedulesListError: "",
+        ),
+      );
+    } on HttpException catch (e) {
+      emit(
+        state.copyWith(
+          latestSchedulesListError: e.message.toString(),
+          isLatestSchedulesLoading: false,
+        ),
+      );
+    } catch (e) {
+      emit(
+        state.copyWith(
+          latestSchedulesListError: e.toString(),
+          isLatestSchedulesLoading: false,
+        ),
+      );
+    }
+  }
+
   //? ====================== local calls
   String toggleGenre(int malId, bool selected) {
     final updatedGenres = state.genresList.map((genre) {

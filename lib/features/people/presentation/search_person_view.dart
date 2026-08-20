@@ -20,7 +20,7 @@ class _SearchPersonViewState extends State<SearchPersonView> {
   final SearchController searchController = SearchController();
 
   Timer? _searchTimer;
-  List<String> _previousSearches = [];
+  final List<String> _previousSearches = [];
 
   //?========= functions
   void searchPeople(String query) {

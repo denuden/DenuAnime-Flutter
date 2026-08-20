@@ -6,10 +6,12 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 class AnimeVerticalCardItem extends StatelessWidget {
   final AnimeDetailsModel animeDetailsModel;
   final bool isFromRecommendationEndpoint;
+  final void Function(int) onLearnMore;
   const AnimeVerticalCardItem({
     super.key,
     required this.animeDetailsModel,
     required this.isFromRecommendationEndpoint,
+    required this.onLearnMore,
   });
 
   @override
@@ -19,7 +21,6 @@ class AnimeVerticalCardItem extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
-
         children: [
           //*image
           SizedBox(
@@ -35,52 +36,55 @@ class AnimeVerticalCardItem extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           //*title
-          Padding(
-            padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(
-                  animeDetailsModel.title ?? 'Unknown Title',
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: white,
-                    fontWeight: FontWeight.w500,
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    animeDetailsModel.title ?? 'Unknown Title',
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: white,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                ),
-                if (isFromRecommendationEndpoint)
-                  TextButton(
-                    onPressed: () {
-                      //TODO
-                    },
-                    child: const Text("Learn more"),
-                  ),
+                  const Spacer(),
+                  if (isFromRecommendationEndpoint)
+                    TextButton(
+                      onPressed: () {
+                        onLearnMore(animeDetailsModel.mal_id ?? -1);
+                      },
+                      child: const Text("Learn more"),
+                    ),
 
-                if (!isFromRecommendationEndpoint)
-                  Row(
-                    children: [
-                      const Icon(Icons.calendar_today_rounded, size: 16),
-                      const SizedBox(width: 8),
-                      Text('${animeDetailsModel.year ?? '---'}'),
-                    ],
-                  ),
-                if (!isFromRecommendationEndpoint)
-                  Row(
-                    children: [
-                      RatingBarIndicator(
-                        rating: (animeDetailsModel.score ?? 0.0) / 2,
-                        itemBuilder: (context, index) =>
-                            const Icon(Icons.star, color: Colors.amber),
-                        itemCount: 5,
-                        itemSize: 16,
-                      ),
-                      const SizedBox(width: 8),
+                  if (!isFromRecommendationEndpoint)
+                    Row(
+                      children: [
+                        const Icon(Icons.calendar_today_rounded, size: 16),
+                        const SizedBox(width: 8),
+                        Text('${animeDetailsModel.year ?? '---'}'),
+                      ],
+                    ),
+                  if (!isFromRecommendationEndpoint)
+                    Row(
+                      children: [
+                        RatingBarIndicator(
+                          rating: (animeDetailsModel.score ?? 0.0) / 2,
+                          itemBuilder: (context, index) =>
+                              const Icon(Icons.star, color: Colors.amber),
+                          itemCount: 5,
+                          itemSize: 16,
+                        ),
+                        const SizedBox(width: 8),
 
-                      Text('${animeDetailsModel.score ?? '0.0'}'),
-                    ],
-                  ),
-              ],
+                        Text('${animeDetailsModel.score ?? '0.0'}'),
+                      ],
+                    ),
+                ],
+              ),
             ),
           ),
         ],
