@@ -21,12 +21,12 @@ class AnimeCarouselItem extends StatelessWidget {
           //* picture
           CustomImageNetwork(
             animeDetails.images?.jpg?.large_image_url ?? '',
-            height: 500,
+            height: 600,
           ),
 
           //* gradient
           Container(
-            height: 500,
+            height: 600,
             width: double.infinity,
             decoration: const BoxDecoration(
               gradient: LinearGradient(

@@ -37,7 +37,7 @@ class AnimeHorizontalCardItem extends StatelessWidget {
                     ),
                     child: Image.network(
                       fit: BoxFit.cover,
-                      model.entry?.images?.jpg?.image_url ?? '',
+                      model.entry?.images?.jpg?.large_image_url ?? '',
                     ),
                   ),
                 ),

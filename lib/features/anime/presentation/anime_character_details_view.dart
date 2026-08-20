@@ -77,7 +77,7 @@ class _AnimeCharacterDetailsViewState extends State<AnimeCharacterDetailsView> {
             slivers: [
               //* ====== appbar
               SliverAppBar(
-                expandedHeight: 350,
+                expandedHeight: 500,
                 pinned: true,
                 backgroundColor: Colors.black,
 
@@ -105,52 +105,89 @@ class _AnimeCharacterDetailsViewState extends State<AnimeCharacterDetailsView> {
                 ],
 
                 //* ========== app bar titles and desc
-                flexibleSpace: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    // Background image
-                    CustomImageNetwork(
-                      character.images?.jpg?.image_url ?? '',
-                      height: double.maxFinite,
-                    ),
-                    // Dark gradient
-                    const DecoratedBox(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [Colors.transparent, Colors.black],
-                          stops: [0.4, 1],
-                        ),
-                      ),
-                    ),
+                flexibleSpace: LayoutBuilder(
+                  builder: (context, constraints) {
+                    final currentHeight = constraints.maxHeight;
 
-                    //* Character name
-                    Positioned(
-                      left: 16,
-                      right: 16,
-                      bottom: 20,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            character.name ?? '',
-                            style: Theme.of(context).textTheme.titleLarge
-                                ?.copyWith(color: Colors.white),
+                    final isExpanded = currentHeight > kToolbarHeight + 100;
+                    final opacity = ((currentHeight - kToolbarHeight) / 300)
+                        .clamp(0.0, 1.0);
+
+                    return Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        // Background image
+                        CustomImageNetwork(
+                          character.images?.jpg?.image_url ?? '',
+                          height: double.maxFinite,
+                        ),
+                        // Dark gradient
+                        const DecoratedBox(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [Colors.transparent, Colors.black],
+                              stops: [0.4, 1],
+                            ),
                           ),
-                          Text(
-                            character.name_kanji ?? '',
-                            style: Theme.of(context).textTheme.titleSmall
-                                ?.copyWith(color: Colors.white),
+                        ),
+
+                        //* Character name
+                        if (isExpanded)
+                          Positioned(
+                            left: 16,
+                            right: 16,
+                            bottom: 20,
+                            child: Opacity(
+                              opacity: opacity,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    character.name ?? '',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleLarge
+                                        ?.copyWith(color: Colors.white),
+                                  ),
+                                  Text(
+                                    character.name_kanji ?? '',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleSmall
+                                        ?.copyWith(color: Colors.white),
+                                  ),
+                                  Text(
+                                    widget.role,
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.bodyLarge,
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
-                          Text(
-                            widget.role,
-                            style: Theme.of(context).textTheme.bodyLarge,
+
+                        //* Collapsed title
+                        if (!isExpanded)
+                          Positioned(
+                            left: 56,
+                            right: 56,
+                            bottom: 12,
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                character.name ?? '',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(context).textTheme.titleMedium,
+                              ),
+                            ),
                           ),
-                        ],
-                      ),
-                    ),
-                  ],
+                      ],
+                    );
+                  },
                 ),
               ),
               //* ====== refresh

@@ -461,7 +461,7 @@ class _HomeViewState extends State<HomeView> {
         const SizedBox(height: 8),
         Container(
           width: double.infinity,
-          height: 500,
+          height: 600,
           decoration: const BoxDecoration(color: Colors.black),
 
           child: BlocBuilder<AnimeCubit, AnimeState>(
