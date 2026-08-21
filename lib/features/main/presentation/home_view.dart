@@ -3,7 +3,9 @@
 import 'package:denuanime/features/anime/data/request/get_recommendations_request.dart';
 import 'package:denuanime/features/anime/data/request/search_anime_request.dart';
 import 'package:denuanime/features/anime/domain/entities/recent_episodes_model.dart';
+import 'package:denuanime/features/anime/domain/repositories/anime_repo.dart';
 import 'package:denuanime/features/anime/presentation/anime_details_view.dart';
+import 'package:denuanime/features/anime/presentation/anime_search_view.dart';
 import 'package:denuanime/features/anime/presentation/common/anime_horizontal_card_item.dart';
 import 'package:denuanime/features/anime/presentation/common/anime_carousel_item.dart';
 import 'package:denuanime/features/common/presentation/skeleton/home_carousel_items_skeleton.dart';
@@ -92,6 +94,24 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
+  void _onNavigateToSearchAnime() {
+    Navigator.of(context).push(
+      MaterialPageRoute<AnimeSearchView>(
+        builder: (context) => BlocProvider(
+          create: (context) => AnimeCubit(animeRepo: context.read<AnimeRepo>())
+            ..searchAnime(
+              const SearchAnimeRequest(
+                order_by: "score",
+                limit: "50",
+                sort: "desc",
+              ),
+            ),
+          child: const AnimeSearchView(),
+        ),
+      ),
+    );
+  }
+
   String _toggleGenreSelection(int mal_id, bool selected) {
     return context.read<AnimeCubit>().toggleGenre(mal_id, selected);
   }
@@ -165,7 +185,12 @@ class _HomeViewState extends State<HomeView> {
       appBar: AppBar(
         title: const Text("Home"),
         actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.search)),
+          IconButton(
+            onPressed: () {
+              _onNavigateToSearchAnime();
+            },
+            icon: const Icon(Icons.search),
+          ),
           IconButton(onPressed: () {}, icon: const Icon(Icons.favorite)),
         ],
       ),

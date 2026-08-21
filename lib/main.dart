@@ -51,6 +51,7 @@ class MainApp extends StatelessWidget {
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider<PeopleRepo>(create: (context) => peopleRepo),
+        RepositoryProvider<AnimeRepo>(create: (context) => animeRepo),
       ],
       child: MultiBlocProvider(
         providers: [

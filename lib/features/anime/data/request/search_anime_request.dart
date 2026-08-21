@@ -13,7 +13,8 @@ class SearchAnimeRequest {
   final String? max_score; // min 1 max 10
   final String? genres; // comma separated id's of genre endpoint
   final String? genres_exclude; // comma separated id's of genre endpoint
-  final String? order_by; // mal_id, title, start_date, end_date, episodes
+  final String?
+  order_by; // mal_id, title, start_date, end_date, episodes, rank, popularity, members, favorites, score
   final String? sort; //asc, desc
   final String? letter; //one letter
   final String? producers; //comma sepearated id's

@@ -25,6 +25,13 @@ class AnimeCubit extends Cubit<AnimeState> {
           animeListError: "",
         ),
       );
+    } on HttpException catch (e) {
+      emit(
+        state.copyWith(
+          isAnimeLoading: false,
+          animeListError: e.message.toString(),
+        ),
+      );
     } catch (e) {
       emit(state.copyWith(isAnimeLoading: false, animeListError: e.toString()));
     }
