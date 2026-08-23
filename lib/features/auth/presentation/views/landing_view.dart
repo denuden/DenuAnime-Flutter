@@ -151,7 +151,7 @@ class _LandingViewState extends State<LandingView> {
                         child: const Text("Login"),
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 8),
                     SizedBox(
                       width: double.infinity,
                       child: FilledButton(

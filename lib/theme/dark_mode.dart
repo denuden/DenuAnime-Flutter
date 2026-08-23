@@ -119,18 +119,52 @@ ThemeData darkMode = ThemeData(
 
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
-      backgroundColor: primary,
-
+      backgroundColor: primaryDark,
       foregroundColor: Colors.white,
-
       elevation: 0,
-
-      padding: const EdgeInsets.symmetric(vertical: 18),
-
+      padding: const EdgeInsets.symmetric(vertical: 14),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
     ),
   ),
 
+  outlinedButtonTheme: OutlinedButtonThemeData(
+    style: OutlinedButton.styleFrom(
+      backgroundColor: Colors.transparent,
+      foregroundColor: primary,
+      elevation: 0,
+      padding: const EdgeInsets.symmetric(vertical: 14),
+      side: const BorderSide(color: primary, width: 1.5),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+    ),
+  ),
+
+  filledButtonTheme: FilledButtonThemeData(
+    style: FilledButton.styleFrom(
+      backgroundColor: primaryDark,
+      foregroundColor: Colors.white,
+      elevation: 0,
+      padding: const EdgeInsets.symmetric(vertical: 14),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+    ),
+  ),
+
+  textButtonTheme: TextButtonThemeData(
+    style: TextButton.styleFrom(
+      backgroundColor: Colors.transparent,
+      foregroundColor: primary,
+      elevation: 0,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+    ),
+  ),
+
+  iconButtonTheme: IconButtonThemeData(
+    style: IconButton.styleFrom(
+      foregroundColor: primary,
+      backgroundColor: Colors.transparent,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    ),
+  ),
   inputDecorationTheme: InputDecorationTheme(
     filled: true,
 

@@ -5,6 +5,7 @@ import 'package:denuanime/features/anime/data/request/search_anime_request.dart'
 import 'package:denuanime/features/anime/domain/entities/recent_episodes_model.dart';
 import 'package:denuanime/features/anime/domain/repositories/anime_repo.dart';
 import 'package:denuanime/features/anime/presentation/anime_details_view.dart';
+import 'package:denuanime/features/anime/presentation/anime_explore_view.dart';
 import 'package:denuanime/features/anime/presentation/anime_search_view.dart';
 import 'package:denuanime/features/anime/presentation/common/anime_horizontal_card_item.dart';
 import 'package:denuanime/features/anime/presentation/common/anime_carousel_item.dart';
@@ -107,6 +108,17 @@ class _HomeViewState extends State<HomeView> {
               ),
             ),
           child: const AnimeSearchView(),
+        ),
+      ),
+    );
+  }
+
+  void _onNavigateToExplore() {
+    Navigator.of(context).push(
+      MaterialPageRoute<AnimeExploreView>(
+        builder: (context) => BlocProvider(
+          create: (context) => AnimeCubit(animeRepo: context.read<AnimeRepo>()),
+          child: const AnimeExploreView(),
         ),
       ),
     );
@@ -577,7 +589,9 @@ class _HomeViewState extends State<HomeView> {
                     vertical: 4,
                   ),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  _onNavigateToExplore();
+                },
                 child: const Text("Explore"),
               ),
             ],
