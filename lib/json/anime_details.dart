@@ -95,19 +95,19 @@ final animeDetailsSample = AnimeDetailsModel(
     "string": "Saturdays at 23:30 (JST)",
   }),
   producers: [
-    const ProducerModel(mal_id: 17, type: "anime", name: "Aniplex"),
-    const ProducerModel(
-      mal_id: 143,
-      type: "anime",
-      name: "Mainichi Broadcasting System",
-    ),
-    const ProducerModel(mal_id: 306, type: "anime", name: "Magic Capsule"),
-    const ProducerModel(mal_id: 1365, type: "anime", name: "Shueisha"),
-    const ProducerModel(
-      mal_id: 1501,
-      type: "anime",
-      name: "JR East Marketing & Communications",
-    ),
+    // const ProducerModel(mal_id: 17, type: "anime", name: "Aniplex"),
+    // const ProducerModel(
+    //   mal_id: 143,
+    //   type: "anime",
+    //   name: "Mainichi Broadcasting System",
+    // ),
+    // const ProducerModel(mal_id: 306, type: "anime", name: "Magic Capsule"),
+    // const ProducerModel(mal_id: 1365, type: "anime", name: "Shueisha"),
+    // const ProducerModel(
+    //   mal_id: 1501,
+    //   type: "anime",
+    //   name: "JR East Marketing & Communications",
+    // ),
   ],
   licensors: [
     const LicensorModel(mal_id: 493, type: "anime", name: "Aniplex of America"),

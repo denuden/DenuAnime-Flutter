@@ -115,9 +115,12 @@ class _AnimeDetailsViewState extends State<AnimeDetailsView> {
                     pinned: true,
                     backgroundColor: Colors.black,
 
-                    leading: const BackButton(
+                    leading: BackButton(
                       style: ButtonStyle(
-                        backgroundColor: WidgetStatePropertyAll(Colors.black38),
+                        backgroundColor: WidgetStatePropertyAll(
+                          secondary.withValues(alpha: 0.5),
+                        ),
+                        iconColor: const WidgetStatePropertyAll(white),
                       ),
                     ),
                     actions: [

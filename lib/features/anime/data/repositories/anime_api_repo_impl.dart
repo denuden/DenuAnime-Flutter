@@ -9,6 +9,7 @@ import 'package:denuanime/features/anime/domain/entities/anime_details_model.dar
 import 'package:denuanime/features/anime/domain/entities/genre_model.dart';
 import 'package:denuanime/features/anime/domain/entities/recommendation_model.dart';
 import 'package:denuanime/features/anime/domain/repositories/anime_repo.dart';
+import 'package:denuanime/features/common/entities/paginated_result_model.dart';
 
 class AnimeApiRepoImpl implements AnimeRepo {
   final AnimeApiDatasource api;
@@ -27,13 +28,17 @@ class AnimeApiRepoImpl implements AnimeRepo {
   }
 
   @override
-  Future<List<AnimeDetailsModel>> searchAnime(
+  Future<PaginatedResultModel<AnimeDetailsModel>> searchAnime(
     SearchAnimeRequest request,
   ) async {
     final response = await api.searchAnime(request);
 
     if (response.data?.isNotEmpty == true && response.data != null) {
-      return response.data ?? [];
+      return PaginatedResultModel(
+        items: response.data!,
+        currentPage: response.pagination?.current_page ?? (request.page ?? 1),
+        hasNextPage: response.pagination?.has_next_page ?? false,
+      );
     } else {
       throw const HttpException("No animes found.");
     }

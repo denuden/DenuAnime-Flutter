@@ -13,6 +13,9 @@ class AnimeState {
   final List<AnimeDetailsModel> seasonalAnimeCurrentList;
   final List<AnimeDetailsModel> seasonalAnimeUpcomingList;
 
+  final bool hasNextPage;
+  final bool isLoadingMore;
+
   final bool isAnimeLoading;
   final bool isGenreLoading;
   final bool isRecommendationLoading;
@@ -44,6 +47,9 @@ class AnimeState {
     this.seasonalAnimeCurrentList = const [],
     this.seasonalAnimeUpcomingList = const [],
 
+    this.hasNextPage = false,
+    this.isLoadingMore = false,
+
     this.isAnimeLoading = false,
     this.isGenreLoading = false,
     this.isRecommendationLoading = false,
@@ -72,6 +78,9 @@ class AnimeState {
     List<AnimeDetailsModel>? latestSchedulesList,
     List<AnimeDetailsModel>? seasonalAnimeCurrentList,
     List<AnimeDetailsModel>? seasonalAnimeUpcomingList,
+
+    bool? hasNextPage,
+    bool? isLoadingMore,
 
     bool? isAnimeLoading,
     bool? isGenreLoading,
@@ -102,6 +111,9 @@ class AnimeState {
       latestSchedulesList: latestSchedulesList ?? this.latestSchedulesList,
       seasonalAnimeCurrentList:
           seasonalAnimeCurrentList ?? this.seasonalAnimeCurrentList,
+
+      hasNextPage: hasNextPage ?? this.hasNextPage,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
 
       isAnimeLoading: isAnimeLoading ?? this.isAnimeLoading,
       isGenreLoading: isGenreLoading ?? this.isGenreLoading,

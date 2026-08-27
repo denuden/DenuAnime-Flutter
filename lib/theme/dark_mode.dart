@@ -162,7 +162,7 @@ ThemeData darkMode = ThemeData(
     style: IconButton.styleFrom(
       foregroundColor: primary,
       backgroundColor: Colors.transparent,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      shape: const CircleBorder(),
     ),
   ),
   inputDecorationTheme: InputDecorationTheme(
@@ -216,6 +216,8 @@ ThemeData darkMode = ThemeData(
     bodyMedium: TextStyle(fontSize: 14, color: textSecondary),
     bodySmall: TextStyle(fontSize: 12, color: textSecondary),
   ),
+
+  sliderTheme: const SliderThemeData(valueIndicatorColor: secondary),
 );
 
 class AppSpacing {

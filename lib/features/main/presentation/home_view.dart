@@ -203,6 +203,12 @@ class _HomeViewState extends State<HomeView> {
             },
             icon: const Icon(Icons.search),
           ),
+          IconButton(
+            onPressed: () {
+              _onNavigateToExplore();
+            },
+            icon: const Icon(Icons.explore),
+          ),
           IconButton(onPressed: () {}, icon: const Icon(Icons.favorite)),
         ],
       ),

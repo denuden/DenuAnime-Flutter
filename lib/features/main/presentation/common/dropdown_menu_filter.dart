@@ -128,7 +128,7 @@ class DropdownMenuFilter extends StatelessWidget {
             padding: WidgetStatePropertyAll(
               EdgeInsets.symmetric(horizontal: 8),
             ),
-            backgroundColor: WidgetStatePropertyAll(primary),
+            backgroundColor: WidgetStatePropertyAll(primaryDark),
           ),
           onPressed: enabled
               ? () {

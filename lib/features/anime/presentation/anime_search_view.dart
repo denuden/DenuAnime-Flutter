@@ -118,6 +118,7 @@ class _AnimeSearchViewState extends State<AnimeSearchView> {
               controller: _searchController,
             ),
           ),
+
           BlocBuilder<AnimeCubit, AnimeState>(
             builder: (context, state) {
               if (state.isAnimeLoading) {

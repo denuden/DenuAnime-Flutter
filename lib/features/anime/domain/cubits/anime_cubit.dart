@@ -10,19 +10,27 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class AnimeCubit extends Cubit<AnimeState> {
   final AnimeRepo animeRepo;
 
+  //holder
+  SearchAnimeRequest _currentRequest = const SearchAnimeRequest();
+
   AnimeCubit({required this.animeRepo}) : super(const AnimeState());
 
+  // * ================== search anime
   Future<void> searchAnime(SearchAnimeRequest request) async {
-    emit(state.copyWith(isAnimeLoading: true, animeListError: ""));
+    _currentRequest = request.copyWith(page: () => 1);
+    emit(
+      state.copyWith(isAnimeLoading: true, animeListError: "", animesList: []),
+    );
 
     try {
-      final animes = await animeRepo.searchAnime(request);
+      final result = await animeRepo.searchAnime(_currentRequest);
 
       emit(
         state.copyWith(
-          animesList: animes,
+          animesList: result.items,
           isAnimeLoading: false,
           animeListError: "",
+          hasNextPage: result.hasNextPage,
         ),
       );
     } on HttpException catch (e) {
@@ -37,6 +45,33 @@ class AnimeCubit extends Cubit<AnimeState> {
     }
   }
 
+  Future<void> loadMoreAnime() async {
+    if (state.isLoadingMore || state.isAnimeLoading || !state.hasNextPage) {
+      return;
+    }
+
+    emit(state.copyWith(isLoadingMore: true));
+
+    _currentRequest = _currentRequest.copyWith(
+      page: () => (_currentRequest.page ?? 1) + 1,
+    );
+
+    try {
+      final result = await animeRepo.searchAnime(_currentRequest);
+      emit(
+        state.copyWith(
+          animesList: [...state.animesList, ...result.items],
+          isLoadingMore: false,
+          hasNextPage: result.hasNextPage,
+        ),
+      );
+    } catch (e) {
+      emit(state.copyWith(isLoadingMore: false));
+    }
+  }
+
+  // * ================== end search anime
+
   Future<void> getAllGenres() async {
     emit(state.copyWith(isGenreLoading: true, genreListError: ""));
 
@@ -48,6 +83,13 @@ class AnimeCubit extends Cubit<AnimeState> {
           genresList: genres,
           isGenreLoading: false,
           genreListError: "",
+        ),
+      );
+    } on HttpException catch (e) {
+      emit(
+        state.copyWith(
+          isGenreLoading: false,
+          genreListError: e.message.toString(),
         ),
       );
     } catch (e) {

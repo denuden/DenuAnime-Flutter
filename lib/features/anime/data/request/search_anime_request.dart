@@ -1,6 +1,8 @@
+import 'package:flutter/widgets.dart';
+
 class SearchAnimeRequest {
   final String? q; //title search
-  final String? page; //min 1 max 1000
+  final int? page; //min 1 max 1000
   final String? limit; // min 1 max 50
   final String? type; // tv, movie, ova, special, ona, music, cm, pv, tv_special
   final String? status; //airing, complete, upcoming
@@ -12,7 +14,9 @@ class SearchAnimeRequest {
   final String? min_score; //min 0 max 10
   final String? max_score; // min 1 max 10
   final String? genres; // comma separated id's of genre endpoint
+  final String? genresName; // name holder === not needed for API
   final String? genres_exclude; // comma separated id's of genre endpoint
+  final String? genres_exclude_name; // name holder === not needed for API
   final String?
   order_by; // mal_id, title, start_date, end_date, episodes, rank, popularity, members, favorites, score
   final String? sort; //asc, desc
@@ -35,7 +39,9 @@ class SearchAnimeRequest {
     this.min_score,
     this.max_score,
     this.genres,
+    this.genresName,
     this.genres_exclude,
+    this.genres_exclude_name,
     this.order_by,
     this.sort,
     this.letter,
@@ -67,5 +73,53 @@ class SearchAnimeRequest {
       if (start_date != null) "start_date": start_date,
       if (end_date != null) "end_date": end_date,
     };
+  }
+
+  SearchAnimeRequest copyWith({
+    ValueGetter<String?>? q,
+    ValueGetter<int?>? page,
+    ValueGetter<String?>? limit,
+    ValueGetter<String?>? type,
+    ValueGetter<String?>? status,
+    ValueGetter<String?>? rating,
+    ValueGetter<String?>? sfw,
+    ValueGetter<String?>? sfw_strict,
+    ValueGetter<String?>? unapproved,
+    ValueGetter<String?>? score,
+    ValueGetter<String?>? min_score,
+    ValueGetter<String?>? max_score,
+    ValueGetter<String?>? genres,
+    ValueGetter<String?>? genres_exclude,
+    //? order_by,
+    ValueGetter<String?>? sort,
+    ValueGetter<String?>? letter,
+    ValueGetter<String?>? producers,
+    ValueGetter<String?>? start_date,
+    ValueGetter<String?>? end_date,
+  }) {
+    return SearchAnimeRequest(
+      q: q != null ? q() : this.q,
+      page: page != null ? page() : this.page,
+      limit: limit != null ? limit() : this.limit,
+      type: type != null ? type() : this.type,
+      status: status != null ? status() : this.status,
+      rating: rating != null ? rating() : this.rating,
+      sfw: sfw != null ? sfw() : this.sfw,
+      sfw_strict: sfw_strict != null ? sfw_strict() : this.sfw_strict,
+      unapproved: unapproved != null ? unapproved() : this.unapproved,
+      score: score != null ? score() : this.score,
+      min_score: min_score != null ? min_score() : this.min_score,
+      max_score: max_score != null ? max_score() : this.max_score,
+      genres: genres != null ? genres() : this.genres,
+      genres_exclude: genres_exclude != null
+          ? genres_exclude()
+          : this.genres_exclude,
+      order_by: order_by ?? this.order_by,
+      sort: sort != null ? sort() : this.sort,
+      letter: letter != null ? letter() : this.letter,
+      producers: producers != null ? producers() : this.producers,
+      start_date: start_date != null ? start_date() : this.start_date,
+      end_date: end_date != null ? end_date() : this.end_date,
+    );
   }
 }
