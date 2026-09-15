@@ -90,6 +90,7 @@ class SearchAnimeRequest {
     ValueGetter<String?>? max_score,
     ValueGetter<String?>? genres,
     ValueGetter<String?>? genres_exclude,
+    ValueGetter<String?>? order_by,
     //? order_by,
     ValueGetter<String?>? sort,
     ValueGetter<String?>? letter,
@@ -114,7 +115,7 @@ class SearchAnimeRequest {
       genres_exclude: genres_exclude != null
           ? genres_exclude()
           : this.genres_exclude,
-      order_by: order_by ?? this.order_by,
+      order_by: order_by != null ? order_by() : this.order_by,
       sort: sort != null ? sort() : this.sort,
       letter: letter != null ? letter() : this.letter,
       producers: producers != null ? producers() : this.producers,

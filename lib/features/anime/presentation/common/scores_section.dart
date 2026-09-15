@@ -3,6 +3,10 @@ import 'package:denuanime/theme/dark_mode.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' show NumberFormat;
 
+/* *
+* USED IN; 
+*  anime details view -> scores section
+*/
 class ScoresSection extends StatelessWidget {
   final AnimeDetailsModel animeDetails;
   const ScoresSection({super.key, required this.animeDetails});

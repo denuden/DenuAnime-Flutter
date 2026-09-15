@@ -2,6 +2,10 @@ import 'package:denuanime/features/anime/domain/entities/anime_details_model.dar
 import 'package:denuanime/theme/dark_mode.dart';
 import 'package:flutter/material.dart';
 
+/* *
+* USED IN; 
+*  anime details view - under broadcast
+*/
 class BroadcastSection extends StatelessWidget {
   final AnimeDetailsModel animeDetails;
   const BroadcastSection({super.key, required this.animeDetails});

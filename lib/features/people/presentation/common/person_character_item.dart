@@ -1,3 +1,4 @@
+import 'package:denuanime/features/common/presentation/custom_image_network.dart';
 import 'package:denuanime/features/people/domain/entities/voices_model.dart';
 import 'package:denuanime/theme/dark_mode.dart';
 import 'package:flutter/material.dart';
@@ -26,11 +27,10 @@ class PersonCharacterItem extends StatelessWidget {
               ClipOval(
                 child: Skeleton.replace(
                   replacement: const Bone.circle(size: 80),
-                  child: Image.network(
+                  child: CustomImageNetwork(
+                    voicesModel.character?.images?.jpg?.image_url ?? '',
                     height: 80,
                     width: 80,
-                    voicesModel.character?.images?.jpg?.image_url ?? '',
-                    fit: BoxFit.cover,
                   ),
                 ),
               ),

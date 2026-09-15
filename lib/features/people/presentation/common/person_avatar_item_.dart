@@ -1,3 +1,4 @@
+import 'package:denuanime/features/common/presentation/custom_image_network.dart';
 import 'package:denuanime/features/people/domain/entities/people_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -17,11 +18,10 @@ class PersonItemView extends StatelessWidget {
         ClipOval(
           child: Skeleton.replace(
             replacement: const Bone.circle(size: 80),
-            child: Image.network(
+            child: CustomImageNetwork(
               people.images?.jpg?.image_url ?? '',
-              width: 80,
               height: 80,
-              fit: BoxFit.cover,
+              width: 80,
             ),
           ),
         ),

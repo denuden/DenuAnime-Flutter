@@ -3,6 +3,10 @@ import 'package:denuanime/theme/dark_mode.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
+/* *
+* USED IN; 
+*  anime details view -> The other details 
+*/
 class AnimeExternalInfoSection extends StatelessWidget {
   final AnimeDetailsModel data;
   final void Function(String) onTap;

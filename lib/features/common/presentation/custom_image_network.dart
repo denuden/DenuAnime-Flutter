@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 class CustomImageNetwork extends StatelessWidget {
   final String imageUrl;
   final double height;
+  final double? width;
   final BoxFit? boxFit;
   const CustomImageNetwork(
     this.imageUrl, {
     super.key,
     required this.height,
+    this.width,
     this.boxFit,
   });
 
@@ -15,7 +17,7 @@ class CustomImageNetwork extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: height,
-      width: double.infinity,
+      width: width ?? double.infinity,
       child: Image.network(
         frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
           if (wasSynchronouslyLoaded || frame != null) {

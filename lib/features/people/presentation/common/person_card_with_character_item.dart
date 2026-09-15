@@ -1,8 +1,13 @@
 import 'package:denuanime/features/anime/domain/entities/anime_characters_model.dart';
 import 'package:denuanime/features/anime/presentation/anime_character_details_view.dart';
+import 'package:denuanime/features/common/presentation/custom_image_network.dart';
 import 'package:denuanime/theme/dark_mode.dart';
 import 'package:flutter/material.dart';
 
+/* *
+* USED IN; 
+*  anime details view -> card of person with character
+*/
 class PersonCardWithCharacterItem extends StatelessWidget {
   final AnimeCharactersModel animeCharactersModel;
   const PersonCardWithCharacterItem({
@@ -49,16 +54,15 @@ class PersonCardWithCharacterItem extends StatelessWidget {
                 child: Row(
                   children: [
                     ClipOval(
-                      child: Image.network(
+                      child: CustomImageNetwork(
                         animeCharactersModel
                                 .character
                                 ?.images
                                 ?.jpg
                                 ?.image_url ??
                             '',
-                        width: 80,
                         height: 80,
-                        fit: BoxFit.cover,
+                        width: 80,
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -110,11 +114,10 @@ class PersonCardWithCharacterItem extends StatelessWidget {
                             : Row(
                                 children: [
                                   ClipOval(
-                                    child: Image.network(
+                                    child: CustomImageNetwork(
                                       jpVA.person?.images?.jpg?.image_url ?? '',
                                       width: 50,
                                       height: 50,
-                                      fit: BoxFit.cover,
                                     ),
                                   ),
 

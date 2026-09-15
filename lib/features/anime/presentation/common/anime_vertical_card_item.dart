@@ -1,8 +1,13 @@
 import 'package:denuanime/features/anime/domain/entities/anime_details_model.dart';
+import 'package:denuanime/features/common/presentation/custom_image_network.dart';
 import 'package:denuanime/theme/dark_mode.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
+/* *
+* USED IN; 
+*  home view -> recommendations -> the anime card with learn more
+*/
 class AnimeVerticalCardItem extends StatelessWidget {
   final AnimeDetailsModel animeDetailsModel;
   final bool isFromRecommendationEndpoint;
@@ -28,9 +33,9 @@ class AnimeVerticalCardItem extends StatelessWidget {
             width: double.infinity,
             child: ClipRRect(
               borderRadius: BorderRadiusGeometry.circular(12),
-              child: Image.network(
-                fit: BoxFit.cover,
+              child: CustomImageNetwork(
                 animeDetailsModel.images?.jpg?.image_url ?? '',
+                height: 160,
               ),
             ),
           ),

@@ -1,4 +1,5 @@
 import 'package:denuanime/features/anime/domain/entities/recent_episodes_model.dart';
+import 'package:denuanime/features/common/presentation/custom_image_network.dart';
 import 'package:denuanime/theme/dark_mode.dart';
 import 'package:denuanime/utils/app_web_view.dart';
 import 'package:denuanime/utils/datetime_formatter.dart';
@@ -8,6 +9,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+/* *
+* USED IN; 
+*  home view -> schedules or episodes section
+*/
 class AnimeHorizontalCardItem extends StatelessWidget {
   final RecentEpisodesModel model;
   final void Function() onClickItem;
@@ -35,9 +40,10 @@ class AnimeHorizontalCardItem extends StatelessWidget {
                       topLeft: Radius.circular(12),
                       bottomLeft: Radius.circular(12),
                     ),
-                    child: Image.network(
-                      fit: BoxFit.cover,
+                    child: CustomImageNetwork(
                       model.entry?.images?.jpg?.large_image_url ?? '',
+                      height: 215,
+                      width: 140,
                     ),
                   ),
                 ),

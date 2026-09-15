@@ -1,6 +1,10 @@
 import 'package:denuanime/theme/dark_mode.dart';
 import 'package:flutter/material.dart';
 
+/* *
+* USED IN; 
+*  anime details view -> collapsable sypnpsis section
+*/
 class SypnosisSection extends StatefulWidget {
   final String synopsis;
 

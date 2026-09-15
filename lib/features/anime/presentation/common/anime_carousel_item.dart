@@ -3,6 +3,10 @@ import 'package:denuanime/features/common/presentation/custom_image_network.dart
 import 'package:denuanime/theme/dark_mode.dart';
 import 'package:flutter/material.dart';
 
+/* *
+* USED IN; 
+*  home view -> Carousel
+*/
 class AnimeCarouselItem extends StatelessWidget {
   final AnimeDetailsModel animeDetails;
   final bool shouldShowDetails;

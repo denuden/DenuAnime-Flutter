@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:denuanime/features/anime/domain/entities/anime_characters_model.dart';
+import 'package:denuanime/features/common/presentation/custom_image_network.dart';
 import 'package:denuanime/json/anime_character.dart';
 import 'package:denuanime/theme/dark_mode.dart';
 import 'package:flutter/material.dart';
@@ -88,11 +89,10 @@ class AnimeDetailsCharactersItemsSkeleton extends StatelessWidget {
                         child: Row(
                           children: [
                             ClipOval(
-                              child: Image.network(
+                              child: CustomImageNetwork(
                                 jpVA?.person?.images?.jpg?.image_url ?? '',
-                                width: 50,
                                 height: 50,
-                                fit: BoxFit.cover,
+                                width: 50,
                               ),
                             ),
 

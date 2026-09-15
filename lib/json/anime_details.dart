@@ -4,7 +4,6 @@ import 'package:denuanime/features/anime/domain/entities/broadcast_model.dart';
 import 'package:denuanime/features/anime/domain/entities/external_model.dart';
 import 'package:denuanime/features/anime/domain/entities/genre_model.dart';
 import 'package:denuanime/features/anime/domain/entities/licensor_model.dart';
-import 'package:denuanime/features/anime/domain/entities/producer_model.dart';
 import 'package:denuanime/features/anime/domain/entities/relation_model.dart';
 import 'package:denuanime/features/anime/domain/entities/streaming_model.dart';
 import 'package:denuanime/features/anime/domain/entities/studio_model.dart';
