@@ -4,6 +4,10 @@ import 'package:denuanime/theme/dark_mode.dart';
 import 'package:flutter/material.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
+/*
+* USAGE:
+* person details view -  character item (Voices)
+*/
 class PersonCharacterItem extends StatelessWidget {
   final VoicesModel voicesModel;
   final void Function() onClick;

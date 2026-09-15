@@ -4,6 +4,10 @@ import 'package:denuanime/theme/dark_mode.dart';
 import 'package:flutter/material.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
+/*
+* USAGE:
+* anime character details view - person with language
+*/
 class PersonCardLanguageItem extends StatelessWidget {
   final VoiceActorModel voiceActorModel;
   final bool isSelected;

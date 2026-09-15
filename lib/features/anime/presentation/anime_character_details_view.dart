@@ -3,7 +3,7 @@ import 'package:denuanime/features/character/domain/cubits/character_state.dart'
 import 'package:denuanime/features/common/presentation/custom_image_network.dart';
 import 'package:denuanime/features/common/presentation/skeleton/about_voice_actor_skeleton.dart';
 import 'package:denuanime/features/common/presentation/skeleton/character_details_view_skeleton.dart';
-import 'package:denuanime/features/common/presentation/spoler_text.dart';
+import 'package:denuanime/features/common/presentation/spoiler_text.dart';
 import 'package:denuanime/features/people/domain/entities/people_model.dart';
 import 'package:denuanime/features/people/presentation/common/person_card_language_item.dart';
 import 'package:denuanime/features/people/presentation/person_details_view.dart';

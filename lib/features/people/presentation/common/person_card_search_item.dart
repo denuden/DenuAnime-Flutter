@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
+/*
+* USAGE:
+* all people view - search - card items
+*/
 class PersonCardSearchItem extends StatelessWidget {
   final PeopleModel peopleModel;
   final void Function() onClick;

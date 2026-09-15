@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
+/*
+* USAGE:
+* home view - top people section
+*/
 class PersonItemView extends StatelessWidget {
   final PeopleModel people;
 
