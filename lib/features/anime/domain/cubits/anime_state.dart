@@ -24,21 +24,20 @@ import 'package:denuanime/utils/core/async_value.dart';
 /// That's a per-field question, and that's what buildWhen answers.
 class AnimeState {
   final Async<List<GenreModel>> genres;
+
   final Async<List<AnimeDetailsModel>> animes;
+
   final Async<List<RecommendationModel>> recommendations;
+
   final Async<List<AnimeDetailsModel>> recents;
 
-  final AnimeDetailsModel animeDetails;
-  final List<AnimeCharactersModel> charactersList;
+  final Async<AnimeDetailsModel> animeDetails;
+
+  final Async<List<AnimeCharactersModel>> characters;
 
   final bool hasNextPage;
+
   final bool isLoadingMore;
-
-  final bool isAnimeDetailsLoading;
-  final bool isCharactersListLoading;
-
-  final String animeDetailsError;
-  final String charactersListError;
 
   final String animeInitial;
 
@@ -53,15 +52,11 @@ class AnimeState {
 
     this.recents = const AsyncIdle(),
 
+    this.animeDetails = const AsyncIdle(),
+
+    this.characters = const AsyncIdle(),
+
     this.animeInitial = "",
-    this.animeDetails = const AnimeDetailsModel(),
-    this.charactersList = const [],
-
-    this.isAnimeDetailsLoading = false,
-    this.isCharactersListLoading = false,
-
-    this.animeDetailsError = "",
-    this.charactersListError = "",
   });
 
   AnimeState copyWith({
@@ -75,14 +70,9 @@ class AnimeState {
 
     Async<List<AnimeDetailsModel>>? recents,
 
-    AnimeDetailsModel? animeDetails,
-    List<AnimeCharactersModel>? charactersList,
+    Async<AnimeDetailsModel>? animeDetails,
 
-    bool? isAnimeDetailsLoading,
-    bool? isCharactersListLoading,
-
-    String? animeDetailsError,
-    String? charactersListError,
+    Async<List<AnimeCharactersModel>>? characters,
 
     String? animeInitial,
   }) {
@@ -98,15 +88,8 @@ class AnimeState {
       recents: recents ?? this.recents,
 
       animeDetails: animeDetails ?? this.animeDetails,
-      charactersList: charactersList ?? this.charactersList,
 
-      isAnimeDetailsLoading:
-          isAnimeDetailsLoading ?? this.isAnimeDetailsLoading,
-      isCharactersListLoading:
-          isCharactersListLoading ?? this.isCharactersListLoading,
-
-      animeDetailsError: animeDetailsError ?? this.animeDetailsError,
-      charactersListError: charactersListError ?? this.charactersListError,
+      characters: characters ?? this.characters,
 
       animeInitial: animeInitial ?? this.animeInitial,
     );

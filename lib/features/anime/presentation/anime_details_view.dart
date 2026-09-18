@@ -20,6 +20,7 @@ import 'package:denuanime/features/people/presentation/common/person_card_with_c
 import 'package:denuanime/json/anime_character.dart';
 import 'package:denuanime/theme/dark_mode.dart';
 import 'package:denuanime/utils/app_web_view.dart';
+import 'package:denuanime/utils/core/async_value.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -90,270 +91,252 @@ class _AnimeDetailsViewState extends State<AnimeDetailsView> {
             )
           : null,
       body: BlocBuilder<AnimeCubit, AnimeState>(
+        buildWhen: (p, c) => p.animeDetails != c.animeDetails,
         builder: (context, state) {
-          if (state.isAnimeDetailsLoading) {
-            return AnimeDetailsViewSkeleton(isLoading: true);
-          }
+          return switch (state.animeDetails) {
+            AsyncIdle() ||
+            AsyncLoading() => AnimeDetailsViewSkeleton(isLoading: true),
+            AsyncFailure() => const Center(child: Text("Anime not found.")),
+            AsyncData(:final value) => _buildContent(context, value),
+          };
+        },
+      ),
+    );
+  }
 
-          if (state.animeDetailsError.isNotEmpty) {
-            return const Center(child: Text("Anime not found."));
-          }
+  //?================== main info
+  Widget _buildContent(BuildContext context, AnimeDetailsModel animeDetails) {
+    return Stack(
+      children: [
+        //* ======== body
+        CustomScrollView(
+          physics: const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics(),
+          ),
+          controller: _controller,
+          slivers: [
+            //* ====== appbar
+            SliverAppBar(
+              centerTitle: false,
+              expandedHeight: 350,
+              pinned: true,
+              backgroundColor: Colors.black,
 
-          final animeDetails = state.animeDetails;
-          return Stack(
-            children: [
-              //* ======== body
-              CustomScrollView(
-                physics: const BouncingScrollPhysics(
-                  parent: AlwaysScrollableScrollPhysics(),
+              leading: BackButton(
+                style: ButtonStyle(
+                  backgroundColor: WidgetStatePropertyAll(
+                    secondary.withValues(alpha: 0.5),
+                  ),
+                  iconColor: const WidgetStatePropertyAll(white),
                 ),
-                controller: _controller,
-                slivers: [
-                  SliverAppBar(
-                    centerTitle: false,
-                    expandedHeight: 350,
-                    pinned: true,
-                    backgroundColor: Colors.black,
-
-                    leading: BackButton(
-                      style: ButtonStyle(
-                        backgroundColor: WidgetStatePropertyAll(
-                          secondary.withValues(alpha: 0.5),
-                        ),
-                        iconColor: const WidgetStatePropertyAll(white),
-                      ),
+              ),
+              actions: [
+                IconButton.filledTonal(
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStatePropertyAll(
+                      secondary.withValues(alpha: 0.5),
                     ),
-                    actions: [
-                      IconButton.filledTonal(
-                        style: ButtonStyle(
-                          backgroundColor: WidgetStatePropertyAll(
-                            secondary.withValues(alpha: 0.5),
+                  ),
+                  splashColor: white,
+                  onPressed: () {
+                    //? open photo
+                    onOpenPhoto(
+                      context: context,
+                      images: [animeDetails.images?.jpg?.large_image_url ?? ''],
+                      type: PhotoType.network,
+                    );
+                  },
+                  icon: const Icon(Icons.open_in_full_rounded, color: white),
+                ),
+              ],
+
+              //*===== appbar details
+              flexibleSpace: LayoutBuilder(
+                builder: (context, constraints) {
+                  final currentHeight = constraints.maxHeight;
+
+                  final isExpanded = currentHeight > kToolbarHeight + 100;
+                  final opacity = ((currentHeight - kToolbarHeight) / 300)
+                      .clamp(0.0, 1.0);
+                  return Stack(
+                    fit: StackFit.expand,
+
+                    children: [
+                      CustomImageNetwork(
+                        animeDetails.images?.jpg?.large_image_url ?? '',
+                        height: 350,
+                      ),
+                      const DecoratedBox(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [Colors.transparent, Colors.black],
+                            stops: [0.4, 1],
                           ),
                         ),
-                        splashColor: white,
-                        onPressed: () {
-                          //? open photo
-                          onOpenPhoto(
-                            context: context,
-                            images: [
-                              animeDetails.images?.jpg?.large_image_url ?? '',
-                            ],
-                            type: PhotoType.network,
+                      ),
+
+                      //* anime name expanded
+                      if (isExpanded)
+                        Positioned(
+                          left: 16,
+                          right: 16,
+                          bottom: 20,
+                          child: Opacity(
+                            opacity: opacity,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  animeDetails.title_english ??
+                                      'No english title',
+                                  style: Theme.of(context).textTheme.titleLarge,
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  animeDetails.title_japanese ??
+                                      'No japanese title',
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                ),
+                                Text(
+                                  animeDetails.title ?? '---',
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                      //* Collapsed title
+                      if (!isExpanded)
+                        Positioned(
+                          left: 56,
+                          right: 56,
+                          bottom: 12,
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              animeDetails.title_english ?? 'No english title',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                          ),
+                        ),
+                    ],
+                  );
+                },
+              ),
+            ),
+
+            //* --  refresher
+            CupertinoSliverRefreshControl(
+              refreshTriggerPullDistance: 180,
+              onRefresh: () async {
+                context.read<AnimeCubit>().getAnimeDetailsFull(
+                  GetAnimeDetailsFullRequest(id: widget.id),
+                );
+                context.read<AnimeCubit>().getAnimeCharacters(
+                  GetAnimeDetailsFullRequest(id: widget.id),
+                );
+              },
+            ),
+
+            //* ======= body
+            SliverToBoxAdapter(
+              child: Column(
+                children: [
+                  //*= genre and  description
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      //* Genre
+                      Wrap(
+                        spacing: 6,
+                        children: List.generate(
+                          animeDetails.genres?.length ?? 0,
+                          (index) => GenreItem(
+                            onSelect: (value) {
+                              //Not needed
+                            },
+                            genre: animeDetails.genres![index],
+                            size: GenreItemSize.small,
+                            side: BorderSide.none,
+                            backgroundColor: primaryDark,
+                          ),
+                        ),
+                      ),
+
+                      //* Description
+                      SypnosisSection(
+                        synopsis: animeDetails.synopsis ?? 'Nondescript',
+                      ),
+
+                      //* other info
+                      _OtherInfo(context, animeDetails),
+
+                      //* External info
+                      const SizedBox(height: 24),
+                      ExternalInfoSection(
+                        data: animeDetails,
+                        onTap: (url) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute<AppWebView>(
+                              builder: (_) => AppWebView(url: url),
+                            ),
                           );
                         },
-                        icon: const Icon(
-                          Icons.open_in_full_rounded,
-                          color: white,
-                        ),
                       ),
                     ],
-
-                    //*===== appbar details
-                    flexibleSpace: LayoutBuilder(
-                      builder: (context, constraints) {
-                        final currentHeight = constraints.maxHeight;
-
-                        final isExpanded = currentHeight > kToolbarHeight + 100;
-                        final opacity = ((currentHeight - kToolbarHeight) / 300)
-                            .clamp(0.0, 1.0);
-                        return Stack(
-                          fit: StackFit.expand,
-
-                          children: [
-                            CustomImageNetwork(
-                              animeDetails.images?.jpg?.large_image_url ?? '',
-                              height: 350,
-                            ),
-                            const DecoratedBox(
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  colors: [Colors.transparent, Colors.black],
-                                  stops: [0.4, 1],
-                                ),
-                              ),
-                            ),
-
-                            //* anime name expanded
-                            if (isExpanded)
-                              Positioned(
-                                left: 16,
-                                right: 16,
-                                bottom: 20,
-                                child: Opacity(
-                                  opacity: opacity,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        animeDetails.title_english ??
-                                            'No english title',
-                                        style: Theme.of(
-                                          context,
-                                        ).textTheme.titleLarge,
-                                      ),
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        animeDetails.title_japanese ??
-                                            'No japanese title',
-                                        style: Theme.of(
-                                          context,
-                                        ).textTheme.bodyMedium,
-                                      ),
-                                      Text(
-                                        animeDetails.title ?? '---',
-                                        style: Theme.of(
-                                          context,
-                                        ).textTheme.bodyMedium,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-
-                            //* Collapsed title
-                            if (!isExpanded)
-                              Positioned(
-                                left: 56,
-                                right: 56,
-                                bottom: 12,
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    animeDetails.title_english ??
-                                        'No english title',
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.titleMedium,
-                                  ),
-                                ),
-                              ),
-                          ],
-                        );
-                      },
-                    ),
                   ),
 
-                  //* --  refresher
-                  CupertinoSliverRefreshControl(
-                    refreshTriggerPullDistance: 180,
-                    onRefresh: () async {
-                      context.read<AnimeCubit>().getAnimeDetailsFull(
-                        GetAnimeDetailsFullRequest(id: widget.id),
-                      );
-                      context.read<AnimeCubit>().getAnimeCharacters(
-                        GetAnimeDetailsFullRequest(id: widget.id),
-                      );
-                    },
-                  ),
-
-                  SliverToBoxAdapter(
-                    child: Column(
-                      children: [
-                        //*= genre and  description
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            //* Genre
-                            Wrap(
-                              spacing: 6,
-                              children: List.generate(
-                                animeDetails.genres?.length ?? 0,
-                                (index) => GenreItem(
-                                  onSelect: (value) {
-                                    //Not needed
-                                  },
-                                  genre: animeDetails.genres![index],
-                                  size: GenreItemSize.small,
-                                  side: BorderSide.none,
-                                  backgroundColor: primaryDark,
-                                ),
-                              ),
-                            ),
-
-                            //* Description
-                            SypnosisSection(
-                              synopsis: animeDetails.synopsis ?? 'Nondescript',
-                            ),
-
-                            //* other info
-                            _OtherInfo(context, animeDetails),
-
-                            //* External info
-                            const SizedBox(height: 24),
-                            ExternalInfoSection(
-                              data: animeDetails,
-                              onTap: (url) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute<AppWebView>(
-                                    builder: (_) => AppWebView(url: url),
-                                  ),
-                                );
-                              },
-                            ),
-                          ],
-                        ),
-
-                        //* anime characters
-                        const SizedBox(height: 16),
-                        Row(
-                          children: [
-                            Text(
-                              "Characters",
-                              style: Theme.of(
-                                context,
-                              ).textTheme.bodyLarge?.copyWith(color: white),
-                            ),
-                            const Spacer(),
-                            TextButton(
-                              onPressed: () {
-                                //TODO
-                              },
-                              child: const Text("See all"),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  BlocBuilder<AnimeCubit, AnimeState>(
-                    builder: (context, state) {
-                      if (state.isCharactersListLoading) {
-                        return SliverToBoxAdapter(
-                          child: AnimeDetailsCharactersItemsSkeleton(
-                            isLoading: true,
-                          ),
-                        );
-                      }
-
-                      if (state.charactersListError.isNotEmpty) {
-                        return SliverToBoxAdapter(
-                          child: Center(child: Text(state.charactersListError)),
-                        );
-                      }
-
-                      final characters = state.charactersList;
-                      return SliverList.builder(
-                        itemCount: min(characters.length, 10),
-                        itemBuilder: (context, index) {
-                          return PersonCardWithCharacterItem(
-                            animeCharactersModel: characters[index],
-                          );
+                  //* anime characters
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Text(
+                        "Characters",
+                        style: Theme.of(
+                          context,
+                        ).textTheme.bodyLarge?.copyWith(color: white),
+                      ),
+                      const Spacer(),
+                      TextButton(
+                        onPressed: () {
+                          //TODO
                         },
-                      );
-                    },
+                        child: const Text("See all"),
+                      ),
+                    ],
                   ),
                 ],
               ),
-            ],
-          );
-        },
-      ),
+            ),
+            BlocBuilder<AnimeCubit, AnimeState>(
+              buildWhen: (p, c) => p.characters != c.characters,
+              builder: (context, state) {
+                return switch (state.characters) {
+                  AsyncIdle() || AsyncLoading() => SliverToBoxAdapter(
+                    child: AnimeDetailsCharactersItemsSkeleton(isLoading: true),
+                  ),
+                  AsyncFailure(:final message) => SliverToBoxAdapter(
+                    child: Center(child: Text(message)),
+                  ),
+                  AsyncData(:final value) => SliverList.builder(
+                    itemCount: min(value.length, 10),
+                    itemBuilder: (context, index) =>
+                        PersonCardWithCharacterItem(
+                          animeCharactersModel: value[index],
+                        ),
+                  ),
+                };
+              },
+            ),
+          ],
+        ),
+      ],
     );
   }
 

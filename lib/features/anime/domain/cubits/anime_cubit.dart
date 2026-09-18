@@ -106,50 +106,34 @@ class AnimeCubit extends Cubit<AnimeState> {
   }
 
   Future<void> getAnimeDetailsFull(GetAnimeDetailsFullRequest request) async {
-    emit(state.copyWith(isAnimeDetailsLoading: true, animeDetailsError: ""));
+    emit(state.copyWith(animeDetails: const AsyncLoading()));
 
     try {
-      final animeDetails = await animeRepo.getAnimeDetailsFull(request);
-
-      emit(
-        state.copyWith(
-          animeDetails: animeDetails,
-          isAnimeDetailsLoading: false,
-          animeDetailsError: "",
-        ),
-      );
+      final result = await animeRepo.getAnimeDetailsFull(request);
+      if (isClosed) return;
+      emit(state.copyWith(animeDetails: AsyncData(result)));
+    } on HttpException catch (e) {
+      if (isClosed) return;
+      emit(state.copyWith(animeDetails: AsyncFailure(e.message.toString())));
     } catch (e) {
-      emit(
-        state.copyWith(
-          animeDetailsError: e.toString(),
-          isAnimeDetailsLoading: false,
-        ),
-      );
+      if (isClosed) return;
+      emit(state.copyWith(animeDetails: AsyncFailure(e.toString())));
     }
   }
 
   Future<void> getAnimeCharacters(GetAnimeDetailsFullRequest request) async {
-    emit(
-      state.copyWith(isCharactersListLoading: true, charactersListError: ""),
-    );
+    emit(state.copyWith(characters: const AsyncLoading()));
 
     try {
-      final characters = await animeRepo.getAnimeCharacters(request);
-
-      emit(
-        state.copyWith(
-          charactersList: characters,
-          isCharactersListLoading: false,
-          charactersListError: "",
-        ),
-      );
+      final result = await animeRepo.getAnimeCharacters(request);
+      if (isClosed) return;
+      emit(state.copyWith(characters: AsyncData(result)));
+    } on HttpException catch (e) {
+      if (isClosed) return;
+      emit(state.copyWith(characters: AsyncFailure(e.message.toString())));
     } catch (e) {
-      emit(
-        state.copyWith(
-          charactersListError: e.toString(),
-          isCharactersListLoading: false,
-        ),
-      );
+      if (isClosed) return;
+      emit(state.copyWith(characters: AsyncFailure(e.toString())));
     }
   }
 
