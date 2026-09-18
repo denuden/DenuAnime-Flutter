@@ -1,8 +1,10 @@
 import 'package:denuanime/features/anime/data/request/search_anime_request.dart';
 import 'package:denuanime/features/anime/domain/cubits/anime_cubit.dart';
+import 'package:denuanime/features/anime/domain/entities/genre_model.dart';
 import 'package:denuanime/features/common/entities/genre_filter_item_model.dart';
 import 'package:denuanime/features/common/presentation/genre_multi_select_dialog.dart';
 import 'package:denuanime/theme/dark_mode.dart';
+import 'package:denuanime/utils/core/async_value.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -237,7 +239,12 @@ class _AnimeFilterBottomSheetState extends State<AnimeFilterBottomSheet> {
 
       Navigator.of(context).pop();
 
-      final items = cubit.state.genresList
+      final genres = cubit.state.genres;
+
+      if (genres is! AsyncData<List<GenreModel>>) {
+        return null; // or <GenreFilterItemModel>[], depending on your return type
+      }
+      final items = genres.value
           .map(
             (e) => GenreFilterItemModel(
               isSelected: selectedIds
@@ -253,9 +260,7 @@ class _AnimeFilterBottomSheetState extends State<AnimeFilterBottomSheet> {
 
       return await showDialog<List<GenreFilterItemModel>>(
         context: context,
-        builder: (_) {
-          return GenreMultiSelectDialog(items: items, title: title);
-        },
+        builder: (_) => GenreMultiSelectDialog(items: items, title: title),
       );
     } catch (e) {
       if (!mounted) return null;

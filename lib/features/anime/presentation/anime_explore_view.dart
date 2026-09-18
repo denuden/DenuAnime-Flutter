@@ -6,6 +6,7 @@ import 'package:denuanime/features/common/presentation/custom_image_network.dart
 import 'package:denuanime/features/common/presentation/filter_anime_bottom_sheet.dart';
 import 'package:denuanime/features/common/presentation/skeleton/serach_anime_item_skeleton.dart';
 import 'package:denuanime/theme/dark_mode.dart';
+import 'package:denuanime/utils/core/async_value.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -87,9 +88,10 @@ class _AnimeExploreViewState extends State<AnimeExploreView> {
       ),
 
       body: BlocBuilder<AnimeCubit, AnimeState>(
+        buildWhen: (p, c) => p.animes != c.animes,
         builder: (context, state) {
-          if (state.isAnimeLoading) {
-            return Expanded(
+          return switch (state.animes) {
+            AsyncIdle() || AsyncLoading() => Expanded(
               child: GridView.count(
                 mainAxisExtent: 350,
                 mainAxisSpacing: 8,
@@ -99,11 +101,9 @@ class _AnimeExploreViewState extends State<AnimeExploreView> {
                   (index) => const SerachAnimeItemSkeleton(),
                 ),
               ),
-            );
-          }
+            ),
 
-          if (state.animeListError.isNotEmpty) {
-            return Padding(
+            AsyncFailure(:final message) => Padding(
               padding: const EdgeInsets.only(top: 42.0),
               child: Center(
                 child: Container(
@@ -113,113 +113,130 @@ class _AnimeExploreViewState extends State<AnimeExploreView> {
                   ),
                   child: Padding(
                     padding: const EdgeInsetsGeometry.all(60),
-                    child: Text(state.animeListError),
+                    child: Text(message),
                   ),
                 ),
               ),
-            );
-          }
+            ),
 
-          final anime = state.animesList;
-          return Expanded(
-            child: GridView.builder(
-              controller: _scrollController,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                mainAxisSpacing: 8,
-                mainAxisExtent: 350,
-                crossAxisSpacing: 4,
+            AsyncData(:final value) when value.isEmpty => Center(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: secondary,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: const Padding(
+                  padding: EdgeInsets.all(50),
+                  child: Text("No animes found"),
+                ),
               ),
-              itemCount:
-                  anime.length +
-                  (state.isLoadingMore
-                      ? 2
-                      : 0), //to show the circular progress indicator
-              itemBuilder: (context, index) {
-                if (index >= anime.length) {
-                  return const Center(child: CircularProgressIndicator());
-                }
+            ),
 
-                final data = anime[index];
-                return Card.filled(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadiusGeometry.circular(20),
-                  ),
-                  child: InkWell(
-                    onTap: () {
-                      _onNavigateToAnimeDetails(data.mal_id ?? -1);
-                    },
-                    child: Stack(
-                      fit: StackFit.expand,
-                      children: [
-                        //* === imgae
-                        ClipRRect(
-                          borderRadius: BorderRadiusGeometry.circular(8),
-                          child: CustomImageNetwork(
-                            data.images?.jpg?.large_image_url ?? '',
-                            height: 350,
-                          ),
-                        ),
+            //? data list
+            AsyncData(:final value) => Expanded(
+              child: GridView.builder(
+                controller: _scrollController,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 8,
+                  mainAxisExtent: 350,
+                  crossAxisSpacing: 4,
+                ),
+                itemCount:
+                    value.length +
+                    (state.isLoadingMore
+                        ? 2
+                        : 0), //to show the circular progress indicator
+                itemBuilder: (context, index) {
+                  if (index >= value.length) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
 
-                        //* ==== gradient black
-                        const DecoratedBox(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [Colors.transparent, Colors.black87],
-                              stops: [0.4, 1],
+                  final data = value[index];
+                  return Card.filled(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadiusGeometry.circular(20),
+                    ),
+                    child: InkWell(
+                      onTap: () {
+                        _onNavigateToAnimeDetails(data.mal_id ?? -1);
+                      },
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          //* === imgae
+                          ClipRRect(
+                            borderRadius: BorderRadiusGeometry.circular(8),
+                            child: CustomImageNetwork(
+                              data.images?.jpg?.large_image_url ?? '',
+                              height: 350,
                             ),
                           ),
-                        ),
 
-                        //* ======= Anime titles
-                        Positioned(
-                          left: 8,
-                          right: 8,
-                          bottom: 12,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                data.title_english ?? 'No english title',
-                                style: Theme.of(context).textTheme.titleSmall,
+                          //* ==== gradient black
+                          const DecoratedBox(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [Colors.transparent, Colors.black87],
+                                stops: [0.4, 1],
                               ),
-                              const SizedBox(height: 4),
-                              Row(
-                                children: [
-                                  const Icon(
-                                    Icons.star,
-                                    color: primaryGlow,
-                                    size: 16,
-                                  ),
-                                  Text(
-                                    data.score.toString(),
-                                    style: Theme.of(context).textTheme.bodySmall
-                                        ?.copyWith(color: inversePrimary),
-                                  ),
-                                  const Spacer(),
-                                  Text(
-                                    "${data.season?.toUpperCase() ?? '--'}, ${data.year ?? '--'}",
-
-                                    style: Theme.of(context).textTheme.bodySmall
-                                        ?.copyWith(
-                                          letterSpacing: 0.1,
-                                          color: inversePrimary,
-                                        ),
-                                  ),
-                                ],
-                              ),
-                            ],
+                            ),
                           ),
-                        ),
-                      ],
+
+                          //* ======= Anime titles
+                          Positioned(
+                            left: 8,
+                            right: 8,
+                            bottom: 12,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  data.title_english ?? 'No english title',
+                                  style: Theme.of(context).textTheme.titleSmall,
+                                ),
+                                const SizedBox(height: 4),
+                                Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.star,
+                                      color: primaryGlow,
+                                      size: 16,
+                                    ),
+                                    Text(
+                                      data.score.toString(),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(color: inversePrimary),
+                                    ),
+                                    const Spacer(),
+                                    Text(
+                                      "${data.season?.toUpperCase() ?? '--'}, ${data.year ?? '--'}",
+
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(
+                                            letterSpacing: 0.1,
+                                            color: inversePrimary,
+                                          ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
-          );
+          };
         },
       ),
     );

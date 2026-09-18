@@ -8,7 +8,7 @@ import 'package:denuanime/features/anime/domain/cubits/anime_cubit.dart';
 import 'package:denuanime/features/anime/domain/cubits/anime_state.dart';
 import 'package:denuanime/features/anime/domain/entities/anime_characters_model.dart';
 import 'package:denuanime/features/anime/domain/entities/anime_details_model.dart';
-import 'package:denuanime/features/anime/presentation/common/anime_external_info_section.dart';
+import 'package:denuanime/features/anime/presentation/common/external_info_section.dart';
 import 'package:denuanime/features/anime/presentation/common/broadcast_section.dart';
 import 'package:denuanime/features/anime/presentation/common/scores_section.dart';
 import 'package:denuanime/features/anime/presentation/common/sypnosis_section.dart';
@@ -285,7 +285,7 @@ class _AnimeDetailsViewState extends State<AnimeDetailsView> {
 
                             //* External info
                             const SizedBox(height: 24),
-                            AnimeExternalInfoSection(
+                            ExternalInfoSection(
                               data: animeDetails,
                               onTap: (url) {
                                 Navigator.push(

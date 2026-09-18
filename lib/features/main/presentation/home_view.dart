@@ -28,6 +28,7 @@ import 'package:denuanime/features/people/domain/cubits/people_state.dart';
 import 'package:denuanime/features/people/presentation/person_details_view.dart';
 import 'package:denuanime/features/people/presentation/search_person_view.dart';
 import 'package:denuanime/theme/dark_mode.dart';
+import 'package:denuanime/utils/core/async_value.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -52,7 +53,7 @@ class _HomeViewState extends State<HomeView> {
   int selectedStatus = 0;
   int selectedOrder = 0;
   bool selectedSort = false; // false is asc, true is desc
-
+  final CarouselController _carouselController = CarouselController();
   var filteredGenre = '';
   //? ============ functions
 
@@ -132,6 +133,9 @@ class _HomeViewState extends State<HomeView> {
     setState(() {
       currentCarouselIndex = 0;
     });
+    if (_carouselController.hasClients) {
+      _carouselController.jumpTo(0);
+    }
     final type = DropdownMenuFilter.typeApiValues[selectedType];
     final rating = DropdownMenuFilter.ratingApiValues[selectedRating];
     final status = DropdownMenuFilter.statusApiValues[selectedStatus];
@@ -180,14 +184,18 @@ class _HomeViewState extends State<HomeView> {
       const GetRecommendationsRequest(limit: "2", sfw: "true"),
     );
 
-    //emit loading only
-    context.read<AnimeCubit>().setLatestSchedulesToLoading();
     //call episodes schedules
     Future.delayed(const Duration(seconds: 3), () {
       if (!mounted) return;
 
       context.read<AnimeCubit>().getLatestSchedules();
     });
+  }
+
+  @override
+  void dispose() {
+    _carouselController.dispose();
+    super.dispose();
   }
 
   @override
@@ -258,8 +266,6 @@ class _HomeViewState extends State<HomeView> {
                 const GetRecommendationsRequest(limit: "2", sfw: "true"),
               );
 
-              //emit loading only
-              context.read<AnimeCubit>().setLatestSchedulesToLoading();
               //call episodes schedules
               Future.delayed(const Duration(seconds: 3), () {
                 if (!context.mounted) return;
@@ -294,37 +300,29 @@ class _HomeViewState extends State<HomeView> {
           SliverPadding(
             padding: const EdgeInsetsGeometry.symmetric(horizontal: 8),
             sliver: BlocBuilder<AnimeCubit, AnimeState>(
+              buildWhen: (p, c) => p.recents != c.recents,
               builder: (context, state) {
-                if (state.isLatestSchedulesLoading) {
-                  return const SliverToBoxAdapter(
+                return switch (state.recents) {
+                  AsyncIdle() || AsyncLoading() => const SliverToBoxAdapter(
                     child: HomeSchedulesItemSkeleton(),
-                  );
-                }
+                  ),
 
-                if (state.latestSchedulesListError.isNotEmpty) {
-                  return SliverToBoxAdapter(
-                    child: Center(child: Text(state.latestSchedulesListError)),
-                  );
-                }
-
-                final schedules = state.latestSchedulesList;
-                return SliverList.builder(
-                  itemCount: schedules.length,
-                  itemBuilder: (context, index) {
-                    return AnimeHorizontalCardItem(
-                      onClickItem: () {
-                        _onNavigateToAnimeDetails(
-                          schedules[index].mal_id ?? -1,
-                        );
-                      },
+                  AsyncFailure(:final message) => SliverToBoxAdapter(
+                    child: Center(child: Text(message)),
+                  ),
+                  AsyncData(:final value) => SliverList.builder(
+                    itemCount: value.length,
+                    itemBuilder: (context, index) => AnimeHorizontalCardItem(
+                      onClickItem: () =>
+                          _onNavigateToAnimeDetails(value[index].mal_id ?? -1),
                       model: RecentEpisodesModel(
-                        entry: schedules[index],
-                        episodes: [],
+                        entry: value[index],
+                        episodes: const [],
                         region_locked: true,
                       ),
-                    );
-                  },
-                );
+                    ),
+                  ),
+                };
               },
             ),
           ),
@@ -457,38 +455,40 @@ class _HomeViewState extends State<HomeView> {
 
             Expanded(
               child: BlocBuilder<AnimeCubit, AnimeState>(
+                buildWhen: (p, c) => p.genres != c.genres,
                 builder: (context, state) {
-                  if (state.isGenreLoading) {
-                    return const HomeGenreItemsSkeleton(isLoading: true);
-                  }
-                  if (state.genreListError.isNotEmpty) {
-                    return Text(state.genreListError);
-                  }
-                  return SizedBox(
-                    height: 40,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: state.genresList.length,
-                      itemBuilder: (context, index) {
-                        final genre = state.genresList[index];
-                        return Padding(
-                          padding: const EdgeInsets.only(right: 8),
-                          child: GenreItem(
-                            size: GenreItemSize.small,
-                            selectedBackgroundColor: primary,
-                            onSelect: (value) {
-                              filteredGenre = _toggleGenreSelection(
-                                genre.mal_id!,
-                                value,
-                              );
-                              _searchAnime();
-                            },
-                            genre: genre,
-                          ),
-                        );
-                      },
+                  return switch (state.genres) {
+                    AsyncIdle() || AsyncLoading() =>
+                      const HomeGenreItemsSkeleton(isLoading: true),
+                    AsyncFailure(:final message) => Text(
+                      message,
+                    ), // : means match by property name
+                    AsyncData(:final value) => SizedBox(
+                      height: 40,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: value.length,
+                        itemBuilder: (context, index) {
+                          final genre = value[index];
+                          return Padding(
+                            padding: const EdgeInsets.only(right: 8),
+                            child: GenreItem(
+                              size: GenreItemSize.small,
+                              selectedBackgroundColor: primary,
+                              onSelect: (v) {
+                                filteredGenre = _toggleGenreSelection(
+                                  genre.mal_id!,
+                                  v,
+                                );
+                                _searchAnime();
+                              },
+                              genre: genre,
+                            ),
+                          );
+                        },
+                      ),
                     ),
-                  );
+                  };
                 },
               ),
             ),
@@ -508,50 +508,58 @@ class _HomeViewState extends State<HomeView> {
           decoration: const BoxDecoration(color: Colors.black),
 
           child: BlocBuilder<AnimeCubit, AnimeState>(
+            buildWhen: (p, c) => p.animes != c.animes,
             builder: (context, state) {
-              if (state.isAnimeLoading) {
-                return const HomeCarouselItemsSkeleton(isLoading: true);
-              }
-              if (state.animeListError.isNotEmpty) {
-                return Center(
+              return switch (state.animes) {
+                AsyncIdle() || AsyncLoading() =>
+                  const HomeCarouselItemsSkeleton(isLoading: true),
+                AsyncFailure(:final message) => Center(
                   child: Container(
                     decoration: BoxDecoration(
                       color: secondary,
                       borderRadius: BorderRadius.circular(16),
                     ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(50),
+                      child: Text(message),
+                    ),
+                  ),
+                ),
 
+                AsyncData(:final value) when value.isEmpty => Center(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: secondary,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
                     child: const Padding(
-                      padding: EdgeInsetsGeometry.all(50),
+                      padding: EdgeInsets.all(50),
                       child: Text("No animes found"),
                     ),
                   ),
-                );
-              }
-              return CarouselView.weighted(
-                enableSplash: true,
-                onTap: (index) => _onNavigateToAnimeDetails(
-                  state.animesList[index].mal_id ?? -1,
                 ),
-                backgroundColor: Colors.red,
-                itemSnapping: true,
-                flexWeights: [6, 1],
-                shape: const RoundedRectangleBorder(),
-                scrollDirection: Axis.horizontal,
-
-                onIndexChanged: (index) {
-                  setState(() {
-                    currentCarouselIndex = index;
-                  });
-                },
-                children: List<Widget>.generate(state.animesList.length, (
-                  int index,
-                ) {
-                  return AnimeCarouselItem(
-                    animeDetails: state.animesList[index],
-                    shouldShowDetails: index == currentCarouselIndex,
-                  );
-                }),
-              );
+                AsyncData(:final value) => CarouselView.weighted(
+                  controller: _carouselController,
+                  enableSplash: true,
+                  onTap: (index) =>
+                      _onNavigateToAnimeDetails(value[index].mal_id ?? -1),
+                  backgroundColor: Colors.red,
+                  itemSnapping: true,
+                  flexWeights: const [6, 1],
+                  shape: const RoundedRectangleBorder(),
+                  scrollDirection: Axis.horizontal,
+                  onIndexChanged: (index) {
+                    setState(() => currentCarouselIndex = index);
+                  },
+                  children: List<Widget>.generate(
+                    value.length,
+                    (index) => AnimeCarouselItem(
+                      animeDetails: value[index],
+                      shouldShowDetails: index == currentCarouselIndex,
+                    ),
+                  ),
+                ),
+              };
             },
           ),
         ),
@@ -605,30 +613,27 @@ class _HomeViewState extends State<HomeView> {
         ),
 
         BlocBuilder<AnimeCubit, AnimeState>(
+          buildWhen: (p, c) => p.recommendations != c.recommendations,
           builder: (context, state) {
-            if (state.isRecommendationLoading) {
-              return const HomeRecommendationItemsSkeleton(isLoading: true);
-            }
+            return switch (state.recommendations) {
+              AsyncIdle() || AsyncLoading() =>
+                const HomeRecommendationItemsSkeleton(isLoading: true),
 
-            if (state.recommendationListError.isNotEmpty) {
-              return Center(child: Text(state.recommendationListError));
-            }
+              AsyncFailure(:final message) => Center(child: Text(message)),
 
-            final recommendations = state.recommendationList;
-
-            return Column(
-              children: List.generate(recommendations.length, (index) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4.0),
-                  child: RecommendationItem(
-                    recommendationModel: recommendations[index],
-                    onLearnMore: (id) {
-                      _onNavigateToAnimeDetails(id);
-                    },
+              AsyncData(:final value) => Column(
+                children: List.generate(
+                  value.length,
+                  (index) => Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                    child: RecommendationItem(
+                      recommendationModel: value[index],
+                      onLearnMore: _onNavigateToAnimeDetails,
+                    ),
                   ),
-                );
-              }),
-            );
+                ),
+              ),
+            };
           },
         ),
         const SizedBox(height: 8),
@@ -642,49 +647,66 @@ class _HomeViewState extends State<HomeView> {
         const SizedBox(height: 12),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16),
-          child: SegmentedButton<RecentSegmentedButton>(
-            style: ButtonStyle(
-              backgroundColor: WidgetStateProperty.resolveWith<Color?>((
-                states,
-              ) {
-                if (states.contains(WidgetState.selected)) {
-                  return primary;
-                }
-                return Colors.transparent;
-              }),
-            ),
+          child: BlocBuilder<AnimeCubit, AnimeState>(
+            buildWhen: (p, c) => p.recents != c.recents,
+            builder: (context, state) {
+              final isLoading = state.recents is AsyncLoading;
 
-            segments: const <ButtonSegment<RecentSegmentedButton>>[
-              ButtonSegment<RecentSegmentedButton>(
-                value: RecentSegmentedButton.recent,
-                label: Text("Recent Episodes"),
-              ),
-              ButtonSegment<RecentSegmentedButton>(
-                value: RecentSegmentedButton.ongoing,
-                label: Text("Ongoing Seasons"),
-              ),
-              ButtonSegment<RecentSegmentedButton>(
-                value: RecentSegmentedButton.upcoming,
-                label: Text("Upcoming Seasons"),
-              ),
-            ],
-            selected: {recentSegmentedButton},
-            onSelectionChanged: (Set<RecentSegmentedButton> newSelection) {
-              setState(() {
-                recentSegmentedButton = newSelection.first;
+              return SegmentedButton<RecentSegmentedButton>(
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.resolveWith<Color?>((
+                    states,
+                  ) {
+                    if (states.contains(WidgetState.disabled)) {
+                      return Colors.transparent;
+                    }
+                    if (states.contains(WidgetState.selected)) {
+                      return primary;
+                    }
+                    return Colors.transparent;
+                  }),
+                ),
 
-                switch (recentSegmentedButton) {
-                  case RecentSegmentedButton.recent:
-                    context.read<AnimeCubit>().getLatestSchedules();
-                    break;
-                  case RecentSegmentedButton.ongoing:
-                    context.read<AnimeCubit>().getSeasonalAnimeCurrent();
-                    break;
-                  case RecentSegmentedButton.upcoming:
-                    context.read<AnimeCubit>().getSeasonalAnimeUpcoming();
-                    break;
-                }
-              });
+                segments: const <ButtonSegment<RecentSegmentedButton>>[
+                  ButtonSegment<RecentSegmentedButton>(
+                    value: RecentSegmentedButton.recent,
+                    label: Text("Recent Episodes"),
+                  ),
+                  ButtonSegment<RecentSegmentedButton>(
+                    value: RecentSegmentedButton.ongoing,
+                    label: Text("Ongoing Seasons"),
+                  ),
+                  ButtonSegment<RecentSegmentedButton>(
+                    value: RecentSegmentedButton.upcoming,
+                    label: Text("Upcoming Seasons"),
+                  ),
+                ],
+                selected: {recentSegmentedButton},
+                onSelectionChanged: isLoading
+                    ? null
+                    : (Set<RecentSegmentedButton> newSelection) {
+                        final next = newSelection.first;
+                        if (next == recentSegmentedButton) return;
+
+                        setState(() => recentSegmentedButton = next);
+
+                        switch (recentSegmentedButton) {
+                          case RecentSegmentedButton.recent:
+                            context.read<AnimeCubit>().getLatestSchedules();
+                            break;
+                          case RecentSegmentedButton.ongoing:
+                            context
+                                .read<AnimeCubit>()
+                                .getSeasonalAnimeCurrent();
+                            break;
+                          case RecentSegmentedButton.upcoming:
+                            context
+                                .read<AnimeCubit>()
+                                .getSeasonalAnimeUpcoming();
+                            break;
+                        }
+                      },
+              );
             },
           ),
         ),

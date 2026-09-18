@@ -3,8 +3,11 @@ import 'dart:io';
 import 'package:denuanime/features/anime/data/request/get_anime_details_full_request.dart';
 import 'package:denuanime/features/anime/data/request/get_recommendations_request.dart';
 import 'package:denuanime/features/anime/data/request/search_anime_request.dart';
+import 'package:denuanime/features/anime/domain/entities/anime_details_model.dart';
+import 'package:denuanime/features/anime/domain/entities/genre_model.dart';
 import 'package:denuanime/features/anime/domain/repositories/anime_repo.dart';
 import 'package:denuanime/features/anime/domain/cubits/anime_state.dart';
+import 'package:denuanime/utils/core/async_value.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AnimeCubit extends Cubit<AnimeState> {
@@ -19,53 +22,54 @@ class AnimeCubit extends Cubit<AnimeState> {
   Future<void> searchAnime(SearchAnimeRequest request) async {
     _currentRequest = request.copyWith(page: () => 1);
     emit(
-      state.copyWith(isAnimeLoading: true, animeListError: "", animesList: []),
+      state.copyWith(
+        animes: const AsyncLoading(),
+        hasNextPage: false,
+        isLoadingMore: false,
+      ),
     );
-
     try {
       final result = await animeRepo.searchAnime(_currentRequest);
 
+      if (isClosed) return;
       emit(
         state.copyWith(
-          animesList: result.items,
-          isAnimeLoading: false,
-          animeListError: "",
+          animes: AsyncData(result.items),
           hasNextPage: result.hasNextPage,
         ),
       );
     } on HttpException catch (e) {
-      emit(
-        state.copyWith(
-          isAnimeLoading: false,
-          animeListError: e.message.toString(),
-        ),
-      );
+      if (isClosed) return;
+      emit(state.copyWith(animes: AsyncFailure(e.message.toString())));
     } catch (e) {
-      emit(state.copyWith(isAnimeLoading: false, animeListError: e.toString()));
+      if (isClosed) return;
+      emit(state.copyWith(animes: AsyncFailure(e.toString())));
     }
   }
 
   Future<void> loadMoreAnime() async {
-    if (state.isLoadingMore || state.isAnimeLoading || !state.hasNextPage) {
-      return;
-    }
+    final current = state.animes;
+    if (current is! AsyncData<List<AnimeDetailsModel>>) return;
+    if (state.isLoadingMore || !state.hasNextPage) return;
 
     emit(state.copyWith(isLoadingMore: true));
 
-    _currentRequest = _currentRequest.copyWith(
-      page: () => (_currentRequest.page ?? 1) + 1,
-    );
+    final nextPage = (_currentRequest.page ?? 1) + 1;
+    final nextRequest = _currentRequest.copyWith(page: () => nextPage);
 
     try {
-      final result = await animeRepo.searchAnime(_currentRequest);
+      final result = await animeRepo.searchAnime(nextRequest);
+      if (isClosed) return;
+      _currentRequest = nextRequest;
       emit(
         state.copyWith(
-          animesList: [...state.animesList, ...result.items],
+          animes: AsyncData([...current.value, ...result.items]),
           isLoadingMore: false,
           hasNextPage: result.hasNextPage,
         ),
       );
     } catch (e) {
+      if (isClosed) return;
       emit(state.copyWith(isLoadingMore: false));
     }
   }
@@ -73,55 +77,31 @@ class AnimeCubit extends Cubit<AnimeState> {
   // * ================== end search anime
 
   Future<void> getAllGenres() async {
-    emit(state.copyWith(isGenreLoading: true, genreListError: ""));
+    emit(state.copyWith(genres: const AsyncLoading()));
 
     try {
       final genres = await animeRepo.getAllGenres();
-
-      emit(
-        state.copyWith(
-          genresList: genres,
-          isGenreLoading: false,
-          genreListError: "",
-        ),
-      );
+      if (isClosed) return;
+      emit(state.copyWith(genres: AsyncData(genres)));
     } on HttpException catch (e) {
-      emit(
-        state.copyWith(
-          isGenreLoading: false,
-          genreListError: e.message.toString(),
-        ),
-      );
+      if (isClosed) return;
+      emit(state.copyWith(genres: AsyncFailure(e.message)));
     } catch (e) {
-      emit(state.copyWith(isGenreLoading: false, genreListError: e.toString()));
+      if (isClosed) return;
+      emit(state.copyWith(genres: AsyncFailure(e.toString())));
     }
   }
 
   Future<void> getAllRecommendations(GetRecommendationsRequest request) async {
-    emit(
-      state.copyWith(
-        isRecommendationLoading: true,
-        recommendationListError: "",
-      ),
-    );
+    emit(state.copyWith(recommendations: const AsyncLoading()));
 
     try {
-      final recommendationList = await animeRepo.getRecommendations(request);
-
-      emit(
-        state.copyWith(
-          recommendationList: recommendationList,
-          isRecommendationLoading: false,
-          recommendationListError: "",
-        ),
-      );
+      final result = await animeRepo.getRecommendations(request);
+      if (isClosed) return;
+      emit(state.copyWith(recommendations: AsyncData(result)));
     } catch (e) {
-      emit(
-        state.copyWith(
-          recommendationListError: e.toString(),
-          isRecommendationLoading: false,
-        ),
-      );
+      if (isClosed) return;
+      emit(state.copyWith(recommendations: AsyncFailure(e.toString())));
     }
   }
 
@@ -173,114 +153,41 @@ class AnimeCubit extends Cubit<AnimeState> {
     }
   }
 
-  Future<void> getLatestSchedules() async {
-    emit(
-      state.copyWith(
-        isLatestSchedulesLoading: true,
-        latestSchedulesListError: "",
-      ),
-    );
+  Future<void> getLatestSchedules() =>
+      _loadRecents(() => animeRepo.getLatestSchedules());
+
+  Future<void> getSeasonalAnimeCurrent() =>
+      _loadRecents(() => animeRepo.getSeasonalAnimeCurrent());
+
+  Future<void> getSeasonalAnimeUpcoming() =>
+      _loadRecents(() => animeRepo.getSeasonalAnimeUpcoming());
+
+  Future<void> _loadRecents(
+    Future<List<AnimeDetailsModel>> Function() fetch,
+  ) async {
+    if (state.recents is AsyncLoading) return;
+
+    emit(state.copyWith(recents: const AsyncLoading()));
 
     try {
-      final schedules = await animeRepo.getLatestSchedules();
-
-      emit(
-        state.copyWith(
-          latestSchedulesList: schedules,
-          isLatestSchedulesLoading: false,
-          latestSchedulesListError: "",
-        ),
-      );
+      final result = await fetch();
+      if (isClosed) return;
+      emit(state.copyWith(recents: AsyncData(result)));
     } on HttpException catch (e) {
-      emit(
-        state.copyWith(
-          latestSchedulesListError: e.message.toString(),
-          isLatestSchedulesLoading: false,
-        ),
-      );
+      if (isClosed) return;
+      emit(state.copyWith(recents: AsyncFailure(e.message.toString())));
     } catch (e) {
-      emit(
-        state.copyWith(
-          latestSchedulesListError: e.toString(),
-          isLatestSchedulesLoading: false,
-        ),
-      );
-    }
-  }
-
-  Future<void> getSeasonalAnimeCurrent() async {
-    emit(
-      state.copyWith(
-        isLatestSchedulesLoading: true,
-        latestSchedulesListError: "",
-      ),
-    );
-
-    try {
-      final schedules = await animeRepo.getSeasonalAnimeCurrent();
-
-      emit(
-        state.copyWith(
-          latestSchedulesList: schedules,
-          isLatestSchedulesLoading: false,
-          latestSchedulesListError: "",
-        ),
-      );
-    } on HttpException catch (e) {
-      emit(
-        state.copyWith(
-          latestSchedulesListError: e.message.toString(),
-          isLatestSchedulesLoading: false,
-        ),
-      );
-    } catch (e) {
-      emit(
-        state.copyWith(
-          latestSchedulesListError: e.toString(),
-          isLatestSchedulesLoading: false,
-        ),
-      );
-    }
-  }
-
-  Future<void> getSeasonalAnimeUpcoming() async {
-    emit(
-      state.copyWith(
-        isLatestSchedulesLoading: true,
-        latestSchedulesListError: "",
-      ),
-    );
-
-    try {
-      final schedules = await animeRepo.getSeasonalAnimeUpcoming();
-
-      emit(
-        state.copyWith(
-          latestSchedulesList: schedules,
-          isLatestSchedulesLoading: false,
-          latestSchedulesListError: "",
-        ),
-      );
-    } on HttpException catch (e) {
-      emit(
-        state.copyWith(
-          latestSchedulesListError: e.message.toString(),
-          isLatestSchedulesLoading: false,
-        ),
-      );
-    } catch (e) {
-      emit(
-        state.copyWith(
-          latestSchedulesListError: e.toString(),
-          isLatestSchedulesLoading: false,
-        ),
-      );
+      if (isClosed) return;
+      emit(state.copyWith(recents: AsyncFailure(e.toString())));
     }
   }
 
   //? ====================== local calls
   String toggleGenre(int malId, bool selected) {
-    final updatedGenres = state.genresList.map((genre) {
+    final current = state.genres;
+    if (current is! AsyncData<List<GenreModel>>) return '';
+
+    final updatedGenres = current.value.map((genre) {
       if (genre.mal_id == malId) {
         return genre.copyWith(is_selected: selected);
       }
@@ -294,18 +201,14 @@ class AnimeCubit extends Cubit<AnimeState> {
       }
 
       // Alphabetical within each group
-      return a.name!.compareTo(b.name!);
+      return (a.name ?? '').compareTo(b.name ?? '');
     });
 
-    emit(state.copyWith(genresList: updatedGenres));
+    emit(state.copyWith(genres: AsyncData(updatedGenres)));
 
     return updatedGenres
         .where((g) => g.is_selected)
         .map((g) => g.mal_id.toString())
         .join(',');
-  }
-
-  void setLatestSchedulesToLoading() {
-    emit(state.copyWith(isLatestSchedulesLoading: true));
   }
 }

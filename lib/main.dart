@@ -12,7 +12,7 @@ import 'package:denuanime/features/anime/domain/cubits/anime_cubit.dart';
 import 'package:denuanime/features/people/domain/repositories/people_repo.dart';
 import 'package:denuanime/features/people/domain/cubits/people_cubit.dart';
 import 'package:denuanime/theme/dark_mode.dart';
-import 'package:denuanime/utils/api_client.dart';
+import 'package:denuanime/utils/core/api_client.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
