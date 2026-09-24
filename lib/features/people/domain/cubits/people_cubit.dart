@@ -1,8 +1,9 @@
 import 'dart:io';
 
 import 'package:denuanime/features/people/data/request/search_people_request.dart';
-import 'package:denuanime/features/people/domain/repositories/people_repo.dart';
 import 'package:denuanime/features/people/domain/cubits/people_state.dart';
+import 'package:denuanime/features/people/domain/repositories/people_repo.dart';
+import 'package:denuanime/utils/core/async_value.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PeopleCubit extends Cubit<PeopleState> {
@@ -10,67 +11,71 @@ class PeopleCubit extends Cubit<PeopleState> {
 
   PeopleCubit({required this.peopleRepo}) : super(const PeopleState());
 
+  //* ================== search
   Future<void> searchPeople(SearchPeopleRequest request) async {
-    emit(state.copyWith(isPeopleLoading: true, peopleListError: ""));
+    emit(state.copyWith(people: const AsyncLoading()));
 
     try {
-      final people = await peopleRepo.searchPeople(request);
-
-      emit(
-        state.copyWith(
-          peopleList: people,
-          isPeopleLoading: false,
-          peopleListError: "",
-        ),
-      );
+      final result = await peopleRepo.searchPeople(request);
+      if (isClosed) return;
+      emit(state.copyWith(people: AsyncData(result)));
     } on HttpException catch (e) {
-      emit(
-        state.copyWith(
-          isPeopleLoading: false,
-          peopleListError: e.message.toString(),
-        ),
-      );
+      if (isClosed) return;
+      emit(state.copyWith(people: AsyncFailure(e.message)));
     } catch (e) {
-      emit(
-        state.copyWith(isPeopleLoading: false, peopleListError: e.toString()),
-      );
+      if (isClosed) return;
+      emit(state.copyWith(people: AsyncFailure(e.toString())));
     }
   }
 
+  //* ================== details
   Future<void> getPeopleDetails(int id) async {
-    emit(state.copyWith(isPeopleLoading: true, peopleError: ""));
+    emit(state.copyWith(personDetails: const AsyncLoading()));
 
     try {
-      final people = await peopleRepo.getPeopleDetails(id);
-
-      emit(
-        state.copyWith(
-          peopleDetails: people,
-          isPeopleLoading: false,
-          peopleError: "",
-        ),
-      );
+      final result = await peopleRepo.getPeopleDetails(id);
+      if (isClosed) return;
+      emit(state.copyWith(personDetails: AsyncData(result)));
     } catch (e) {
-      emit(state.copyWith(isPeopleLoading: false, peopleError: e.toString()));
+      if (isClosed) return;
+      emit(state.copyWith(personDetails: AsyncFailure(e.toString())));
     }
   }
 
   Future<void> getFullPeopleDetails(int id) async {
-    emit(state.copyWith(isPeopleLoading: true, peopleError: ""));
+    emit(
+      state.copyWith(
+        personDetails: const AsyncLoading(),
+        pictures: const AsyncLoading(),
+      ),
+    );
 
     try {
-      final people = await peopleRepo.getFullPeopleDetails(id);
-      final pictures = await peopleRepo.getPictures(people.mal_id ?? -1);
+      final result = await peopleRepo.getFullPeopleDetails(id);
+      if (isClosed) return;
+      emit(state.copyWith(personDetails: AsyncData(result)));
+    } catch (e) {
+      if (isClosed) return;
       emit(
         state.copyWith(
-          peopleDetails: people,
-          pictures: pictures,
-          isPeopleLoading: false,
-          peopleError: "",
+          personDetails: AsyncFailure(e.toString()),
+          pictures: const AsyncIdle(),
         ),
       );
+      return;
+    }
+
+    await _loadPictures(id);
+  }
+
+  Future<void> _loadPictures(int id) async {
+    try {
+      final result = await peopleRepo.getPictures(id);
+      if (isClosed) return;
+      emit(state.copyWith(pictures: AsyncData(result)));
     } catch (e) {
-      emit(state.copyWith(isPeopleLoading: false, peopleError: e.toString()));
+      if (isClosed) return;
+      emit(state.copyWith(pictures: AsyncFailure(e.toString())));
     }
   }
 }

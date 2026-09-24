@@ -4,7 +4,6 @@ import 'package:denuanime/features/anime/domain/repositories/anime_repo.dart';
 import 'package:denuanime/features/auth/presentation/views/landing_view.dart';
 import 'package:denuanime/features/character/data/datasource/character_api_datasource.dart';
 import 'package:denuanime/features/character/data/repositories/character_api_repo_impl.dart';
-import 'package:denuanime/features/character/domain/cubits/character_cubit.dart';
 import 'package:denuanime/features/character/domain/repositories/character_repo.dart';
 import 'package:denuanime/features/people/data/datasource/people_api_datasource.dart';
 import 'package:denuanime/features/people/data/repositories/people_api_repo_impl.dart';
@@ -52,6 +51,7 @@ class MainApp extends StatelessWidget {
       providers: [
         RepositoryProvider<PeopleRepo>(create: (context) => peopleRepo),
         RepositoryProvider<AnimeRepo>(create: (context) => animeRepo),
+        RepositoryProvider<CharacterRepo>(create: (context) => characterRepo),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -61,13 +61,6 @@ class MainApp extends StatelessWidget {
           ),
           //* Anime Cubit
           BlocProvider(create: (context) => AnimeCubit(animeRepo: animeRepo)),
-          //* Character Cubit
-          BlocProvider(
-            create: (context) => CharacterCubit(
-              characterRepo: characterRepo,
-              peopleRepo: peopleRepo,
-            ),
-          ),
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,

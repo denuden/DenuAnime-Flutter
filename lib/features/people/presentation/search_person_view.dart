@@ -4,8 +4,10 @@ import 'package:denuanime/features/common/presentation/skeleton/search_people_ca
 import 'package:denuanime/features/people/data/request/search_people_request.dart';
 import 'package:denuanime/features/people/domain/cubits/people_cubit.dart';
 import 'package:denuanime/features/people/domain/cubits/people_state.dart';
+import 'package:denuanime/features/people/domain/entities/people_model.dart';
 import 'package:denuanime/features/people/presentation/common/person_card_search_item.dart';
 import 'package:denuanime/features/people/presentation/person_details_view.dart';
+import 'package:denuanime/utils/core/async_value.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -23,10 +25,13 @@ class _SearchPersonViewState extends State<SearchPersonView> {
   final List<String> _previousSearches = [];
 
   //?========= functions
-  void searchPeople(String query) {
+  void _searchPeople(String query) {
+    final trimmed = query.trim();
+    if (trimmed.isEmpty) return;
+
     context.read<PeopleCubit>().searchPeople(
       SearchPeopleRequest(
-        q: query.trim(),
+        q: trimmed,
         order_by: "favorites",
         sort: "desc",
         limit: "50",
@@ -34,8 +39,8 @@ class _SearchPersonViewState extends State<SearchPersonView> {
     );
 
     setState(() {
-      _previousSearches.remove(query.trim());
-      _previousSearches.insert(0, query.trim());
+      _previousSearches.remove(trimmed);
+      _previousSearches.insert(0, trimmed);
     });
   }
 
@@ -47,36 +52,19 @@ class _SearchPersonViewState extends State<SearchPersonView> {
     }
 
     _searchTimer = Timer(const Duration(seconds: 2), () {
-      final trimmedQuery = searchController.text.trim();
-      //call initial search
-      context.read<PeopleCubit>().searchPeople(
-        SearchPeopleRequest(
-          q: trimmedQuery,
-          order_by: "favorites",
-          sort: "desc",
-          limit: "50",
-        ),
-      );
-
-      setState(() {
-        _previousSearches.remove(trimmedQuery);
-        _previousSearches.insert(0, trimmedQuery);
-      });
+      if (!mounted) return;
+      _searchPeople(searchController.text);
     });
   }
 
   void _onNavigateToPeopleDetails(int id) {
-    Navigator.of(context).push(
-      MaterialPageRoute<PersonDetailsView>(
-        builder: (context) => PersonDetailsView(id: id),
-      ),
-    );
+    Navigator.of(context).push(PersonDetailsView.route(id));
   }
 
   @override
   void initState() {
-    searchController.addListener(_onSearchChanged);
     super.initState();
+    searchController.addListener(_onSearchChanged);
   }
 
   @override
@@ -87,6 +75,7 @@ class _SearchPersonViewState extends State<SearchPersonView> {
     super.dispose();
   }
 
+  //?========= widget
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -99,7 +88,6 @@ class _SearchPersonViewState extends State<SearchPersonView> {
             isFullScreen: false,
             textInputAction: TextInputAction.done,
             keyboardType: TextInputType.text,
-
             builder: (context, controller) {
               return IconButton(
                 icon: const Icon(Icons.search),
@@ -111,7 +99,6 @@ class _SearchPersonViewState extends State<SearchPersonView> {
             viewLeading: IconButton(
               onPressed: () {
                 searchController.clear();
-
                 searchController.closeView(searchController.text);
               },
               icon: const Icon(Icons.close),
@@ -119,7 +106,7 @@ class _SearchPersonViewState extends State<SearchPersonView> {
             viewTrailing: [
               IconButton(
                 onPressed: () {
-                  searchPeople(searchController.text);
+                  _searchPeople(searchController.text);
                   searchController.closeView(searchController.text);
                   searchController.clear();
                 },
@@ -127,8 +114,7 @@ class _SearchPersonViewState extends State<SearchPersonView> {
               ),
             ],
             viewOnSubmitted: (value) {
-              searchPeople(value);
-
+              _searchPeople(value);
               searchController.closeView(value);
               searchController.clear();
             },
@@ -138,8 +124,9 @@ class _SearchPersonViewState extends State<SearchPersonView> {
                   leading: const Icon(Icons.history),
                   title: Text(query),
                   onTap: () {
-                    searchController.text = query;
+                    _searchPeople(query);
                     searchController.closeView(query);
+                    searchController.clear();
                   },
                 );
               }).toList();
@@ -149,42 +136,44 @@ class _SearchPersonViewState extends State<SearchPersonView> {
       ),
 
       body: BlocBuilder<PeopleCubit, PeopleState>(
+        buildWhen: (p, c) => p.people != c.people,
         builder: (context, state) {
-          if (state.isPeopleLoading) {
-            return Column(
-              children: List.generate(5, (index) {
-                return const SearchPeopleCardItemsSkeleton();
-              }),
-            );
-          }
-
-          if (state.peopleListError.isNotEmpty) {
-            return Center(child: Text(state.peopleListError));
-          }
-
-          final peopleList = state.peopleList;
-          return peopleList.isEmpty
-              ? const Center(child: Text("No person found"))
-              : SizedBox(
-                  width: double.infinity,
-                  child: ListView.builder(
-                    physics: const BouncingScrollPhysics(),
-                    scrollDirection: Axis.vertical,
-                    itemCount: peopleList.length,
-                    itemBuilder: (context, index) {
-                      return PersonCardSearchItem(
-                        peopleModel: peopleList[index],
-                        onClick: () {
-                          _onNavigateToPeopleDetails(
-                            peopleList[index].mal_id ?? -1,
-                          );
-                        },
-                      );
-                    },
-                  ),
-                );
+          return switch (state.people) {
+            AsyncIdle() || AsyncLoading() => _buildSkeleton(),
+            AsyncFailure(:final message) => Center(child: Text(message)),
+            AsyncData(:final value) => _buildResults(value),
+          };
         },
       ),
+    );
+  }
+
+  Widget _buildSkeleton() {
+    return Column(
+      children: List.generate(5, (index) {
+        return const SearchPeopleCardItemsSkeleton();
+      }),
+    );
+  }
+
+  Widget _buildResults(List<PeopleModel> people) {
+    if (people.isEmpty) {
+      return const Center(child: Text("No person found"));
+    }
+
+    return ListView.builder(
+      physics: const BouncingScrollPhysics(),
+      itemCount: people.length,
+      itemBuilder: (context, index) {
+        final person = people[index];
+
+        return PersonCardSearchItem(
+          peopleModel: person,
+          onClick: () {
+            _onNavigateToPeopleDetails(person.mal_id ?? -1);
+          },
+        );
+      },
     );
   }
 }

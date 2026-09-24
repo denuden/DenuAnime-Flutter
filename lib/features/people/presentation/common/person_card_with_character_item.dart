@@ -15,6 +15,12 @@ class PersonCardWithCharacterItem extends StatelessWidget {
     required this.animeCharactersModel,
   });
 
+  void _navigateToCharacterDetails(BuildContext context, int id, String role) {
+    Navigator.of(
+      context,
+    ).push(AnimeCharacterDetailsView.route(id: id, role: role));
+  }
+
   @override
   Widget build(BuildContext context) {
     final voiceActors = animeCharactersModel.voice_actors;
@@ -25,15 +31,10 @@ class PersonCardWithCharacterItem extends StatelessWidget {
 
     return InkWell(
       onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute<AnimeCharacterDetailsView>(
-            builder: (context) {
-              return AnimeCharacterDetailsView(
-                id: animeCharactersModel.character?.mal_id ?? 0,
-                role: animeCharactersModel.role ?? '---',
-              );
-            },
-          ),
+        _navigateToCharacterDetails(
+          context,
+          animeCharactersModel.character?.mal_id ?? 0,
+          animeCharactersModel.role ?? '---',
         );
       },
       child: Card.filled(

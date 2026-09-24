@@ -75,11 +75,7 @@ class _HomeViewState extends State<HomeView> {
   }
 
   void _onNavigateToPeopleDetails(int id) {
-    Navigator.of(context).push(
-      MaterialPageRoute<PersonDetailsView>(
-        builder: (context) => PersonDetailsView(id: id),
-      ),
-    );
+    Navigator.of(context).push(PersonDetailsView.route(id));
   }
 
   void _onNavigateToSearchPerson() {
@@ -367,42 +363,39 @@ class _HomeViewState extends State<HomeView> {
         ),
 
         BlocBuilder<PeopleCubit, PeopleState>(
+          buildWhen: (p, c) => p.people != c.people,
           builder: (context, state) {
-            //* Bloc builder
-            if (state.isPeopleLoading) {
-              return const SizedBox(
+            return switch (state.people) {
+              AsyncIdle() || AsyncLoading() => const SizedBox(
                 height: 120,
                 child: HomePeopleItemsSkeleton(isLoading: true),
-              );
-            }
-            if (state.peopleListError.isNotEmpty) {
-              SizedBox(
-                height: 120,
-                width: 400,
-                child: Text(state.peopleListError),
-              );
-            }
-            return SizedBox(
-              height: 120,
-              child: ListView.builder(
-                itemCount: state.peopleList.length,
-                itemBuilder: (context, index) {
-                  final person = state.peopleList[index];
-
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(16),
-                      onTap: () {
-                        _onNavigateToPeopleDetails(person.mal_id ?? -1);
-                      },
-                      child: PersonItemView(people: person),
-                    ),
-                  );
-                },
-                scrollDirection: Axis.horizontal,
               ),
-            );
+              AsyncFailure(:final message) => SizedBox(
+                height: 120,
+                child: Center(child: Text(message)),
+              ),
+              AsyncData(:final value) => SizedBox(
+                height: 120,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: value.length,
+                  itemBuilder: (context, index) {
+                    final person = value[index];
+
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(16),
+                        onTap: () {
+                          _onNavigateToPeopleDetails(person.mal_id ?? -1);
+                        },
+                        child: PersonItemView(people: person),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            };
           },
         ),
 

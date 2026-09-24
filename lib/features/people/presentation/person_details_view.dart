@@ -1,12 +1,16 @@
 import 'dart:ui';
 
 import 'package:denuanime/features/anime/presentation/anime_character_details_view.dart';
+import 'package:denuanime/features/common/entities/image_type_model.dart';
 import 'package:denuanime/features/common/presentation/custom_image_network.dart';
 import 'package:denuanime/features/common/presentation/skeleton/person_details_view_skeleton.dart';
 import 'package:denuanime/features/people/domain/cubits/people_cubit.dart';
 import 'package:denuanime/features/people/domain/cubits/people_state.dart';
+import 'package:denuanime/features/people/domain/entities/people_model.dart';
+import 'package:denuanime/features/people/domain/repositories/people_repo.dart';
 import 'package:denuanime/features/people/presentation/common/person_character_item.dart';
 import 'package:denuanime/theme/dark_mode.dart';
+import 'package:denuanime/utils/core/async_value.dart';
 import 'package:denuanime/utils/datetime_formatter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +20,21 @@ import 'package:intl/intl.dart';
 class PersonDetailsView extends StatefulWidget {
   final int id;
   const PersonDetailsView({super.key, required this.id});
+
+  /// Every navigation to this page goes through here,
+  /// so each person page gets its own cubit.
+  static Route<void> route(int id) {
+    return MaterialPageRoute<void>(
+      builder: (context) {
+        return BlocProvider(
+          create: (context) {
+            return PeopleCubit(peopleRepo: context.read<PeopleRepo>());
+          },
+          child: PersonDetailsView(id: id),
+        );
+      },
+    );
+  }
 
   @override
   State<PersonDetailsView> createState() => _PersonDetailsViewState();
@@ -50,11 +69,24 @@ class _PersonDetailsViewState extends State<PersonDetailsView> {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    _pageController.dispose();
+    _controller.dispose();
+    super.dispose();
+  }
+
   void _navigateToCharacterDetails(int id, String role) {
-    Navigator.of(context).push(
-      MaterialPageRoute<AnimeCharacterDetailsView>(
-        builder: (context) => AnimeCharacterDetailsView(id: id, role: role),
-      ),
+    Navigator.of(
+      context,
+    ).push(AnimeCharacterDetailsView.route(id: id, role: role));
+  }
+
+  void _animateToPage(int page) {
+    _pageController.animateToPage(
+      page,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.ease,
     );
   }
 
@@ -76,294 +108,302 @@ class _PersonDetailsViewState extends State<PersonDetailsView> {
           : null,
       body: BlocBuilder<PeopleCubit, PeopleState>(
         builder: (context, state) {
-          if (state.isPeopleLoading) {
-            return const PersonDetailsViewSkeleton();
-          }
+          return switch (state.personDetails) {
+            AsyncIdle() || AsyncLoading() => const PersonDetailsViewSkeleton(),
+            AsyncFailure(:final message) => Center(child: Text(message)),
+            AsyncData(:final value) => _buildContent(context, value),
+          };
+        },
+      ),
+    );
+  }
 
-          if (state.peopleError.isNotEmpty) {
-            return Center(child: Text(state.peopleError));
-          }
+  //?========= main content
+  Widget _buildContent(BuildContext context, PeopleModel person) {
+    final alternateNames = person.alternate_names ?? [];
+    final voices = person.voices ?? [];
 
-          final personImages = state.pictures;
-          final peopleModel = state.peopleDetails;
+    return CustomScrollView(
+      physics: const BouncingScrollPhysics(
+        parent: AlwaysScrollableScrollPhysics(),
+      ),
+      controller: _controller,
+      slivers: [
+        //* Refresh
+        CupertinoSliverRefreshControl(
+          refreshTriggerPullDistance: 180,
+          onRefresh: () async {
+            setState(() {
+              _currentPage = 0;
+            });
+            //call full details people
+            context.read<PeopleCubit>().getFullPeopleDetails(widget.id);
+          },
+        ),
 
-          return CustomScrollView(
-            physics: const BouncingScrollPhysics(
-              parent: AlwaysScrollableScrollPhysics(),
-            ),
-            controller: _controller,
-            //* body
-            slivers: [
-              //* Refresh
-              CupertinoSliverRefreshControl(
-                refreshTriggerPullDistance: 180,
+        //* Header
+        SliverToBoxAdapter(child: _PicturesHeader(context)),
 
-                onRefresh: () async {
-                  //call full details people
-                  context.read<PeopleCubit>().getFullPeopleDetails(widget.id);
-                },
-              ),
-              //* Header
-              SliverToBoxAdapter(
-                child: SizedBox(
-                  height: 200,
-                  child: Stack(
-                    children: [
-                      if (personImages.isNotEmpty == true)
-                        SizedBox(
-                          height: 200,
-                          child: PageView.builder(
-                            controller: _pageController,
-                            onPageChanged: (index) {
-                              setState(() {
-                                _currentPage = index;
-                              });
-                            },
-                            itemCount: personImages.length,
-                            itemBuilder: (context, index) {
-                              return Stack(
-                                children: [
-                                  ImageFiltered(
-                                    imageFilter: ImageFilter.blur(
-                                      sigmaX: 20,
-                                      sigmaY: 20,
-                                    ),
-                                    child: CustomImageNetwork(
-                                      personImages[index].jpg?.image_url ?? '',
-                                      height: 200,
-                                      boxFit: BoxFit.cover,
-                                    ),
-                                  ),
+        //* Body
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 8),
 
-                                  Container(
-                                    color: Colors.black.withValues(alpha: 0.25),
-                                  ),
-                                  CustomImageNetwork(
-                                    personImages[index].jpg?.image_url ?? '',
-                                    height: 200,
-                                    boxFit: BoxFit.fitHeight,
-                                  ),
-                                ], //*end image stack
-                              );
-                            },
-                          ),
-                        ),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: IconButton(
-                          style: ButtonStyle(
-                            backgroundColor: WidgetStatePropertyAll(
-                              secondary.withValues(alpha: 0.4),
-                            ),
-                          ),
-                          onPressed: () {
-                            if (_currentPage > 0) {
-                              _pageController.animateToPage(
-                                _currentPage - 1,
-                                duration: const Duration(milliseconds: 300),
-                                curve: Curves.ease,
-                              );
-                            }
-                          },
-                          icon: const Icon(Icons.keyboard_arrow_left),
-                        ),
-                      ),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: IconButton(
-                          style: ButtonStyle(
-                            backgroundColor: WidgetStatePropertyAll(
-                              secondary.withValues(alpha: 0.4),
-                            ),
-                          ),
-                          onPressed: () {
-                            if (_currentPage < personImages.length - 1) {
-                              _pageController.animateToPage(
-                                _currentPage + 1,
-                                duration: const Duration(milliseconds: 300),
-                                curve: Curves.ease,
-                              );
-                            }
-                          },
-                          icon: const Icon(Icons.keyboard_arrow_right),
-                        ),
-                      ),
-                      Positioned(
-                        bottom: 8,
-                        left: 0,
-                        right: 0,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: List.generate(
-                            personImages.length,
-                            (index) => Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 2,
-                              ),
-                              child: Icon(
-                                Icons.circle,
-                                size: 10,
-                                color: index == _currentPage
-                                    ? primary
-                                    : textSecondary,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ], //*end stack
-                  ),
-                ),
-              ),
-
-              //*Body
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 8),
-
-                      Row(
-                        children: [
-                          Text(
-                            peopleModel.name ?? ' Unknown Name',
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
-                          Text(
-                            "(${peopleModel.given_name ?? '--'} ${peopleModel.family_name ?? '--'})",
-                          ),
-                        ],
-                      ),
-                      Text(
-                        "Alternate name: ${(peopleModel.alternate_names?.isNotEmpty ?? false) ? peopleModel.alternate_names!.join(", ") : "N/A"}",
-                      ),
-
-                      const SizedBox(height: 16),
-                      //*birthday
-                      Row(
-                        children: [
-                          const Icon(Icons.calendar_month, size: 20),
-                          const SizedBox(width: 8),
-                          Text(
-                            DateTimeFormatter.formatFromIso(
-                              peopleModel.birthday ?? '',
-                              "MMMM dd, yyyy",
-                            ),
-                            style: Theme.of(context).textTheme.bodyMedium
-                                ?.copyWith(color: inversePrimary),
-                          ),
-                        ],
-                      ),
-                      //*favorites
-                      const SizedBox(height: 4),
-                      Row(
-                        children: [
-                          const Icon(Icons.favorite, size: 20),
-                          const SizedBox(width: 8),
-                          Text(
-                            NumberFormat.decimalPattern().format(
-                              peopleModel.favorites ?? 0,
-                            ),
-                            style: Theme.of(context).textTheme.bodyMedium
-                                ?.copyWith(color: inversePrimary),
-                          ),
-                        ],
-                      ),
-                      //*Link
-                      Row(
-                        children: [
-                          const Icon(Icons.link, size: 20, color: Colors.blue),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              peopleModel.url ?? '---',
-                              style: Theme.of(context).textTheme.bodyMedium
-                                  ?.copyWith(
-                                    color: Colors.blue,
-                                    decoration: TextDecoration.underline,
-                                    decorationColor: Colors.blue,
-                                  ),
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      const SizedBox(height: 12),
-                      AnimatedSize(
-                        duration: const Duration(milliseconds: 300),
-                        curve: Curves.easeInOut,
-                        child: Text(
-                          peopleModel.about ?? 'Nondescript',
-                          style: Theme.of(context).textTheme.bodyMedium
-                              ?.copyWith(color: white, height: 1.5),
-                          maxLines: _expanded ? null : 10,
-                          overflow: _expanded
-                              ? TextOverflow.visible
-                              : TextOverflow.ellipsis,
-                        ),
-                      ),
-
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: TextButton(
-                          onPressed: () {
-                            setState(() {
-                              _expanded = !_expanded;
-                            });
-                          },
-                          child: Text(
-                            _expanded ? "Hide" : "See more",
-                            style: Theme.of(context).textTheme.bodySmall
-                                ?.copyWith(fontWeight: FontWeight.w600),
-                          ),
-                        ),
-                      ),
-                    ], // * end column
-                  ),
-                ),
-              ),
-
-              //* ====== VOICES
-              SliverToBoxAdapter(
-                child: Column(
+                Row(
                   children: [
-                    const SizedBox(height: 16),
                     Text(
-                      "Voices",
+                      person.name ?? 'Unknown Name',
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
-                    const SizedBox(height: 4),
+                    Text(
+                      "(${person.given_name ?? '--'} ${person.family_name ?? '--'})",
+                    ),
                   ],
                 ),
-              ),
-
-              if (peopleModel.voices?.isEmpty == true ||
-                  peopleModel.voices == null)
-                const SliverToBoxAdapter(
-                  child: Center(
-                    child: Text("This person didn't voice any anime"),
-                  ),
-                )
-              else
-                SliverList.builder(
-                  itemCount: peopleModel.voices?.length,
-                  itemBuilder: (context, index) {
-                    return PersonCharacterItem(
-                      voicesModel: peopleModel.voices![index],
-                      onClick: () {
-                        _navigateToCharacterDetails(
-                          peopleModel.voices![index].character?.mal_id ?? -1,
-                          peopleModel.voices![index].role ?? '---',
-                        );
-                      },
-                    );
-                  },
+                Text(
+                  "Alternate name: ${alternateNames.isEmpty ? "N/A" : alternateNames.join(", ")}",
                 ),
-            ], //* end
-          );
-        },
+
+                const SizedBox(height: 16),
+
+                //* birthday
+                Row(
+                  children: [
+                    const Icon(Icons.calendar_month, size: 20),
+                    const SizedBox(width: 8),
+                    Text(
+                      DateTimeFormatter.formatFromIso(
+                        person.birthday ?? '',
+                        "MMMM dd, yyyy",
+                      ),
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodyMedium?.copyWith(color: inversePrimary),
+                    ),
+                  ],
+                ),
+
+                //* favorites
+                const SizedBox(height: 4),
+                Row(
+                  children: [
+                    const Icon(Icons.favorite, size: 20),
+                    const SizedBox(width: 8),
+                    Text(
+                      NumberFormat.decimalPattern().format(
+                        person.favorites ?? 0,
+                      ),
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodyMedium?.copyWith(color: inversePrimary),
+                    ),
+                  ],
+                ),
+
+                //* link
+                Row(
+                  children: [
+                    const Icon(Icons.link, size: 20, color: Colors.blue),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        person.url ?? '---',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Colors.blue,
+                          decoration: TextDecoration.underline,
+                          decorationColor: Colors.blue,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                //* about
+                const SizedBox(height: 12),
+                AnimatedSize(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                  child: Text(
+                    person.about ?? 'Nondescript',
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyMedium?.copyWith(color: white, height: 1.5),
+                    maxLines: _expanded ? null : 10,
+                    overflow: _expanded
+                        ? TextOverflow.visible
+                        : TextOverflow.ellipsis,
+                  ),
+                ),
+
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () {
+                      setState(() {
+                        _expanded = !_expanded;
+                      });
+                    },
+                    child: Text(
+                      _expanded ? "Hide" : "See more",
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+              ], // * end column
+            ),
+          ),
+        ),
+
+        //* ====== VOICES
+        SliverToBoxAdapter(
+          child: Column(
+            children: [
+              const SizedBox(height: 16),
+              Text("Voices", style: Theme.of(context).textTheme.titleMedium),
+              const SizedBox(height: 4),
+            ],
+          ),
+        ),
+
+        if (voices.isEmpty)
+          const SliverToBoxAdapter(
+            child: Center(child: Text("This person didn't voice any anime")),
+          )
+        else
+          SliverList.builder(
+            itemCount: voices.length,
+            itemBuilder: (context, index) {
+              final voice = voices[index];
+
+              return PersonCharacterItem(
+                voicesModel: voice,
+                onClick: () {
+                  _navigateToCharacterDetails(
+                    voice.character?.mal_id ?? -1,
+                    voice.role ?? '---',
+                  );
+                },
+              );
+            },
+          ),
+      ], //* end
+    );
+  }
+
+  //?========= pictures header
+  Widget _PicturesHeader(BuildContext context) {
+    return BlocBuilder<PeopleCubit, PeopleState>(
+      buildWhen: (p, c) => p.pictures != c.pictures,
+      builder: (context, state) {
+        return switch (state.pictures) {
+          AsyncIdle() || AsyncFailure() => const SizedBox.shrink(),
+          AsyncLoading() => const SizedBox(
+            height: 200,
+            child: ColoredBox(color: secondary),
+          ),
+          AsyncData(:final value) =>
+            value.isEmpty ? const SizedBox.shrink() : _buildGallery(value),
+        };
+      },
+    );
+  }
+
+  Widget _buildGallery(List<ImageTypeModel> pictures) {
+    return SizedBox(
+      height: 200,
+      child: Stack(
+        children: [
+          PageView.builder(
+            controller: _pageController,
+            onPageChanged: (index) {
+              setState(() {
+                _currentPage = index;
+              });
+            },
+            itemCount: pictures.length,
+            itemBuilder: (context, index) {
+              final url = pictures[index].jpg?.image_url ?? '';
+
+              return Stack(
+                children: [
+                  ImageFiltered(
+                    imageFilter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                    child: CustomImageNetwork(
+                      url,
+                      height: 200,
+                      boxFit: BoxFit.cover,
+                    ),
+                  ),
+                  Container(color: Colors.black.withValues(alpha: 0.25)),
+                  CustomImageNetwork(
+                    url,
+                    height: 200,
+                    boxFit: BoxFit.fitHeight,
+                  ),
+                ], //*end image stack
+              );
+            },
+          ),
+
+          if (pictures.length > 1) ...[
+            Align(
+              alignment: Alignment.centerLeft,
+              child: IconButton(
+                style: ButtonStyle(
+                  backgroundColor: WidgetStatePropertyAll(
+                    secondary.withValues(alpha: 0.4),
+                  ),
+                ),
+                onPressed: () {
+                  if (_currentPage > 0) {
+                    _animateToPage(_currentPage - 1);
+                  }
+                },
+                icon: const Icon(Icons.keyboard_arrow_left),
+              ),
+            ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: IconButton(
+                style: ButtonStyle(
+                  backgroundColor: WidgetStatePropertyAll(
+                    secondary.withValues(alpha: 0.4),
+                  ),
+                ),
+                onPressed: () {
+                  if (_currentPage < pictures.length - 1) {
+                    _animateToPage(_currentPage + 1);
+                  }
+                },
+                icon: const Icon(Icons.keyboard_arrow_right),
+              ),
+            ),
+            Positioned(
+              bottom: 8,
+              left: 0,
+              right: 0,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(pictures.length, (index) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 2),
+                    child: Icon(
+                      Icons.circle,
+                      size: 10,
+                      color: index == _currentPage ? primary : textSecondary,
+                    ),
+                  );
+                }),
+              ),
+            ),
+          ],
+        ], //*end stack
       ),
     );
   }

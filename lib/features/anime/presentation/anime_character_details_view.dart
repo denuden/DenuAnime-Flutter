@@ -1,11 +1,13 @@
 import 'package:denuanime/features/character/domain/cubits/character_cubit.dart';
 import 'package:denuanime/features/character/domain/cubits/character_state.dart';
 import 'package:denuanime/features/character/domain/entities/character_full_model.dart';
+import 'package:denuanime/features/character/domain/repositories/character_repo.dart';
 import 'package:denuanime/features/common/presentation/custom_image_network.dart';
 import 'package:denuanime/features/common/presentation/skeleton/about_voice_actor_skeleton.dart';
 import 'package:denuanime/features/common/presentation/skeleton/character_details_view_skeleton.dart';
 import 'package:denuanime/features/common/presentation/spoiler_text.dart';
 import 'package:denuanime/features/people/domain/entities/people_model.dart';
+import 'package:denuanime/features/people/domain/repositories/people_repo.dart';
 import 'package:denuanime/features/people/presentation/common/person_card_language_item.dart';
 import 'package:denuanime/features/people/presentation/person_details_view.dart';
 import 'package:denuanime/theme/dark_mode.dart';
@@ -26,6 +28,22 @@ class AnimeCharacterDetailsView extends StatefulWidget {
     required this.id,
     required this.role,
   });
+
+  static Route<void> route({required int id, required String role}) {
+    return MaterialPageRoute<void>(
+      builder: (context) {
+        return BlocProvider(
+          create: (context) {
+            return CharacterCubit(
+              characterRepo: context.read<CharacterRepo>(),
+              peopleRepo: context.read<PeopleRepo>(),
+            );
+          },
+          child: AnimeCharacterDetailsView(id: id, role: role),
+        );
+      },
+    );
+  }
 
   @override
   State<AnimeCharacterDetailsView> createState() =>
