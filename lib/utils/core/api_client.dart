@@ -17,14 +17,14 @@ class ApiClient {
       PrettyDioLogger(
         requestHeader: true,
         requestBody: true,
-        responseBody: false,
+        responseBody: true,
         responseHeader: true,
         error: true,
         compact: true,
         maxWidth: 90,
         enabled: kDebugMode,
         filter: (options, args) {
-          if (options.path.contains('/anime')) {
+          if (options.path.contains('full')) {
             return true;
           }
           return false;

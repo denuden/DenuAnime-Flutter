@@ -67,11 +67,7 @@ class _HomeViewState extends State<HomeView> {
   }
 
   void _onNavigateToAnimeDetails(int id) {
-    Navigator.of(context).push(
-      MaterialPageRoute<AnimeDetailsView>(
-        builder: (context) => AnimeDetailsView(id: id),
-      ),
-    );
+    Navigator.of(context).push(AnimeDetailsView.route(id));
   }
 
   void _onNavigateToPeopleDetails(int id) {

@@ -53,11 +53,7 @@ class _AnimeSearchViewState extends State<AnimeSearchView> {
   }
 
   void _onNavigateToAnimeDetails(int id) {
-    Navigator.of(context).push(
-      MaterialPageRoute<AnimeDetailsView>(
-        builder: (context) => AnimeDetailsView(id: id),
-      ),
-    );
+    Navigator.of(context).push(AnimeDetailsView.route(id));
   }
 
   @override

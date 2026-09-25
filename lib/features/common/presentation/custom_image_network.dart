@@ -49,6 +49,7 @@ class CustomImageNetwork extends StatelessWidget {
           );
         },
         errorBuilder: (context, error, stackTrace) {
+          debugPrintStack(stackTrace: stackTrace, label: error.toString());
           return Container(
             color: Theme.of(context).colorScheme.secondary,
             alignment: Alignment.center,

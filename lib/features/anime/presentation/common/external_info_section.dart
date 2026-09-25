@@ -1,5 +1,7 @@
 import 'package:denuanime/features/anime/domain/entities/anime_details_model.dart';
-import 'package:denuanime/features/anime/domain/entities/relation_model.dart';
+import 'package:denuanime/features/anime/domain/entities/entry_model.dart';
+import 'package:denuanime/features/anime/presentation/anime_details_view.dart';
+import 'package:denuanime/features/common/presentation/custom_image_network.dart';
 import 'package:denuanime/theme/dark_mode.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -17,6 +19,9 @@ class ExternalInfoSection extends StatelessWidget {
     required this.data,
     required this.onTap,
   });
+  void _navigateToAnimeDetails(BuildContext context, int id) {
+    Navigator.of(context).push(AnimeDetailsView.route(id));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -265,6 +270,7 @@ class ExternalInfoSection extends StatelessWidget {
           ),
 
           const SizedBox(height: 24),
+
           //*============ Related MEDIA
           Column(
             children: [
@@ -291,6 +297,20 @@ class ExternalInfoSection extends StatelessWidget {
               ),
 
               //? LIST OF RELATIONS
+              Column(
+                children: data.relations?.isNotEmpty == true
+                    ? List.generate(data.relations?.length ?? 0, (index) {
+                        return relatedMediaCard(
+                          context: context,
+                          entry: data.relations?[index].entry,
+                          relation: data.relations?[index].relation,
+                          onTap: (id) {
+                            _navigateToAnimeDetails(context, id);
+                          },
+                        );
+                      })
+                    : [const Text("No external found.")],
+              ),
             ],
           ),
 
@@ -482,18 +502,72 @@ class ExternalInfoSection extends StatelessWidget {
 
   Widget relatedMediaCard({
     required BuildContext context,
-    required RelationModel data,
+    required List<EntryModel>? entry,
+    required String? relation,
+    required void Function(int) onTap,
   }) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          data.relation ?? '---',
+          (relation ?? '---').toUpperCase(),
           style: Theme.of(
             context,
-          ).textTheme.bodyLarge?.copyWith(color: primary),
+          ).textTheme.titleSmall?.copyWith(color: primary),
+        ),
+        const SizedBox(height: 4),
+        Column(
+          children: entry?.isNotEmpty == true
+              ? List.generate(entry?.length ?? 0, (index) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                    child: InkWell(
+                      onTap: () {
+                        onTap(entry?[index].mal_id ?? -1);
+                      },
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          CustomImageNetwork(
+                            entry?[index].images?.jpg?.image_url ?? '',
+                            height: 140,
+                            width: 120,
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            flex: 1,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  (entry?[index].media_type ?? '---')
+                                      .toUpperCase(),
+                                  style: Theme.of(context).textTheme.bodyMedium
+                                      ?.copyWith(
+                                        color: primarySoft,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                ),
+                                Text(
+                                  entry?[index].name ?? 'No title',
+                                  style: Theme.of(context).textTheme.bodyMedium
+                                      ?.copyWith(
+                                        color: inversePrimary,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                })
+              : [const Text("No entries found")],
         ),
 
-        const SizedBox(height: 8),
+        const SizedBox(height: 16),
       ],
     );
   }

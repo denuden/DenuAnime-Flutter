@@ -8,11 +8,13 @@ import 'package:denuanime/features/anime/domain/cubits/anime_cubit.dart';
 import 'package:denuanime/features/anime/domain/cubits/anime_state.dart';
 import 'package:denuanime/features/anime/domain/entities/anime_characters_model.dart';
 import 'package:denuanime/features/anime/domain/entities/anime_details_model.dart';
+import 'package:denuanime/features/anime/domain/repositories/anime_repo.dart';
 import 'package:denuanime/features/anime/presentation/common/external_info_section.dart';
 import 'package:denuanime/features/anime/presentation/common/broadcast_section.dart';
 import 'package:denuanime/features/anime/presentation/common/scores_section.dart';
 import 'package:denuanime/features/anime/presentation/common/sypnosis_section.dart';
 import 'package:denuanime/features/common/presentation/custom_image_network.dart';
+import 'package:denuanime/features/common/presentation/error_with_back_button.dart';
 import 'package:denuanime/features/common/presentation/skeleton/anime_details_characters_items_skeleton.dart';
 import 'package:denuanime/features/common/presentation/skeleton/anime_details_view_skeleton.dart';
 import 'package:denuanime/features/main/presentation/common/genre_item.dart';
@@ -30,6 +32,19 @@ import 'package:photo_opener/photo_opener.dart';
 class AnimeDetailsView extends StatefulWidget {
   final int id;
   const AnimeDetailsView({super.key, required this.id});
+
+  static Route<void> route(int id) {
+    return MaterialPageRoute<void>(
+      builder: (context) {
+        return BlocProvider(
+          create: (context) {
+            return AnimeCubit(animeRepo: context.read<AnimeRepo>());
+          },
+          child: AnimeDetailsView(id: id),
+        );
+      },
+    );
+  }
 
   @override
   State<AnimeDetailsView> createState() => _AnimeDetailsViewState();
@@ -96,7 +111,9 @@ class _AnimeDetailsViewState extends State<AnimeDetailsView> {
           return switch (state.animeDetails) {
             AsyncIdle() ||
             AsyncLoading() => AnimeDetailsViewSkeleton(isLoading: true),
-            AsyncFailure() => const Center(child: Text("Anime not found.")),
+            AsyncFailure() => const ErrorWithBackButton(
+              child: Center(child: Text("Anime not found.")),
+            ),
             AsyncData(:final value) => _buildContent(context, value),
           };
         },
