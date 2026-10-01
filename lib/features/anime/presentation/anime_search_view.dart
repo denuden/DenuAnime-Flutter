@@ -203,7 +203,8 @@ class _AnimeSearchViewState extends State<AnimeSearchView> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      data.title_english ?? 'No english title',
+                                      (data.title_english ?? data.title) ??
+                                          'No english title',
                                       style: Theme.of(
                                         context,
                                       ).textTheme.titleSmall,

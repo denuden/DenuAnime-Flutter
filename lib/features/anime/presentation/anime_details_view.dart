@@ -206,7 +206,8 @@ class _AnimeDetailsViewState extends State<AnimeDetailsView> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  animeDetails.title_english ??
+                                  (animeDetails.title_english ??
+                                          animeDetails.title) ??
                                       'No english title',
                                   style: Theme.of(context).textTheme.titleLarge,
                                 ),

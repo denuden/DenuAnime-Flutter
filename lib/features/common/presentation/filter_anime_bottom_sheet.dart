@@ -180,6 +180,34 @@ class _AnimeFilterBottomSheetState extends State<AnimeFilterBottomSheet> {
     );
   }
 
+  void resetValues() {
+    _sfw = false;
+    _sfwStrict = false;
+    _excludeUnapproved = false;
+
+    _searchController.text = '';
+
+    _type = '';
+    _status = '';
+    _rating = '';
+
+    _scoreRangeValues = const RangeValues(0, 9.9);
+
+    _orderBy = '';
+    _sort = '';
+
+    _genres = '';
+    _genresName = '';
+
+    _excludeGenres = '';
+    _excludeGenresName = '';
+
+    _producers = '';
+
+    _selectedStartDate = null;
+    _selectedEndDate = null;
+  }
+
   //* ============= formatters
   String? _formatDate(DateTime? date) {
     if (date == null) return null;
@@ -318,7 +346,11 @@ class _AnimeFilterBottomSheetState extends State<AnimeFilterBottomSheet> {
                         const Spacer(),
 
                         TextButton.icon(
-                          onPressed: () {},
+                          onPressed: () {
+                            resetValues();
+                            final request = buildSearchRequest();
+                            Navigator.pop(context, request);
+                          },
                           label: const Text("Reset"),
 
                           icon: const Icon(Icons.restart_alt, size: 30),
@@ -348,16 +380,21 @@ class _AnimeFilterBottomSheetState extends State<AnimeFilterBottomSheet> {
                                   color: Colors.white38,
                                   width: 1.5,
                                 ),
+                                color: _sfw ? primaryDark : null,
                               ),
                               child: InkWell(
                                 borderRadius: BorderRadius.circular(16),
                                 onTap: () {
                                   setState(() {
                                     _sfw = !_sfw;
+                                    if (_sfw) {
+                                      _sfwStrict = false;
+                                      _excludeUnapproved = false;
+                                    }
                                   });
                                 },
-                                child: const Padding(
-                                  padding: EdgeInsets.symmetric(
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
                                     vertical: 4,
                                     horizontal: 12,
                                   ),
@@ -366,8 +403,21 @@ class _AnimeFilterBottomSheetState extends State<AnimeFilterBottomSheet> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Icon(Icons.check),
-                                      Text("Safe for Work"),
+                                      Icon(
+                                        Icons.check,
+                                        color: _sfw ? inversePrimary : null,
+                                      ),
+                                      Text(
+                                        "Safe for Work",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium
+                                            ?.copyWith(
+                                              color: _sfw
+                                                  ? inversePrimary
+                                                  : null,
+                                            ),
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -382,16 +432,21 @@ class _AnimeFilterBottomSheetState extends State<AnimeFilterBottomSheet> {
                                   color: Colors.white38,
                                   width: 1.5,
                                 ),
+                                color: _sfwStrict ? primaryDark : null,
                               ),
                               child: InkWell(
                                 borderRadius: BorderRadius.circular(16),
                                 onTap: () {
                                   setState(() {
                                     _sfwStrict = !_sfwStrict;
+                                    if (_sfwStrict) {
+                                      _sfw = false;
+                                      _excludeUnapproved = false;
+                                    }
                                   });
                                 },
-                                child: const Padding(
-                                  padding: EdgeInsets.symmetric(
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
                                     vertical: 4,
                                     horizontal: 12,
                                   ),
@@ -400,8 +455,23 @@ class _AnimeFilterBottomSheetState extends State<AnimeFilterBottomSheet> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Icon(Icons.stop),
-                                      Text("SFW Strict"),
+                                      Icon(
+                                        Icons.stop,
+                                        color: _sfwStrict
+                                            ? inversePrimary
+                                            : null,
+                                      ),
+                                      Text(
+                                        "SFW Strict",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium
+                                            ?.copyWith(
+                                              color: _sfwStrict
+                                                  ? inversePrimary
+                                                  : null,
+                                            ),
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -417,16 +487,21 @@ class _AnimeFilterBottomSheetState extends State<AnimeFilterBottomSheet> {
                                   color: Colors.white38,
                                   width: 1.5,
                                 ),
+                                color: _excludeUnapproved ? primaryDark : null,
                               ),
                               child: InkWell(
                                 borderRadius: BorderRadius.circular(16),
                                 onTap: () {
                                   setState(() {
                                     _excludeUnapproved = !_excludeUnapproved;
+                                    if (_excludeUnapproved) {
+                                      _sfwStrict = false;
+                                      _sfw = false;
+                                    }
                                   });
                                 },
-                                child: const Padding(
-                                  padding: EdgeInsets.symmetric(
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
                                     vertical: 4,
                                     horizontal: 12,
                                   ),
@@ -435,8 +510,23 @@ class _AnimeFilterBottomSheetState extends State<AnimeFilterBottomSheet> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Icon(Icons.not_interested_rounded),
-                                      Text("Exclude Unapproved"),
+                                      Icon(
+                                        Icons.not_interested_rounded,
+                                        color: _excludeUnapproved
+                                            ? inversePrimary
+                                            : null,
+                                      ),
+                                      Text(
+                                        "Exclude Unapproved",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium
+                                            ?.copyWith(
+                                              color: _excludeUnapproved
+                                                  ? inversePrimary
+                                                  : null,
+                                            ),
+                                      ),
                                     ],
                                   ),
                                 ),

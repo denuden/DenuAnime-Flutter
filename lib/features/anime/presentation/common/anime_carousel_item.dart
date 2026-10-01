@@ -81,7 +81,8 @@ class AnimeCarouselItem extends StatelessWidget {
                   Align(
                     alignment: AlignmentGeometry.topLeft,
                     child: Text(
-                      animeDetails.title_english ?? "No english title",
+                      (animeDetails.title_english ?? animeDetails.title) ??
+                          'No english title',
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                         fontWeight: FontWeight.w500,
                         color: Colors.white,
