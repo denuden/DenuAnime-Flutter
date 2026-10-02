@@ -10,15 +10,22 @@ import 'package:denuanime/features/people/data/repositories/people_api_repo_impl
 import 'package:denuanime/features/anime/domain/cubits/anime_cubit.dart';
 import 'package:denuanime/features/people/domain/repositories/people_repo.dart';
 import 'package:denuanime/features/people/domain/cubits/people_cubit.dart';
+import 'package:denuanime/firebase_options.dart';
 import 'package:denuanime/theme/dark_mode.dart';
 import 'package:denuanime/utils/core/api_client.dart';
 import 'package:dio/dio.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  // Ideal time to initialize
+  await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
   runApp(MainApp());
 }
 

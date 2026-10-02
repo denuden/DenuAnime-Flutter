@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "721223882849",
+    "project_id": "denu-anime",
+    "storage_bucket": "denu-anime.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:721223882849:android:02611c9d1124cc1f523220",
+        "android_client_info": {
+          "package_name": "com.example.denuanime"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvfC-RgWhl10IBMpXvzsDL5zo3-rqbCfs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
