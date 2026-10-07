@@ -150,61 +150,58 @@ class AnimeHorizontalCardItem extends StatelessWidget {
 
                     //? ==== meta data
                     const SizedBox(height: 8),
-                    FractionallySizedBox(
-                      widthFactor: 0.8,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              const Icon(
-                                Icons.remove_red_eye_outlined,
-                                size: 16,
-                                color: primaryLight,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.remove_red_eye_outlined,
+                              size: 16,
+                              color: primaryLight,
+                            ),
+                            const SizedBox(width: 2),
+                            Text(
+                              formatShorthandNumber(
+                                model.entry?.trailer?.views ?? 0,
                               ),
-                              const SizedBox(width: 2),
-                              Text(
-                                formatShorthandNumber(
-                                  model.entry?.trailer?.views ?? 0,
-                                ),
-                                style: Theme.of(context).textTheme.bodySmall,
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.thumb_up_alt_outlined,
+                              size: 16,
+                              color: primaryLight,
+                            ),
+                            const SizedBox(width: 2),
+                            Text(
+                              formatShorthandNumber(
+                                model.entry?.trailer?.likes ?? 0,
                               ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              const Icon(
-                                Icons.thumb_up_alt_outlined,
-                                size: 16,
-                                color: primaryLight,
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.comment_outlined,
+                              size: 16,
+                              color: primaryLight,
+                            ),
+                            const SizedBox(width: 2),
+                            Text(
+                              formatShorthandNumber(
+                                model.entry?.trailer?.comment_count ?? 0,
                               ),
-                              const SizedBox(width: 2),
-                              Text(
-                                formatShorthandNumber(
-                                  model.entry?.trailer?.likes ?? 0,
-                                ),
-                                style: Theme.of(context).textTheme.bodySmall,
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              const Icon(
-                                Icons.comment_outlined,
-                                size: 16,
-                                color: primaryLight,
-                              ),
-                              const SizedBox(width: 2),
-                              Text(
-                                formatShorthandNumber(
-                                  model.entry?.trailer?.comment_count ?? 0,
-                                ),
-                                style: Theme.of(context).textTheme.bodySmall,
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
 
                     //?==== youtube title
@@ -212,6 +209,7 @@ class AnimeHorizontalCardItem extends StatelessWidget {
                     Text(
                       model.entry?.trailer?.title ?? 'Unknown youtube title',
                       maxLines: 3,
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
                     const SizedBox(height: 4),
 

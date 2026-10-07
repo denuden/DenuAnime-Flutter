@@ -58,6 +58,8 @@ class _HomeViewState extends State<HomeView> {
   bool selectedSort = false; // false is asc, true is desc
   final CarouselController _carouselController = CarouselController();
   var filteredGenre = '';
+
+  //for loading dialog (used in: signing out)
   Route<void>? _loadingRoute;
 
   //? ============ functions
@@ -200,6 +202,9 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
+    //gets users
+    final user = context.select((AuthCubit cubit) => cubit.state.user);
+
     return Scaffold(
       //* ================= appbar
       appBar: AppBar(
@@ -217,7 +222,6 @@ class _HomeViewState extends State<HomeView> {
             },
             icon: const Icon(Icons.explore),
           ),
-          IconButton(onPressed: () {}, icon: const Icon(Icons.favorite)),
         ],
       ),
       //* =============== drawer
@@ -227,6 +231,8 @@ class _HomeViewState extends State<HomeView> {
           _onMenuSelection(index);
         },
         onSignOut: () => _onSignOut(),
+        name: user?.name ?? 'No display name',
+        email: user?.email ?? "Email not found",
       ),
 
       //* ============== body
