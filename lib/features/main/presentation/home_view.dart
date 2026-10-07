@@ -9,6 +9,9 @@ import 'package:denuanime/features/anime/presentation/anime_explore_view.dart';
 import 'package:denuanime/features/anime/presentation/anime_search_view.dart';
 import 'package:denuanime/features/anime/presentation/common/anime_horizontal_card_item.dart';
 import 'package:denuanime/features/anime/presentation/common/anime_carousel_item.dart';
+import 'package:denuanime/features/auth/domain/cubits/auth_cubit.dart';
+import 'package:denuanime/features/auth/domain/cubits/auth_state.dart';
+import 'package:denuanime/features/common/presentation/dialog/show_loading_dialog.dart';
 import 'package:denuanime/features/common/presentation/skeleton/home_carousel_items_skeleton.dart';
 import 'package:denuanime/features/common/presentation/skeleton/home_genre_items_skeleton.dart';
 import 'package:denuanime/features/common/presentation/skeleton/home_people_items_skeleton.dart';
@@ -55,7 +58,12 @@ class _HomeViewState extends State<HomeView> {
   bool selectedSort = false; // false is asc, true is desc
   final CarouselController _carouselController = CarouselController();
   var filteredGenre = '';
+  Route<void>? _loadingRoute;
+
   //? ============ functions
+  Future<void> _onSignOut() async {
+    context.read<AuthCubit>().signOut();
+  }
 
   void _onMenuSelection(int index) {
     setState(() {
@@ -218,108 +226,128 @@ class _HomeViewState extends State<HomeView> {
         onSelect: (index) {
           _onMenuSelection(index);
         },
+        onSignOut: () => _onSignOut(),
       ),
 
       //* ============== body
-      body: CustomScrollView(
-        physics: const BouncingScrollPhysics(
-          parent: AlwaysScrollableScrollPhysics(),
-        ),
-        slivers: [
-          //*--------------- Refresher
-          CupertinoSliverRefreshControl(
-            refreshTriggerPullDistance: 180,
-
-            onRefresh: () async {
-              //call people list
-              context.read<PeopleCubit>().searchPeople(
-                const SearchPeopleRequest(
-                  order_by: "favorites",
-                  limit: "25",
-                  sort: "desc",
-                ),
-              );
-
-              //call genre list
-              context.read<AnimeCubit>().getAllGenres();
-
-              // call anime list
-              context.read<AnimeCubit>().searchAnime(
-                const SearchAnimeRequest(
-                  type: "tv",
-                  order_by: "popularity",
-                  limit: "10",
-                  sort: "asc",
-                ),
-              );
-
-              //call recommendataions
-              context.read<AnimeCubit>().getAllRecommendations(
-                const GetRecommendationsRequest(limit: "2", sfw: "true"),
-              );
-
-              //call episodes schedules
-              Future.delayed(const Duration(seconds: 3), () {
-                if (!context.mounted) return;
-
-                switch (recentSegmentedButton) {
-                  case RecentSegmentedButton.recent:
-                    context.read<AnimeCubit>().getLatestSchedules();
-                    break;
-                  case RecentSegmentedButton.ongoing:
-                    context.read<AnimeCubit>().getSeasonalAnimeCurrent();
-                    break;
-                  case RecentSegmentedButton.upcoming:
-                    context.read<AnimeCubit>().getSeasonalAnimeUpcoming();
-                    break;
-                }
-              });
-            },
+      body: BlocListener<AuthCubit, AuthState>(
+        listenWhen: (previous, current) =>
+            previous.submission != current.submission,
+        listener: (context, state) {
+          if (state.submission is AsyncLoading) {
+            _loadingRoute = showLoadingDialog(
+              context,
+              message: 'Signing out...',
+            );
+          } else {
+            final route = _loadingRoute;
+            if (route != null) {
+              hideLoadingDialog(route);
+              _loadingRoute = null;
+            }
+          }
+        },
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics(),
           ),
-          //*-------------- People List
-          SliverToBoxAdapter(child: _TopPeopleSection(context)),
-          //* ---------------------- Filter
-          SliverToBoxAdapter(child: _FilterSection(context)),
+          slivers: [
+            //*--------------- Refresher
+            CupertinoSliverRefreshControl(
+              refreshTriggerPullDistance: 180,
 
-          //* ----------------- Carousel
-          SliverToBoxAdapter(child: _CarouselSection(context)),
-
-          //* -------------- Recommendation
-          SliverToBoxAdapter(child: _RecommendationSection(context)),
-
-          //* -------------------- Recents
-          SliverToBoxAdapter(child: _RecentHeaderSection(context)),
-          SliverPadding(
-            padding: const EdgeInsetsGeometry.symmetric(horizontal: 8),
-            sliver: BlocBuilder<AnimeCubit, AnimeState>(
-              buildWhen: (p, c) => p.recents != c.recents,
-              builder: (context, state) {
-                return switch (state.recents) {
-                  AsyncIdle() || AsyncLoading() => const SliverToBoxAdapter(
-                    child: HomeSchedulesItemSkeleton(),
+              onRefresh: () async {
+                //call people list
+                context.read<PeopleCubit>().searchPeople(
+                  const SearchPeopleRequest(
+                    order_by: "favorites",
+                    limit: "25",
+                    sort: "desc",
                   ),
+                );
 
-                  AsyncFailure(:final message) => SliverToBoxAdapter(
-                    child: Center(child: Text(message)),
+                //call genre list
+                context.read<AnimeCubit>().getAllGenres();
+
+                // call anime list
+                context.read<AnimeCubit>().searchAnime(
+                  const SearchAnimeRequest(
+                    type: "tv",
+                    order_by: "popularity",
+                    limit: "10",
+                    sort: "asc",
                   ),
-                  AsyncData(:final value) => SliverList.builder(
-                    itemCount: value.length,
-                    itemBuilder: (context, index) => AnimeHorizontalCardItem(
-                      onClickItem: () =>
-                          _onNavigateToAnimeDetails(value[index].mal_id ?? -1),
-                      model: RecentEpisodesModel(
-                        entry: value[index],
-                        episodes: const [],
-                        region_locked: true,
-                      ),
-                    ),
-                  ),
-                };
+                );
+
+                //call recommendataions
+                context.read<AnimeCubit>().getAllRecommendations(
+                  const GetRecommendationsRequest(limit: "2", sfw: "true"),
+                );
+
+                //call episodes schedules
+                Future.delayed(const Duration(seconds: 3), () {
+                  if (!context.mounted) return;
+
+                  switch (recentSegmentedButton) {
+                    case RecentSegmentedButton.recent:
+                      context.read<AnimeCubit>().getLatestSchedules();
+                      break;
+                    case RecentSegmentedButton.ongoing:
+                      context.read<AnimeCubit>().getSeasonalAnimeCurrent();
+                      break;
+                    case RecentSegmentedButton.upcoming:
+                      context.read<AnimeCubit>().getSeasonalAnimeUpcoming();
+                      break;
+                  }
+                });
               },
             ),
-          ),
-          //*===== END COLUMN
-        ],
+            //*-------------- People List
+            SliverToBoxAdapter(child: _TopPeopleSection(context)),
+            //* ---------------------- Filter
+            SliverToBoxAdapter(child: _FilterSection(context)),
+
+            //* ----------------- Carousel
+            SliverToBoxAdapter(child: _CarouselSection(context)),
+
+            //* -------------- Recommendation
+            SliverToBoxAdapter(child: _RecommendationSection(context)),
+
+            //* -------------------- Recents
+            SliverToBoxAdapter(child: _RecentHeaderSection(context)),
+            SliverPadding(
+              padding: const EdgeInsetsGeometry.symmetric(horizontal: 8),
+              sliver: BlocBuilder<AnimeCubit, AnimeState>(
+                buildWhen: (p, c) => p.recents != c.recents,
+                builder: (context, state) {
+                  return switch (state.recents) {
+                    AsyncIdle() || AsyncLoading() => const SliverToBoxAdapter(
+                      child: HomeSchedulesItemSkeleton(),
+                    ),
+
+                    AsyncFailure(:final message) => SliverToBoxAdapter(
+                      child: Center(child: Text(message)),
+                    ),
+                    AsyncData(:final value) => SliverList.builder(
+                      itemCount: value.length,
+                      itemBuilder: (context, index) => AnimeHorizontalCardItem(
+                        onClickItem: () => _onNavigateToAnimeDetails(
+                          value[index].mal_id ?? -1,
+                        ),
+                        model: RecentEpisodesModel(
+                          entry: value[index],
+                          episodes: const [],
+                          region_locked: true,
+                        ),
+                      ),
+                    ),
+                  };
+                },
+              ),
+            ),
+            //*===== END COLUMN
+          ],
+        ),
       ),
     );
   }

@@ -2,13 +2,13 @@ import 'package:denuanime/features/auth/data/request/register_request.dart';
 import 'package:denuanime/features/auth/data/request/sign_in_request.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class AuthFirbaseDatasource {
+class AuthFirebaseDatasource {
   final FirebaseAuth auth;
 
-  AuthFirbaseDatasource(this.auth);
+  AuthFirebaseDatasource(this.auth);
 
   Stream<User?> authStateChanges() {
-    return auth.authStateChanges();
+    return auth.userChanges();
   }
 
   Future<UserCredential?> signInWithEmail(SignInRequest request) {

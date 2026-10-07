@@ -54,6 +54,7 @@ flutter:
     - assets/icons/ic_camera.svg
     - assets/icons/ic_youtube.svg
     - assets/icons/ic_chain.svg
+    - assets/icons/ic_signout.svg
 # ICONS
 flutter_launcher_icons:
   android: "launcher_icon"

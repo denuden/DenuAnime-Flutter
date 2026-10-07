@@ -1,7 +1,11 @@
 import 'package:denuanime/features/anime/data/datasource/anime_api_datasource.dart';
 import 'package:denuanime/features/anime/data/repositories/anime_api_repo_impl.dart';
 import 'package:denuanime/features/anime/domain/repositories/anime_repo.dart';
-import 'package:denuanime/features/auth/presentation/views/landing_view.dart';
+import 'package:denuanime/features/auth/data/datasource/auth_firbase_datasource.dart';
+import 'package:denuanime/features/auth/data/repositories/auth_firebase_repo_impl.dart';
+import 'package:denuanime/features/auth/domain/cubits/auth_cubit.dart';
+import 'package:denuanime/features/auth/domain/repositories/auth_repo.dart';
+import 'package:denuanime/features/auth/presentation/views/auth_gate.dart';
 import 'package:denuanime/features/character/data/datasource/character_api_datasource.dart';
 import 'package:denuanime/features/character/data/repositories/character_api_repo_impl.dart';
 import 'package:denuanime/features/character/domain/repositories/character_repo.dart';
@@ -25,7 +29,7 @@ Future<void> main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // Ideal time to initialize
-  await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+  // await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
   runApp(MainApp());
 }
 
@@ -51,14 +55,23 @@ class MainApp extends StatelessWidget {
   late final CharacterRepo characterRepo = CharacterApiRepoImpl(
     characterApiDatasource,
   );
+
+  //* -------- Auth Firebase
+  late final AuthFirebaseDatasource authFirebaseDatasource =
+      AuthFirebaseDatasource(FirebaseAuth.instance);
+  late final AuthRepo authRepo = AuthFirebaseRepoImpl(authFirebaseDatasource);
+
   //* -------------------------
   @override
   Widget build(BuildContext context) {
+    //provides repositories so i can use the same instance when i need
+    //a new instance of my cubits (blocproviders in inner screens)
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider<PeopleRepo>(create: (context) => peopleRepo),
         RepositoryProvider<AnimeRepo>(create: (context) => animeRepo),
         RepositoryProvider<CharacterRepo>(create: (context) => characterRepo),
+        RepositoryProvider<AuthRepo>(create: (context) => authRepo),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -68,11 +81,13 @@ class MainApp extends StatelessWidget {
           ),
           //* Anime Cubit
           BlocProvider(create: (context) => AnimeCubit(animeRepo: animeRepo)),
+          //* Auth Cubit
+          BlocProvider(create: (context) => AuthCubit(authRepo: authRepo)),
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: darkMode,
-          home: const LandingView(),
+          home: const AuthGate(),
         ),
       ),
     );

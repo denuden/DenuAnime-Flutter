@@ -70,7 +70,7 @@ const success = Color(0xFF4CAF50);
 
 const warning = Color(0xFFFFB300);
 
-const error = Color(0xFFE53935);
+const error = Color.fromARGB(255, 244, 78, 63);
 
 /// ================================
 /// GENERAL
@@ -183,6 +183,15 @@ ThemeData darkMode = ThemeData(
     focusedBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(16),
       borderSide: const BorderSide(color: primaryLight, width: 1.5),
+    ),
+    errorStyle: const TextStyle(color: error),
+    errorBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(16),
+      borderSide: const BorderSide(color: error),
+    ),
+    focusedErrorBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(16),
+      borderSide: const BorderSide(color: error, width: 2),
     ),
   ),
 

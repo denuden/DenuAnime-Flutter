@@ -1,11 +1,18 @@
 import 'package:denuanime/theme/dark_mode.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 class HomeDrawer extends StatelessWidget {
   final int selected;
   final void Function(int) onSelect;
+  final void Function() onSignOut;
 
-  const HomeDrawer({super.key, required this.selected, required this.onSelect});
+  const HomeDrawer({
+    super.key,
+    required this.selected,
+    required this.onSelect,
+    required this.onSignOut,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +58,29 @@ class HomeDrawer extends StatelessWidget {
             selectedTileColor: primary,
             selectedColor: inversePrimary,
             leading: const Icon(Icons.history),
+          ),
+          const Column(
+            children: [
+              SizedBox(height: 24),
+              Divider(thickness: 0.3, height: 1, indent: 12, endIndent: 20),
+            ],
+          ),
+          const SizedBox(height: 16),
+          ListTile(
+            title: const Text("Sign Out"),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadiusGeometry.circular(8),
+            ),
+            onTap: () => onSignOut(),
+            selected: selected == 2,
+            selectedTileColor: primary,
+            selectedColor: inversePrimary,
+            leading: SvgPicture.asset(
+              'assets/icons/ic_signout.svg',
+              colorFilter: const ColorFilter.mode(white, BlendMode.srcIn),
+              height: 24,
+              width: 24,
+            ),
           ),
         ],
       ),
