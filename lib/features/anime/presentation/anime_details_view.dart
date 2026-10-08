@@ -165,6 +165,21 @@ class _AnimeDetailsViewState extends State<AnimeDetailsView> {
                   },
                   icon: const Icon(Icons.open_in_full_rounded, color: white),
                 ),
+                IconButton.filledTonal(
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStatePropertyAll(
+                      secondary.withValues(alpha: 0.5),
+                    ),
+                  ),
+                  splashColor: white,
+                  onPressed: () {
+                    //? add to favorites
+                  },
+                  icon: const Icon(
+                    Icons.favorite_border_outlined,
+                    color: white,
+                  ),
+                ),
               ],
 
               //*===== appbar details

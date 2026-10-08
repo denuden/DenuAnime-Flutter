@@ -27,4 +27,8 @@ abstract class AnimeRepo {
   //* ============ seasons
   Future<List<AnimeDetailsModel>> getSeasonalAnimeCurrent();
   Future<List<AnimeDetailsModel>> getSeasonalAnimeUpcoming();
+
+  //* ============= FIREBASE
+  //* =============
+  Future<void> addToFavorites();
 }

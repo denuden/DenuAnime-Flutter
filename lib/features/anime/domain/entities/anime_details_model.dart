@@ -1,3 +1,4 @@
+import 'package:denuanime/features/common/entities/base_image_model.dart';
 import 'package:flutter/widgets.dart';
 
 import 'package:denuanime/features/anime/domain/entities/aired_model.dart';
@@ -56,6 +57,9 @@ class AnimeDetailsModel {
   final List<ExternalModel>? external;
   final List<StreamingModel>? streaming;
 
+  //* =============== for firebase
+  final String? added_at;
+
   const AnimeDetailsModel({
     this.mal_id,
     this.url,
@@ -97,6 +101,9 @@ class AnimeDetailsModel {
     this.theme,
     this.external,
     this.streaming,
+
+    //*====== firebase
+    this.added_at,
   });
 
   factory AnimeDetailsModel.fromJson(Map<String, dynamic> json) {
@@ -173,6 +180,20 @@ class AnimeDetailsModel {
       streaming: (json['streaming'] as List?)
           ?.map((e) => StreamingModel.fromJson(e as Map<String, dynamic>))
           .toList(),
+    );
+  }
+
+  factory AnimeDetailsModel.fromFirebaseJson(Map<String, dynamic> json) {
+    return AnimeDetailsModel(
+      mal_id: json['mal_id'] as int?,
+      title: json['title'] as String?,
+      images: ImageTypeModel(
+        jpg: BaseImagesModel(large_image_url: json['image_url'] as String?),
+      ),
+      score: json['score'] as double?,
+      season: json['season'] as String?,
+      year: json['year'] as int?,
+      added_at: json['added_at'] as String?,
     );
   }
 
