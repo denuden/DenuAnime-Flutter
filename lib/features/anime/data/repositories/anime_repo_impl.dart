@@ -1,20 +1,25 @@
 import 'dart:io';
 
 import 'package:denuanime/features/anime/data/datasource/anime_api_datasource.dart';
+import 'package:denuanime/features/anime/data/datasource/anime_firebase_datasource.dart';
+import 'package:denuanime/features/anime/data/request/favorite_anime_request.dart';
 import 'package:denuanime/features/anime/data/request/get_anime_details_full_request.dart';
 import 'package:denuanime/features/anime/data/request/get_recommendations_request.dart';
 import 'package:denuanime/features/anime/data/request/search_anime_request.dart';
 import 'package:denuanime/features/anime/domain/entities/anime_characters_model.dart';
 import 'package:denuanime/features/anime/domain/entities/anime_details_model.dart';
+import 'package:denuanime/features/anime/domain/entities/exception/list_exception.dart';
 import 'package:denuanime/features/anime/domain/entities/genre_model.dart';
 import 'package:denuanime/features/anime/domain/entities/recommendation_model.dart';
 import 'package:denuanime/features/anime/domain/repositories/anime_repo.dart';
 import 'package:denuanime/features/common/entities/paginated_result_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class AnimeApiRepoImpl implements AnimeRepo {
+class AnimeRepoImpl implements AnimeRepo {
   final AnimeApiDatasource api;
+  final AnimeFirebaseDatasource firebase;
 
-  AnimeApiRepoImpl(this.api);
+  AnimeRepoImpl(this.api, this.firebase);
 
   @override
   Future<List<GenreModel>> getAllGenres() async {
@@ -114,5 +119,27 @@ class AnimeApiRepoImpl implements AnimeRepo {
     } else {
       throw const HttpException("Cannot find latest schedules of anime");
     }
+  }
+
+  //*======== firebase
+  @override
+  Future<void> toggleFavorites(FavoriteAnimeRequest request) async {
+    return await firebase.toggleFavorite(request);
+  }
+
+  @override
+  Stream<List<AnimeDetailsModel>> getAnimeFavorites() {
+    return firebase
+        .getAnimeList()
+        .map(
+          (snapshot) => snapshot.docs
+              .map((doc) => AnimeDetailsModel.fromFirebaseJson(doc.data()))
+              .toList(),
+        )
+        .handleError((Object error) {
+          throw ListException(
+            error is FirebaseException ? error.message : error.toString(),
+          );
+        });
   }
 }

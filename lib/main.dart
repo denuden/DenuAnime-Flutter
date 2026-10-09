@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:denuanime/features/anime/data/datasource/anime_api_datasource.dart';
-import 'package:denuanime/features/anime/data/repositories/anime_api_repo_impl.dart';
+import 'package:denuanime/features/anime/data/datasource/anime_firebase_datasource.dart';
+import 'package:denuanime/features/anime/data/repositories/anime_repo_impl.dart';
+import 'package:denuanime/features/anime/domain/cubits/favorite_cubit.dart';
 import 'package:denuanime/features/anime/domain/repositories/anime_repo.dart';
 import 'package:denuanime/features/auth/data/datasource/auth_firbase_datasource.dart';
 import 'package:denuanime/features/auth/data/repositories/auth_firebase_repo_impl.dart';
@@ -46,7 +49,15 @@ class MainApp extends StatelessWidget {
 
   //* ------ Anime API
   late final AnimeApiDatasource animeApiDatasource = AnimeApiDatasource(dio);
-  late final AnimeRepo animeRepo = AnimeApiRepoImpl(animeApiDatasource);
+  late final AnimeFirebaseDatasource animeFirebaseDatasource =
+      AnimeFirebaseDatasource(
+        FirebaseFirestore.instance,
+        FirebaseAuth.instance,
+      );
+  late final AnimeRepo animeRepo = AnimeRepoImpl(
+    animeApiDatasource,
+    animeFirebaseDatasource,
+  );
   //* -------------------------
 
   //* ------ Character API
@@ -83,6 +94,10 @@ class MainApp extends StatelessWidget {
           BlocProvider(create: (context) => AnimeCubit(animeRepo: animeRepo)),
           //* Auth Cubit
           BlocProvider(create: (context) => AuthCubit(authRepo: authRepo)),
+          //* Favorite Cubit
+          BlocProvider(
+            create: (context) => FavoriteCubit(animeRepo: animeRepo),
+          ),
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,

@@ -1,3 +1,4 @@
+import 'package:denuanime/features/anime/data/request/favorite_anime_request.dart';
 import 'package:denuanime/features/anime/data/request/get_anime_details_full_request.dart';
 import 'package:denuanime/features/anime/data/request/get_recommendations_request.dart';
 import 'package:denuanime/features/anime/data/request/search_anime_request.dart';
@@ -30,5 +31,6 @@ abstract class AnimeRepo {
 
   //* ============= FIREBASE
   //* =============
-  Future<void> addToFavorites();
+  Future<void> toggleFavorites(FavoriteAnimeRequest request);
+  Stream<List<AnimeDetailsModel>> getAnimeFavorites();
 }

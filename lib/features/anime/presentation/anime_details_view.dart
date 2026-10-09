@@ -3,16 +3,21 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:denuanime/features/anime/data/request/favorite_anime_request.dart';
 import 'package:denuanime/features/anime/data/request/get_anime_details_full_request.dart';
 import 'package:denuanime/features/anime/domain/cubits/anime_cubit.dart';
 import 'package:denuanime/features/anime/domain/cubits/anime_state.dart';
+import 'package:denuanime/features/anime/domain/cubits/favorite_cubit.dart';
+import 'package:denuanime/features/anime/domain/cubits/favorite_state.dart';
 import 'package:denuanime/features/anime/domain/entities/anime_characters_model.dart';
 import 'package:denuanime/features/anime/domain/entities/anime_details_model.dart';
 import 'package:denuanime/features/anime/domain/repositories/anime_repo.dart';
+import 'package:denuanime/features/anime/presentation/common/anime_favorite_button.dart';
 import 'package:denuanime/features/anime/presentation/common/external_info_section.dart';
 import 'package:denuanime/features/anime/presentation/common/broadcast_section.dart';
 import 'package:denuanime/features/anime/presentation/common/scores_section.dart';
 import 'package:denuanime/features/anime/presentation/common/sypnosis_section.dart';
+import 'package:denuanime/features/auth/domain/entities/auth_failure.dart';
 import 'package:denuanime/features/common/presentation/custom_image_network.dart';
 import 'package:denuanime/features/common/presentation/error_with_back_button.dart';
 import 'package:denuanime/features/common/presentation/skeleton/anime_details_characters_items_skeleton.dart';
@@ -31,6 +36,7 @@ import 'package:photo_opener/photo_opener.dart';
 
 class AnimeDetailsView extends StatefulWidget {
   final int id;
+
   const AnimeDetailsView({super.key, required this.id});
 
   static Route<void> route(int id) {
@@ -60,6 +66,20 @@ class _AnimeDetailsViewState extends State<AnimeDetailsView> {
   bool _showFab = false;
 
   //? ============= function
+  void onAddToFavorites(AnimeDetailsModel data, bool isFav) {
+    context.read<FavoriteCubit>().toggleFavorites(
+      FavoriteAnimeRequest(
+        mal_id: data.mal_id ?? -1,
+        title: (data.title_english ?? data.title) ?? "No Title",
+        image_url: data.images?.jpg?.large_image_url ?? '',
+        score: data.score ?? 0.0,
+        season: data.season ?? '---',
+        year: data.year ?? 00,
+        isFav: isFav,
+      ),
+    );
+  }
+
   @override
   void initState() {
     context.read<AnimeCubit>().getAnimeDetailsFull(
@@ -105,18 +125,29 @@ class _AnimeDetailsViewState extends State<AnimeDetailsView> {
               child: const Icon(Icons.arrow_upward),
             )
           : null,
-      body: BlocBuilder<AnimeCubit, AnimeState>(
-        buildWhen: (p, c) => p.animeDetails != c.animeDetails,
-        builder: (context, state) {
-          return switch (state.animeDetails) {
-            AsyncIdle() ||
-            AsyncLoading() => AnimeDetailsViewSkeleton(isLoading: true),
-            AsyncFailure() => const ErrorWithBackButton(
-              child: Center(child: Text("Anime not found.")),
-            ),
-            AsyncData(:final value) => _buildContent(context, value),
-          };
+      body: BlocListener<FavoriteCubit, FavoriteState>(
+        listenWhen: (previous, current) =>
+            previous.addFavorite != current.addFavorite,
+        listener: (context, state) {
+          if (state.addFavorite case AuthFailure(:final message)) {
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(message)));
+          }
         },
+        child: BlocBuilder<AnimeCubit, AnimeState>(
+          buildWhen: (p, c) => p.animeDetails != c.animeDetails,
+          builder: (context, state) {
+            return switch (state.animeDetails) {
+              AsyncIdle() ||
+              AsyncLoading() => AnimeDetailsViewSkeleton(isLoading: true),
+              AsyncFailure() => const ErrorWithBackButton(
+                child: Center(child: Text("Anime not found.")),
+              ),
+              AsyncData(:final value) => _buildContent(context, value),
+            };
+          },
+        ),
       ),
     );
   }
@@ -165,20 +196,12 @@ class _AnimeDetailsViewState extends State<AnimeDetailsView> {
                   },
                   icon: const Icon(Icons.open_in_full_rounded, color: white),
                 ),
-                IconButton.filledTonal(
-                  style: ButtonStyle(
-                    backgroundColor: WidgetStatePropertyAll(
-                      secondary.withValues(alpha: 0.5),
-                    ),
-                  ),
-                  splashColor: white,
-                  onPressed: () {
-                    //? add to favorites
+
+                FavoriteButton(
+                  anime: animeDetails,
+                  onPressed: (isFav) {
+                    onAddToFavorites(animeDetails, isFav);
                   },
-                  icon: const Icon(
-                    Icons.favorite_border_outlined,
-                    color: white,
-                  ),
                 ),
               ],
 

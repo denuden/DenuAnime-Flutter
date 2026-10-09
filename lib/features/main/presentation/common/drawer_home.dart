@@ -182,7 +182,9 @@ class HomeDrawer extends StatelessWidget {
 
                     //* signout button
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        onSignOut();
+                      },
                       icon: SvgPicture.asset(
                         'assets/icons/ic_signout.svg',
                         colorFilter: const ColorFilter.mode(

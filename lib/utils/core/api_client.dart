@@ -24,7 +24,7 @@ class ApiClient {
         maxWidth: 90,
         enabled: kDebugMode,
         filter: (options, args) {
-          if (options.path.contains('full')) {
+          if (options.path.contains('sss')) {
             return true;
           }
           return false;

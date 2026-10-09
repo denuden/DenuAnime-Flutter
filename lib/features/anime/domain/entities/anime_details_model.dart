@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:denuanime/features/common/entities/base_image_model.dart';
 import 'package:flutter/widgets.dart';
 
@@ -14,6 +15,7 @@ import 'package:denuanime/features/anime/domain/entities/theme_song_model.dart';
 import 'package:denuanime/features/anime/domain/entities/title_model.dart';
 import 'package:denuanime/features/anime/domain/entities/trailer_model.dart';
 import 'package:denuanime/features/common/entities/image_type_model.dart';
+import 'package:intl/intl.dart';
 
 class AnimeDetailsModel {
   final int? mal_id;
@@ -193,7 +195,12 @@ class AnimeDetailsModel {
       score: json['score'] as double?,
       season: json['season'] as String?,
       year: json['year'] as int?,
-      added_at: json['added_at'] as String?,
+
+      added_at: (json['added_at'] as Timestamp?) == null
+          ? null
+          : DateFormat(
+              'MMMM dd, yyyy',
+            ).format((json['added_at'] as Timestamp).toDate()),
     );
   }
 
