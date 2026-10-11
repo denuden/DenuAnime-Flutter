@@ -2,6 +2,8 @@ import 'package:denuanime/features/anime/data/request/favorite_anime_request.dar
 import 'package:denuanime/features/anime/domain/cubits/favorite_cubit.dart';
 import 'package:denuanime/features/anime/domain/cubits/favorite_state.dart';
 import 'package:denuanime/features/anime/domain/entities/anime_details_model.dart';
+import 'package:denuanime/features/anime/presentation/anime_details_view.dart';
+import 'package:denuanime/features/anime/presentation/common/anime_grid_item.dart';
 import 'package:denuanime/features/anime/presentation/common/favorites_list_item.dart';
 import 'package:denuanime/theme/dark_mode.dart';
 import 'package:denuanime/utils/core/async_value.dart';
@@ -25,6 +27,10 @@ class _AnimeFavoritesViewState extends State<AnimeFavoritesView> {
   int _selectedIndex = 0;
 
   //? ============= function
+  void _onNavigateToAnimeDetails(int id) {
+    Navigator.of(context).push(AnimeDetailsView.route(id));
+  }
+
   void onAddToFavorites(AnimeDetailsModel data, bool isFav) {
     context.read<FavoriteCubit>().toggleFavorites(
       FavoriteAnimeRequest(
@@ -241,19 +247,40 @@ class _AnimeFavoritesViewState extends State<AnimeFavoritesView> {
                   ),
 
                   AsyncData(:final value) => Expanded(
-                    child: ListView.builder(
-                      itemCount: value.length,
-
-                      physics: const BouncingScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        return FavoritesListItem(
-                          animeDetailsModel: value[index],
-                          onPressedFavorite: (isFav) {
-                            onAddToFavorites(value[index], isFav);
-                          },
-                        );
-                      },
-                    ),
+                    child: switch (screenView) {
+                      ScreenView.list => ListView.builder(
+                        itemCount: value.length,
+                        physics: const BouncingScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          final data = value[index];
+                          return FavoritesListItem(
+                            animeDetailsModel: data,
+                            onPressedFavorite: (isFav) =>
+                                onAddToFavorites(data, isFav),
+                          );
+                        },
+                      ),
+                      ScreenView.grid => GridView.builder(
+                        physics: const BouncingScrollPhysics(),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              mainAxisSpacing: 8,
+                              mainAxisExtent: 350,
+                              crossAxisSpacing: 4,
+                            ),
+                        itemCount: value.length,
+                        itemBuilder: (context, index) {
+                          final data = value[index];
+                          return AnimeGridItem(
+                            data: data,
+                            onNavigateToAnimeDetails: _onNavigateToAnimeDetails,
+                            onAddtoFavorites: (isFav) =>
+                                onAddToFavorites(data, isFav),
+                          );
+                        },
+                      ),
+                    },
                   ),
                 };
               },

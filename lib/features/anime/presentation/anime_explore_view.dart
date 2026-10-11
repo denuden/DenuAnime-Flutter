@@ -1,8 +1,11 @@
+import 'package:denuanime/features/anime/data/request/favorite_anime_request.dart';
 import 'package:denuanime/features/anime/data/request/search_anime_request.dart';
 import 'package:denuanime/features/anime/domain/cubits/anime_cubit.dart';
 import 'package:denuanime/features/anime/domain/cubits/anime_state.dart';
+import 'package:denuanime/features/anime/domain/cubits/favorite_cubit.dart';
+import 'package:denuanime/features/anime/domain/entities/anime_details_model.dart';
 import 'package:denuanime/features/anime/presentation/anime_details_view.dart';
-import 'package:denuanime/features/common/presentation/custom_image_network.dart';
+import 'package:denuanime/features/anime/presentation/common/anime_grid_item.dart';
 import 'package:denuanime/features/common/presentation/filter_anime_bottom_sheet.dart';
 import 'package:denuanime/features/common/presentation/skeleton/serach_anime_item_skeleton.dart';
 import 'package:denuanime/theme/dark_mode.dart';
@@ -25,6 +28,21 @@ class _AnimeExploreViewState extends State<AnimeExploreView> {
   //* ======= functions
   void _onNavigateToAnimeDetails(int id) {
     Navigator.of(context).push(AnimeDetailsView.route(id));
+  }
+
+  //? ============= function
+  void onAddToFavorites(AnimeDetailsModel data, bool isFav) {
+    context.read<FavoriteCubit>().toggleFavorites(
+      FavoriteAnimeRequest(
+        mal_id: data.mal_id ?? -1,
+        title: (data.title_english ?? data.title) ?? "No Title",
+        image_url: data.images?.jpg?.large_image_url ?? '',
+        score: data.score ?? 0.0,
+        season: data.season ?? '---',
+        year: data.year ?? 00,
+        isFav: isFav,
+      ),
+    );
   }
 
   @override
@@ -149,86 +167,12 @@ class _AnimeExploreViewState extends State<AnimeExploreView> {
                   }
 
                   final data = value[index];
-                  return Card.filled(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadiusGeometry.circular(20),
-                    ),
-                    child: InkWell(
-                      onTap: () {
-                        _onNavigateToAnimeDetails(data.mal_id ?? -1);
-                      },
-                      child: Stack(
-                        fit: StackFit.expand,
-                        children: [
-                          //* === imgae
-                          ClipRRect(
-                            borderRadius: BorderRadiusGeometry.circular(8),
-                            child: CustomImageNetwork(
-                              data.images?.jpg?.large_image_url ?? '',
-                              height: 350,
-                            ),
-                          ),
-
-                          //* ==== gradient black
-                          const DecoratedBox(
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [Colors.transparent, Colors.black87],
-                                stops: [0.4, 1],
-                              ),
-                            ),
-                          ),
-
-                          //* ======= Anime titles
-                          Positioned(
-                            left: 8,
-                            right: 8,
-                            bottom: 12,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  (data.title_english ?? data.title) ??
-                                      'No english title',
-                                  style: Theme.of(context).textTheme.titleSmall,
-                                ),
-                                const SizedBox(height: 4),
-                                Row(
-                                  children: [
-                                    const Icon(
-                                      Icons.star,
-                                      color: primaryGlow,
-                                      size: 16,
-                                    ),
-                                    Text(
-                                      data.score.toString(),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodySmall
-                                          ?.copyWith(color: inversePrimary),
-                                    ),
-                                    const Spacer(),
-                                    Text(
-                                      "${data.season?.toUpperCase() ?? '--'}, ${data.year ?? '--'}",
-
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodySmall
-                                          ?.copyWith(
-                                            letterSpacing: 0.1,
-                                            color: inversePrimary,
-                                          ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                  return AnimeGridItem(
+                    data: data,
+                    onNavigateToAnimeDetails: _onNavigateToAnimeDetails,
+                    onAddtoFavorites: (isFav) {
+                      onAddToFavorites(data, isFav);
+                    },
                   );
                 },
               ),

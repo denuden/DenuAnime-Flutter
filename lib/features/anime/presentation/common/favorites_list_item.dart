@@ -22,8 +22,8 @@ class FavoritesListItem extends StatelessWidget {
           //*image
           CustomImageNetwork(
             animeDetailsModel.images?.jpg?.large_image_url ?? '',
-            height: 160,
-            width: 110,
+            height: 150,
+            width: 100,
           ),
           //* info
           const SizedBox(width: 16),
@@ -34,9 +34,10 @@ class FavoritesListItem extends StatelessWidget {
                 Text(
                   "${animeDetailsModel.season ?? '---'} ${animeDetailsModel.year}"
                       .toUpperCase(),
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleSmall?.copyWith(color: primaryDark),
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                    color: primaryDark,
+                    fontSize: 12,
+                  ),
                 ),
                 Text(
                   animeDetailsModel.title ?? 'Unknown Title',
@@ -52,7 +53,9 @@ class FavoritesListItem extends StatelessWidget {
                     const SizedBox(width: 8),
                     Text(
                       "${animeDetailsModel.score ?? 0.0}",
-                      style: Theme.of(context).textTheme.titleSmall,
+                      style: Theme.of(
+                        context,
+                      ).textTheme.titleSmall?.copyWith(color: primaryDark),
                     ),
                   ],
                 ),
