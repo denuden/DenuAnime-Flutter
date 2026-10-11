@@ -17,14 +17,20 @@ class FavoriteCubit extends Cubit<FavoriteState> {
   Future<void> toggleFavorites(FavoriteAnimeRequest request) async {
     emit(state.copyWith(addFavorite: const AsyncLoading()));
 
+    //ads the saving ids to load only the one getting saved
+    final id = request.mal_id;
+    emit(state.copyWith(savingIds: {...state.savingIds, id}));
     try {
       await animeRepo.toggleFavorites(request);
+
+      emit(state.copyWith(savingIds: {...state.savingIds}..remove(id)));
 
       if (isClosed) return;
       emit(state.copyWith(addFavorite: const AsyncIdle()));
     } catch (e) {
       if (isClosed) return;
       emit(state.copyWith(addFavorite: AsyncFailure(e.toString())));
+      emit(state.copyWith(savingIds: {...state.savingIds}..remove(id)));
     }
   }
 
@@ -34,7 +40,6 @@ class FavoriteCubit extends Cubit<FavoriteState> {
 
     _favoritesSub = animeRepo.getAnimeFavorites().listen(
       (list) {
-        debugPrint('favorites: ${list.map((a) => a.mal_id).toList()}');
         emit(
           state.copyWith(
             favorites: AsyncData(list),

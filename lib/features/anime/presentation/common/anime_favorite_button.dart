@@ -1,7 +1,6 @@
 import 'package:denuanime/features/anime/domain/cubits/favorite_cubit.dart';
 import 'package:denuanime/features/anime/domain/entities/anime_details_model.dart';
 import 'package:denuanime/theme/dark_mode.dart';
-import 'package:denuanime/utils/core/async_value.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -21,7 +20,7 @@ class FavoriteButton extends StatelessWidget {
       (FavoriteCubit c) => c.state.ids.contains(anime.mal_id),
     );
     final isSaving = context.select(
-      (FavoriteCubit c) => c.state.addFavorite is AsyncLoading,
+      (FavoriteCubit c) => c.state.savingIds.contains(anime.mal_id),
     );
 
     return IconButton.filledTonal(
