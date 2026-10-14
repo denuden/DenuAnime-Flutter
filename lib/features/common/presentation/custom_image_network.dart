@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class CustomImageNetwork extends StatelessWidget {
@@ -5,6 +6,7 @@ class CustomImageNetwork extends StatelessWidget {
   final double height;
   final double? width;
   final BoxFit? boxFit;
+
   const CustomImageNetwork(
     this.imageUrl, {
     super.key,
@@ -15,49 +17,27 @@ class CustomImageNetwork extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final placeholderColor = Theme.of(context).colorScheme.secondary;
+
     return SizedBox(
       height: height,
       width: width ?? double.infinity,
-      child: Image.network(
-        frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-          if (wasSynchronouslyLoaded || frame != null) {
-            return child;
-          }
-
+      child: CachedNetworkImage(
+        imageUrl: imageUrl,
+        fit: boxFit ?? BoxFit.cover,
+        progressIndicatorBuilder: (context, url, progress) => Container(
+          color: placeholderColor,
+          alignment: Alignment.center,
+          child: CircularProgressIndicator(value: progress.progress),
+        ),
+        errorWidget: (context, url, error) {
+          debugPrint('Image failed: $url ($error)');
           return Container(
-            color: Theme.of(context).colorScheme.secondary,
-            alignment: Alignment.center,
-            child: const CircularProgressIndicator(),
-          );
-        },
-        loadingBuilder: (context, child, loadingProgress) {
-          if (loadingProgress == null) {
-            return child;
-          }
-
-          return Container(
-            color: Theme.of(context).colorScheme.secondary,
-            alignment: Alignment.center,
-            child: Center(
-              child: CircularProgressIndicator(
-                value: loadingProgress.expectedTotalBytes != null
-                    ? loadingProgress.cumulativeBytesLoaded /
-                          loadingProgress.expectedTotalBytes!
-                    : null,
-              ),
-            ),
-          );
-        },
-        errorBuilder: (context, error, stackTrace) {
-          debugPrintStack(stackTrace: stackTrace, label: error.toString());
-          return Container(
-            color: Theme.of(context).colorScheme.secondary,
+            color: placeholderColor,
             alignment: Alignment.center,
             child: const Icon(Icons.broken_image),
           );
         },
-        fit: boxFit ?? BoxFit.cover,
-        imageUrl,
       ),
     );
   }

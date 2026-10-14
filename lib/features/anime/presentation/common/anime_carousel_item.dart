@@ -1,4 +1,5 @@
 import 'package:denuanime/features/anime/domain/entities/anime_details_model.dart';
+import 'package:denuanime/features/anime/presentation/common/anime_favorite_button.dart';
 import 'package:denuanime/features/common/presentation/custom_image_network.dart';
 import 'package:denuanime/theme/dark_mode.dart';
 import 'package:flutter/material.dart';
@@ -10,10 +11,14 @@ import 'package:flutter/material.dart';
 class AnimeCarouselItem extends StatelessWidget {
   final AnimeDetailsModel animeDetails;
   final bool shouldShowDetails;
+  final void Function() onTap;
+  final void Function(bool) onFavorites;
   const AnimeCarouselItem({
     super.key,
     required this.animeDetails,
     required this.shouldShowDetails,
+    required this.onTap,
+    required this.onFavorites,
   });
 
   @override
@@ -40,35 +45,6 @@ class AnimeCarouselItem extends StatelessWidget {
               ),
             ),
           ),
-
-          //*Chips for genre
-          if (shouldShowDetails)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Wrap(
-                spacing: 4,
-                runSpacing: -8,
-                children: List.generate(
-                  animeDetails.genres?.length ?? 0,
-                  (index) => FilterChip(
-                    backgroundColor: primaryDark,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadiusGeometry.circular(8),
-                      side: const BorderSide(color: Colors.transparent),
-                    ),
-                    padding: EdgeInsets.zero,
-                    label: Text(
-                      animeDetails.genres?[index].name ?? "---",
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: white,
-                        fontSize: 10,
-                      ),
-                    ),
-                    onSelected: (value) {},
-                  ),
-                ),
-              ),
-            ),
 
           //* Details
           if (shouldShowDetails)
@@ -150,6 +126,55 @@ class AnimeCarouselItem extends StatelessWidget {
                         ),
                       ),
                     ],
+                  ),
+                ],
+              ),
+            ),
+
+          //* Tap layer: covers the card, splash renders over image + text
+          Positioned.fill(
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(onTap: onTap),
+            ),
+          ),
+
+          //*Chips for genre
+          if (shouldShowDetails)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Wrap(
+                      spacing: 4,
+                      runSpacing: -8,
+                      children: List.generate(
+                        animeDetails.genres?.length ?? 0,
+                        (index) => FilterChip(
+                          backgroundColor: primaryDark,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadiusGeometry.circular(8),
+                            side: const BorderSide(color: Colors.transparent),
+                          ),
+                          padding: EdgeInsets.zero,
+                          label: Text(
+                            animeDetails.genres?[index].name ?? "---",
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(color: white, fontSize: 10),
+                          ),
+                          onSelected: (value) {},
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  FavoriteButton(
+                    anime: animeDetails,
+                    onPressed: (isFav) {
+                      onFavorites(isFav);
+                    },
                   ),
                 ],
               ),

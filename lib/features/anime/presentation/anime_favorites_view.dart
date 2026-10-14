@@ -119,7 +119,7 @@ class _AnimeFavoritesViewState extends State<AnimeFavoritesView> {
               alignment: WrapAlignment.start,
               spacing: 8,
               children: [
-                Chip(
+                ActionChip(
                   label: Text(
                     "Recently Added",
                     style: TextStyle(
@@ -129,8 +129,13 @@ class _AnimeFavoritesViewState extends State<AnimeFavoritesView> {
                   backgroundColor: _selectedIndex == 0
                       ? primary
                       : Colors.transparent,
+                  onPressed: () {
+                    setState(() {
+                      _selectedIndex = 0;
+                    });
+                  },
                 ),
-                Chip(
+                ActionChip(
                   label: Text(
                     "Top score",
                     style: TextStyle(
@@ -140,8 +145,13 @@ class _AnimeFavoritesViewState extends State<AnimeFavoritesView> {
                   backgroundColor: _selectedIndex == 1
                       ? primary
                       : Colors.transparent,
+                  onPressed: () {
+                    setState(() {
+                      _selectedIndex = 1;
+                    });
+                  },
                 ),
-                Chip(
+                ActionChip(
                   label: Text(
                     "A-Z",
                     style: TextStyle(
@@ -151,8 +161,13 @@ class _AnimeFavoritesViewState extends State<AnimeFavoritesView> {
                   backgroundColor: _selectedIndex == 2
                       ? primary
                       : Colors.transparent,
+                  onPressed: () {
+                    setState(() {
+                      _selectedIndex = 2;
+                    });
+                  },
                 ),
-                Chip(
+                ActionChip(
                   label: Text(
                     "Finished",
                     style: TextStyle(
@@ -162,8 +177,13 @@ class _AnimeFavoritesViewState extends State<AnimeFavoritesView> {
                   backgroundColor: _selectedIndex == 3
                       ? primary
                       : Colors.transparent,
+                  onPressed: () {
+                    setState(() {
+                      _selectedIndex = 3;
+                    });
+                  },
                 ),
-                Chip(
+                ActionChip(
                   label: Text(
                     "Up Next",
                     style: TextStyle(
@@ -173,6 +193,11 @@ class _AnimeFavoritesViewState extends State<AnimeFavoritesView> {
                   backgroundColor: _selectedIndex == 4
                       ? primary
                       : Colors.transparent,
+                  onPressed: () {
+                    setState(() {
+                      _selectedIndex = 4;
+                    });
+                  },
                 ),
               ],
             ),

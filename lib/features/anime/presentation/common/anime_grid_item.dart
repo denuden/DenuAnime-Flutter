@@ -92,6 +92,7 @@ class AnimeGridItem extends StatelessWidget {
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           letterSpacing: 0.1,
                           color: primarySoft,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ],

@@ -21,6 +21,8 @@ class HomeCarouselItemsSkeleton extends StatelessWidget {
           return AnimeCarouselItem(
             animeDetails: animeDetailsSample,
             shouldShowDetails: true,
+            onTap: () {},
+            onFavorites: (p0) {},
           );
         }),
       ),

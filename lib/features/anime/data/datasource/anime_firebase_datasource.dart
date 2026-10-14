@@ -59,6 +59,7 @@ class AnimeFirebaseDatasource {
         .collection("users")
         .doc(currentUser.uid)
         .collection("favorites")
+        .orderBy("added_at", descending: true)
         .snapshots();
   }
 }

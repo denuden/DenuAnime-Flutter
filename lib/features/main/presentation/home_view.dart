@@ -1,7 +1,10 @@
 // ignore_for_file: non_constant_identifier_names
 
+import 'package:denuanime/features/anime/data/request/favorite_anime_request.dart';
 import 'package:denuanime/features/anime/data/request/get_recommendations_request.dart';
 import 'package:denuanime/features/anime/data/request/search_anime_request.dart';
+import 'package:denuanime/features/anime/domain/cubits/favorite_cubit.dart';
+import 'package:denuanime/features/anime/domain/entities/anime_details_model.dart';
 import 'package:denuanime/features/anime/domain/entities/recent_episodes_model.dart';
 import 'package:denuanime/features/anime/domain/repositories/anime_repo.dart';
 import 'package:denuanime/features/anime/presentation/anime_details_view.dart';
@@ -66,6 +69,20 @@ class _HomeViewState extends State<HomeView> {
   //? ============ functions
   Future<void> _onSignOut() async {
     context.read<AuthCubit>().signOut();
+  }
+
+  void _onAddToFavorites(AnimeDetailsModel data, bool isFav) {
+    context.read<FavoriteCubit>().toggleFavorites(
+      FavoriteAnimeRequest(
+        mal_id: data.mal_id ?? -1,
+        title: (data.title_english ?? data.title) ?? "No Title",
+        image_url: data.images?.jpg?.large_image_url ?? '',
+        score: data.score ?? 0.0,
+        season: data.season ?? '---',
+        year: data.year ?? 00,
+        isFav: isFav,
+      ),
+    );
   }
 
   void _onMenuSelection(int index) {
@@ -577,9 +594,7 @@ class _HomeViewState extends State<HomeView> {
                 ),
                 AsyncData(:final value) => CarouselView.weighted(
                   controller: _carouselController,
-                  enableSplash: true,
-                  onTap: (index) =>
-                      _onNavigateToAnimeDetails(value[index].mal_id ?? -1),
+                  enableSplash: false,
                   backgroundColor: Colors.red,
                   itemSnapping: true,
                   flexWeights: const [6, 1],
@@ -593,6 +608,11 @@ class _HomeViewState extends State<HomeView> {
                     (index) => AnimeCarouselItem(
                       animeDetails: value[index],
                       shouldShowDetails: index == currentCarouselIndex,
+                      onTap: () =>
+                          _onNavigateToAnimeDetails(value[index].mal_id ?? -1),
+                      onFavorites: (isFav) {
+                        _onAddToFavorites(value[index], isFav);
+                      },
                     ),
                   ),
                 ),
