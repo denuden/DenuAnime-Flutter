@@ -169,7 +169,7 @@ class _AnimeFavoritesViewState extends State<AnimeFavoritesView> {
                 ),
                 ActionChip(
                   label: Text(
-                    "Finished",
+                    "Watched",
                     style: TextStyle(
                       color: _selectedIndex == 3 ? Colors.black : Colors.white,
                     ),

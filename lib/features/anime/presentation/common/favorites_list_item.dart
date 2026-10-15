@@ -1,5 +1,6 @@
 import 'package:denuanime/features/anime/domain/entities/anime_details_model.dart';
 import 'package:denuanime/features/anime/presentation/common/anime_favorite_button.dart';
+import 'package:denuanime/features/anime/presentation/common/more_options.dart';
 import 'package:denuanime/features/common/presentation/custom_image_network.dart';
 import 'package:denuanime/theme/dark_mode.dart';
 import 'package:flutter/material.dart';
@@ -49,14 +50,76 @@ class FavoritesListItem extends StatelessWidget {
 
                 Row(
                   children: [
-                    const Icon(Icons.star, color: primary),
-                    const SizedBox(width: 8),
+                    const Icon(Icons.star, color: primary, size: 24),
+                    const SizedBox(width: 4),
                     Text(
                       "${animeDetailsModel.score ?? 0.0}",
                       style: Theme.of(
                         context,
                       ).textTheme.titleSmall?.copyWith(color: primaryDark),
                     ),
+                    const SizedBox(width: 16),
+
+                    if (animeDetailsModel.watch_state == "finished")
+                      Chip(
+                        materialTapTargetSize: MaterialTapTargetSize
+                            .shrinkWrap, // drops the 48px tap area
+                        visualDensity: VisualDensity.compact,
+                        padding: EdgeInsets.zero,
+                        labelPadding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                        ),
+
+                        color: const WidgetStatePropertyAll(white),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadiusGeometry.circular(16),
+                        ),
+                        label: Row(
+                          children: [
+                            const Icon(
+                              Icons.check,
+                              color: background,
+                              size: 18,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              "Watched",
+                              style: Theme.of(context).textTheme.bodySmall
+                                  ?.copyWith(
+                                    color: background,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                    if (animeDetailsModel.watch_state == "unfinished")
+                      Chip(
+                        materialTapTargetSize: MaterialTapTargetSize
+                            .shrinkWrap, // drops the 48px tap area
+                        visualDensity: VisualDensity.compact,
+                        padding: EdgeInsets.zero,
+                        labelPadding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                        ),
+
+                        color: const WidgetStatePropertyAll(Colors.transparent),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadiusGeometry.circular(16),
+                        ),
+                        label: Row(
+                          children: [
+                            const Icon(Icons.schedule, size: 18),
+                            const SizedBox(width: 4),
+                            Text(
+                              "Up Next",
+                              style: Theme.of(context).textTheme.bodySmall
+                                  ?.copyWith(fontWeight: FontWeight.w600),
+                            ),
+                          ],
+                        ),
+                      ),
                   ],
                 ),
                 const SizedBox(height: 12),
@@ -68,9 +131,15 @@ class FavoritesListItem extends StatelessWidget {
 
           //*favorite button
           const SizedBox(width: 8),
-          FavoriteButton(
-            anime: animeDetailsModel,
-            onPressed: onPressedFavorite,
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              MoreOptions(malId: animeDetailsModel.mal_id ?? -1),
+              FavoriteButton(
+                anime: animeDetailsModel,
+                onPressed: onPressedFavorite,
+              ),
+            ],
           ),
         ],
       ),

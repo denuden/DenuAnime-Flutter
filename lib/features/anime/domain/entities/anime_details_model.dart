@@ -61,6 +61,7 @@ class AnimeDetailsModel {
 
   //* =============== for firebase
   final String? added_at;
+  final String? watch_state;
 
   const AnimeDetailsModel({
     this.mal_id,
@@ -106,6 +107,7 @@ class AnimeDetailsModel {
 
     //*====== firebase
     this.added_at,
+    this.watch_state,
   });
 
   factory AnimeDetailsModel.fromJson(Map<String, dynamic> json) {
@@ -201,6 +203,8 @@ class AnimeDetailsModel {
           : DateFormat(
               'MMMM dd, yyyy',
             ).format((json['added_at'] as Timestamp).toDate()),
+
+      watch_state: json['watch_state'] as String?,
     );
   }
 

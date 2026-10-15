@@ -6,12 +6,14 @@ class FavoriteState {
   final Async<List<AnimeDetailsModel>> favorites;
   final Set<int> ids;
   final Set<int> savingIds;
+  final Async<void> toggleWatchState;
 
   const FavoriteState({
     this.addFavorite = const AsyncIdle(),
     this.favorites = const AsyncIdle(),
     this.ids = const {},
     this.savingIds = const {},
+    this.toggleWatchState = const AsyncIdle(),
   });
 
   FavoriteState copyWith({
@@ -19,12 +21,14 @@ class FavoriteState {
     Async<List<AnimeDetailsModel>>? favorites,
     Set<int>? ids,
     Set<int>? savingIds,
+    Async<void>? toggleWatchState,
   }) {
     return FavoriteState(
       addFavorite: addFavorite ?? this.addFavorite,
       favorites: favorites ?? this.favorites,
       ids: ids ?? this.ids,
       savingIds: savingIds ?? this.savingIds,
+      toggleWatchState: toggleWatchState ?? this.toggleWatchState,
     );
   }
 }

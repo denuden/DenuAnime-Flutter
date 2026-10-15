@@ -6,6 +6,7 @@ import 'package:denuanime/features/anime/data/request/favorite_anime_request.dar
 import 'package:denuanime/features/anime/data/request/get_anime_details_full_request.dart';
 import 'package:denuanime/features/anime/data/request/get_recommendations_request.dart';
 import 'package:denuanime/features/anime/data/request/search_anime_request.dart';
+import 'package:denuanime/features/anime/data/request/toggle_watch_state_request.dart';
 import 'package:denuanime/features/anime/domain/entities/anime_characters_model.dart';
 import 'package:denuanime/features/anime/domain/entities/anime_details_model.dart';
 import 'package:denuanime/features/anime/domain/entities/exception/list_exception.dart';
@@ -141,5 +142,10 @@ class AnimeRepoImpl implements AnimeRepo {
             error is FirebaseException ? error.message : error.toString(),
           );
         });
+  }
+
+  @override
+  Future<void> toggleWatchState(ToggleWatchStateRequest request) async {
+    return await firebase.toggleWatchState(request);
   }
 }

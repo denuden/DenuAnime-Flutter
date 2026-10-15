@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:denuanime/features/anime/data/request/favorite_anime_request.dart';
+import 'package:denuanime/features/anime/data/request/toggle_watch_state_request.dart';
 import 'package:denuanime/features/anime/domain/entities/exception/add_favorite_exception.dart';
 import 'package:denuanime/features/anime/domain/entities/exception/no_user_exception.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -40,13 +41,16 @@ class AnimeFirebaseDatasource {
               'season': request.season,
               'year': request.year,
               'added_at': todayTimeStamp,
+              'watch_state': null,
             })
             .timeout(const Duration(seconds: 10));
       }
     } on TimeoutException {
-      throw Exception("You're offline. It will be added once you're online");
+      throw FavoriteException(
+        "You're offline. It will be added once you're online",
+      );
     } on FirebaseException catch (e) {
-      throw Exception(e.message ?? "Failed to add favorite");
+      throw FavoriteException(e.message ?? "Failed to add favorite");
     } catch (e) {
       throw FavoriteException("Something went wrong. $e");
     }
@@ -61,5 +65,32 @@ class AnimeFirebaseDatasource {
         .collection("favorites")
         .orderBy("added_at", descending: true)
         .snapshots();
+  }
+
+  Future<void> toggleWatchState(ToggleWatchStateRequest request) async {
+    final currentUser = firebaseAuth.currentUser ?? (throw NoUserException());
+
+    try {
+      final favoritesCollection = "favorites";
+      final usersCollection = "users";
+
+      final docRef = firebaseFirestore
+          .collection(usersCollection)
+          .doc(currentUser.uid)
+          .collection(favoritesCollection)
+          .doc((request.mal_id).toString());
+
+      await docRef
+          .update({"watch_state": request.watch_state})
+          .timeout(const Duration(seconds: 10));
+    } on TimeoutException {
+      throw FavoriteException(
+        "You're offline. It will be updated once you're online",
+      );
+    } on FirebaseException catch (e) {
+      throw FavoriteException(e.message ?? "Failed to toggle watch state");
+    } catch (e) {
+      throw FavoriteException("Something went wrong. $e");
+    }
   }
 }
